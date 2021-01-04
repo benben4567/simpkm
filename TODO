@@ -1,7 +1,7 @@
 FIX:
   ✔ Pakai DB transaction saat membuat user + (student/teacher), agar ketika student/teacher dibuat table user ikut rollback @done(20-12-29 22:53)
-  ☐ Function populatetable di user.js not found
-  ☐ Nama File untuk BA, FORM dan Export Excel pakai timestamp/now
+  ✔ Function populatetable di user.js not found @done(21-01-04 22:29)
+  ✔ Nama File untuk BA, FORM dan Export Excel pakai timestamp/now @done(21-01-04 22:29)
 TODO:
   ✔ Export Excel Rekapitulasi usulan (pake FastExcel) @done(21-01-03 20:51)
   ✔ Buat Panduan SIM (Alur pengusulan dan penggunaan) (pakai wizard coba) @done(20-12-29 22:16)
