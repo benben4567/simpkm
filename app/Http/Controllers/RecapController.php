@@ -5,8 +5,7 @@ namespace App\Http\Controllers;
 use App\Exports\ProposalsExport;
 use Illuminate\Http\Request;
 use App\Period;
-use App\Proposal;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class RecapController extends Controller
 {
@@ -20,7 +19,9 @@ class RecapController extends Controller
   {
 
     $id = $request->input('periode');
-    return (new ProposalsExport($id))->download('invoices.xlsx');
+    $periode = Period::find($id);
+    $name = "Rekap".$periode->tahun."-".Str::random(5).".xlsx";
+    return (new ProposalsExport($id))->download($name);
     // $proposals = Proposal::with(['students' =>function($q) {
     //               $q->wherePivot('jabatan', '=', 'Ketua');
     //             }, "teachers" => function($q) {

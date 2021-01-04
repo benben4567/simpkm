@@ -43,7 +43,7 @@ $(document).ready(function () {
         $('#adminModal').modal("hide")
         $.LoadingOverlay("hide")
         if (response.success) {
-          populateTable(response.data)
+          populateTableAdmin(response.data)
           Swal.fire(
             "Berhasil!",
             'User admin sudah disimpan.',
