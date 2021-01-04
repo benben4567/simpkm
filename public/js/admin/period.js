@@ -1,0 +1,177 @@
+$(function () {
+  $.ajaxSetup({
+    headers: {
+      'X-CSRF-TOKEN' : $('meta[name="csrf-token"]').attr('content')
+    }
+  });
+
+  var table = $("#table").DataTable({
+      dom: "tip",
+      ordering: false,
+  })
+
+
+
+  $("#create-periode").submit(function (e) {
+    e.preventDefault();
+    $.ajax({
+      type: "post",
+      url: "/admin/periode/store",
+      data: $(this).serialize(),
+      beforeSend: function () {
+        $.LoadingOverlay('show')
+      },
+      success: function (response) {
+        $.LoadingOverlay('hide')
+        if (response.success) {
+          populateTable(response.data)
+          $("#modalPeriode").modal('hide')
+          Swal.fire(
+            'Berhasil!',
+            'Periode pembukaan sudah disimpan.',
+            'success'
+          )
+        } else {
+          $("#modalPeriode").modal('hide')
+          Swal.fire(
+            'Gagal!',
+            response.msg,
+            'error'
+          )
+        }
+      },
+      error: function(error) {
+        $.LoadingOverlay('hide')
+        console.log(error.responseText)
+      }
+    });
+  });
+
+  $("#edit-periode").submit(function (e) {
+    e.preventDefault();
+    Swal.fire({
+      title: 'Anda yakin?',
+      text: "Periode yang sudah ditutup tidak dapat dibuka kembali.",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Ya!',
+      cancelButtonText: 'Batal'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        $.ajax({
+          type: "put",
+          url: "/admin/periode/update",
+          data: $(this).serialize(),
+          beforeSend: function() {
+            $.LoadingOverlay('show')
+          },
+          success: function (response) {
+            $.LoadingOverlay('hide')
+            if (response.success) {
+              populateTable(response.data);
+              $("#modalUpdate").modal("hide");
+              Swal.fire(
+                'Berhasil!',
+                'Periode pembukaan sudah ditutup.',
+                'success'
+              )
+            }
+          },
+          error: function(xhr, ajaxOptions, thrownError) {
+            $.LoadingOverlay('hide')
+            console.log(xhr.responseText)
+          }
+        });
+      }
+    })
+  });
+
+  function populateTable(data) {
+    // destroy datatable
+    $('#table').DataTable().clear().destroy();
+    // re-initiate filled datatable
+    window.table = $('#table').DataTable({
+      stateSave: true,
+      dom: "tip",
+      data: data,
+      responsive: true,
+      ordering: false,
+      "columnDefs": [
+        { "className": "text-center text-nowrap", "targets": "_all" },
+        {
+          "targets": 0,
+          "data": null,
+          "render": function (data, type, row, meta) {
+            return meta.row + meta.settings._iDisplayStart + 1;
+          }
+        },
+        {
+          "targets": 1,
+          "data": null,
+          "render": function (data, type, row, meta) {
+            return row.tahun ;
+          }
+        },
+        {
+          "targets":2,
+          "data": null,
+          "render": function (data, type, row, meta) {
+            return row.proposals_count
+          }
+        },
+        {
+          "targets" : 3,
+          "data" : null,
+          "render": function (data, type, row, meta) {
+            if (row.status == "buka") {
+              return `<span class="badge badge-success">Buka</span>`;
+            } else {
+              return `<span class="badge badge-danger">Tutup</span>`;
+            }
+          }
+        },
+        {
+          "targets": 4,
+          "data": null,
+          "render": function ( data, type, row, meta ) {
+            if (row.status == "buka") {
+              return `<button type="button" class="btn btn-icon btn-sm btn-warning" title="Edit" data-id="${row.id}"><i class="fas fa-pencil-alt"></i></button>`
+            } else {
+              return `<button type="button" class="btn btn-icon btn-sm btn-danger" disabled><i class="fas fa-times"></i></button>`
+            }
+          }
+        },
+      ]
+    });
+  }
+
+  $('#table tbody').on( 'click', 'button', function () {
+    // var data = table.row( $(this).parents('tr') ).data();
+    var id = $(this).data('id');
+    console.log(id);
+    $.ajax({
+      type: "get",
+      url: "/admin/periode/show",
+      data: {id: id},
+      beforeSend: function() {
+        $.LoadingOverlay('show')
+      },
+      success: function (response) {
+        $.LoadingOverlay('hide')
+        if (response.data) {
+          var data = response.data;
+          console.log(data);
+          $("input[name='id']").val(data.id);
+          $("input[name='tahun']").val(data.tahun);
+          $("select[name='status']").val(data.status);
+          $("#modalUpdate").modal("show");
+        }
+      }
+    });
+  });
+
+});
+
+

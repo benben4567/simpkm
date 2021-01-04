@@ -1,0 +1,70 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use App\Proposal;
+use App\Major;
+use App\Student;
+use App\Period;
+
+class HomeController extends Controller
+{
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
+    /**
+     * Show the application dashboard.
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function index()
+    {
+        if (Auth::user()->role == 'admin') {
+            $proposal = Proposal::all()->count();
+            $lolos = Proposal::lolos()->count();
+            $major = Major::all()->count();
+            $student = Student::all()->count();
+            return view('pages.admin.index', compact('proposal', 'lolos', 'major', 'student'));
+        } elseif (Auth::user()->role == 'student') {
+            $proposals = Proposal::with('teachers')->whereHas('students', function($q) {
+              $q->where('student_id', '=', Auth::user()->student->id);
+            })->get();
+            // dd($proposals);
+            return view('pages.student.index', compact('proposals'));
+        } else {
+            return abort(403);
+        }
+        return view('home');
+    }
+
+    public function recap($tahun)
+    {
+      $period = Period::whereTahun($tahun)->first();
+      if ($period) {
+        $recap = $period->proposals->groupBy('skema')->map->count();
+        return response()->json([
+          'success' => true,
+          'data' => $recap
+        ]);
+      } else {
+        return response()->json([
+          'success' => false,
+          'data' => null
+        ], 404);
+      }
+
+    }
+
+    public function panduan(){
+      return view('pages.student.panduan');
+    }
+}
