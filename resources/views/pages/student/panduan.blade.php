@@ -7,6 +7,15 @@
       </div>
       <div class="section-body">
         <div class="row">
+          <div class="col-lg-12">
+            <div class="alert alert-info alert-has-icon">
+              <div class="alert-icon"><i class="far fa-lightbulb"></i></div>
+              <div class="alert-body">
+                <div class="alert-title">Perhatian</div>
+                Dibawah ini merupakan Panduan dalam menggunakan SIM PKM di ITSK RS dr. Soepraoen. Harap baca secara seksama seluruh bagian dari Panduan ini, yaitu Alur Pengusulan serta tahapan-tahapan pengusulan PKM.
+              </div>
+            </div>
+          </div>
           <div class="col-12">
             <div class="card">
               <div class="card-body">
@@ -42,6 +51,9 @@
                   <div class="col-12 col-sm-12 col-md-9">
                     <div class="tab-content no-padding" id="myTab2Content">
                       <div class="tab-pane fade show active" id="alur" role="tabpanel" aria-labelledby="alur">
+                        <p class="text-center">
+                          Dibawah ini merupakan alur/tahapan secara umum dalam pengusulan PKM di SIM PKM ini.
+                        </p>
                         <div class="text-center">
                           <img src="{{ asset('img/Alur.png') }}" class="img-fluid rounded" alt="Alur">
                         </div>
