@@ -1,0 +1,164 @@
+@import url("https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap");
+body {
+  font-family: 'Ubuntu', sans-serif;
+  min-height: 60em;
+}
+
+body::before {
+  content: '';
+  background-image: url(../img/bg.png);
+  background-repeat: no-repeat;
+  background-position: top right;
+  background-size: 60vmax;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 60em;
+}
+
+@media screen and (max-width: 992px) {
+  body::before {
+    opacity: 0.4;
+  }
+}
+
+.custom-nav .navbar-brand img {
+  width: 50px;
+  margin-top: -10px;
+  margin-right: 15px;
+}
+
+.custom-nav .navbar-brand span {
+  color: #363767;
+  font-size: 1.4rem;
+  font-weight: 500;
+  margin-left: -0.4em;
+}
+
+.custom-nav #navbarNav .navbar-nav .nav-item .nav-link {
+  color: white;
+  font-weight: 500;
+  margin-left: 2.2em;
+  -webkit-transition: 0.3s color ease;
+  transition: 0.3s color ease;
+}
+
+.custom-nav #navbarNav .navbar-nav .nav-item .nav-link:hover {
+  color: #111430;
+}
+
+.custom-nav #navbarNav .navbar-nav .nav-item .Sign-up-button {
+  background-color: white;
+  color: #363767;
+  border-radius: 2em;
+  border: 0;
+  padding-left: 1.5em;
+  padding-right: 1.5em;
+}
+
+.custom-nav #navbarNav .navbar-nav .nav-item .Sign-up-button:hover {
+  opacity: 0.8;
+}
+
+@media screen and (max-width: 992px) {
+  .custom-nav #navbarNav .navbar-nav .nav-item .nav-link {
+    color: #3844A2;
+  }
+  .custom-nav #navbarNav .navbar-nav .nav-item .nav-link:hover {
+    color: white;
+  }
+  .custom-nav #navbarNav .navbar-nav .nav-item .Sign-up-button {
+    background-color: #EB9639;
+    color: white;
+    border: 1px solid transparent;
+  }
+  .custom-nav #navbarNav .navbar-nav .nav-item .Sign-up-button:hover {
+    color: #3844A2;
+    background-color: white;
+    border: 1px solid #EB9639;
+  }
+}
+
+@media screen and (max-width: 992px) {
+  .custom-nav {
+    margin-top: -1em;
+  }
+}
+
+.custom-section {
+  margin-top: 10em;
+}
+
+.custom-section h2 {
+  font-weight: 700;
+  font-size: 4rem;
+  color: #2C2A55;
+  line-height: 1.1em;
+}
+
+.custom-section p {
+  color: #3844A2;
+  font-size: 1.1em;
+  margin-top: 3em;
+}
+
+.custom-section .button-getStarted {
+  display: inline-block;
+  color: white;
+  background-color: #EB9639;
+  border-radius: 2em;
+  padding: 0.5em 2em;
+  text-decoration: none;
+  margin-top: 2.2em;
+  -webkit-transition: 0.5s ease;
+  transition: 0.5s ease;
+  border: 1px solid transparent;
+}
+
+.custom-section .button-getStarted:hover {
+  color: #3844A2;
+  background-color: transparent;
+  border: 1px solid #EB9639;
+}
+
+.custom-section span {
+  color: #EB9639;
+}
+
+.custom-section .button-contact {
+  color: #EB9639;
+}
+
+@media screen and (max-width: 992px) {
+  .custom-section {
+    margin-top: 5em;
+    text-align: center;
+  }
+  .custom-section h2,
+  .custom-section p {
+    text-shadow: 1px 1px 2px rgba(54, 55, 103, 0.3);
+  }
+  .custom-section p {
+    color: #484988;
+  }
+  .custom-section .button-getStarted {
+    margin-left: 2em;
+  }
+  .custom-section .button-contact {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+            flex-direction: column;
+    margin-top: 1em;
+  }
+}
+
+.credit {
+  margin-top: 15em;
+}
+/*# sourceMappingURL=landing.css.map */
