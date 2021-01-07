@@ -13,12 +13,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// Route::get('/', function () {
-//     return view('welcome');
-// });
-
-Route::view('/', 'welcome');
-Route::view('/', 'auth.login2');
+// Route::view('/', 'auth.login2');
+Route::view('/', 'landing');
 
 Auth::routes();
 
