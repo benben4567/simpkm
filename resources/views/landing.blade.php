@@ -33,12 +33,18 @@
                       <li class="nav-item align-self-center">
                           <a class="nav-link" href="#">Panduan</a>
                       </li>
-                      <li class="nav-item align-self-center">
-                          <a class="nav-link" href="{{ route('login') }}">Masuk</a>
-                      </li>
-                      <li class="nav-item">
-                          <a class="nav-link btn btn-primary Sign-up-button" href="{{ route('register') }}">Daftar</a>
-                      </li>
+                      @auth
+                        <li class="nav-item align-self-center">
+                            <a class="nav-link" href="{{ route('home') }}">Dashboard</a>
+                        </li>
+                      @else
+                        <li class="nav-item align-self-center">
+                            <a class="nav-link" href="{{ route('login') }}">Masuk</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link btn btn-primary Sign-up-button" href="{{ route('register') }}">Daftar</a>
+                        </li>
+                      @endauth
                   </ul>
               </div>
           </nav>
