@@ -75,7 +75,7 @@
 
               @if (Route::has('register'))
               <div class="mt-5 text-center">
-                Tidak punya akun? <a href="{{ route('register') }}">Register disini</a>
+                Tidak punya akun? <a href="{{ route('register') }}">Registrasi disini</a>
               </div>
               @endif
             </form>
