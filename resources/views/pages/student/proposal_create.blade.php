@@ -29,11 +29,12 @@
                         <label for="">Skema PKM</label>
                         <select class="form-control selectric @error('skema') is-invalid @enderror" name="skema" id="skema">
                           <option selected disabled>- pilih -</option>
-                          <option value="PKM-P">PKM-P</option>
+                          <option value="PKM-R">PKM-R</option>
                           <option value="PKM-K">PKM-K</option>
-                          <option value="PKM-M">PKM-M</option>
-                          <option value="PKM-T">PKM-T</option>
+                          <option value="PKM-PM">PKM-PM</option>
+                          <option value="PKM-PI">PKM-PI</option>
                           <option value="PKM-KC">PKM-KC</option>
+                          <option value="PKM-GFK">PKM-GFK</option>
                           <option value="PKM-AI">PKM-AI</option>
                           <option value="PKM-GT">PKM-GT</option>
                         </select>
