@@ -85,7 +85,7 @@
                 <div class="form-group">
                   <select class="form-control selectric" name="periode">
                     <option selected diabled>-pilih-</option>
-                    <option>2020</option>
+                    <option>2021</option>
                   </select>
                 </div>
               </div>
@@ -99,7 +99,7 @@
                   </thead>
                   <tbody>
                     <tr>
-                      <td>PKM-P</td>
+                      <td>PKM-R</td>
                       <td>0</td>
                     </tr>
                     <tr>
@@ -107,11 +107,11 @@
                       <td>0</td>
                     </tr>
                     <tr>
-                      <td>PKM-M</td>
+                      <td>PKM-PM</td>
                       <td>0</td>
                     </tr>
                     <tr>
-                      <td>PKM-T</td>
+                      <td>PKM-PI</td>
                       <td>0</td>
                     </tr>
                     <tr>
