@@ -15,11 +15,11 @@ use Illuminate\Support\Facades\Route;
 
 // Route::view('/', 'auth.login2');
 Route::view('/', 'landing');
+Route::view('/panduan', 'panduan')->name('panduan');
 
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
-
 
 Route::group(['middleware' => ['admin'], 'prefix' => 'admin'], function () {
   Route::get('/home/recap/{tahun}', ['as' => 'home.recap', 'uses' => 'HomeController@recap']);
