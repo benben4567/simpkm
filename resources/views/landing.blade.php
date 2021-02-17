@@ -31,7 +31,7 @@
               <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
                   <ul class="navbar-nav">
                       <li class="nav-item align-self-center">
-                          <a class="nav-link" href="#">Panduan</a>
+                          <a class="nav-link" href="{{ route('panduan') }}">Panduan</a>
                       </li>
                       @auth
                         <li class="nav-item align-self-center">
