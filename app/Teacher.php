@@ -26,7 +26,7 @@ class Teacher extends Model
 
     public function proposals()
     {
-      return $this->belongsToMany(Proposal::class);
+      return $this->belongsToMany(Proposal::class)->withPivot('jabatan');
     }
 
     public function setNamaAttribute($value)
