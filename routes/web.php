@@ -67,3 +67,13 @@ Route::group(['middleware' => ['student'], 'prefix' => 'student'], function () {
   // Panduan
   Route::get('/panduan', ['as' => 'panduan.index', 'uses' => 'HomeController@panduan']);
 });
+
+Route::group(['middleware' => ['teacher'], 'prefix' => 'teacher', 'as' => 'teacher.'], function () {
+  // Profile
+  Route::get('/profile', ['as' => 'profile.index', 'uses' => 'Teacher\ProfileController@index']);
+
+  // Proposal
+  Route::get('/usulan', ['as' => 'proposal.index', 'uses' => 'Teacher\ProposalController@index']);
+
+  Route::get('/panduan', ['as' => 'panduan.index', 'uses' => 'HomeController@panduan']);
+});
