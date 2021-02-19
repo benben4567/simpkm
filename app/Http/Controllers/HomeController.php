@@ -40,6 +40,11 @@ class HomeController extends Controller
             })->get();
             // dd($proposals);
             return view('pages.student.index', compact('proposals'));
+        } elseif (Auth::user()->role == 'teacher') {
+            $proposals = Proposal::with('students')->whereHas('teachers', function($q) {
+              $q->where('teacher_id', '=', Auth::user()->teacher->id);
+            })->get();
+            return view('pages.teacher.index', compact('proposals'));
         } else {
             return abort(403);
         }
