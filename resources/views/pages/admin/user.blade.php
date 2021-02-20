@@ -53,7 +53,7 @@
                 <div class="tab-pane fade" id="nav-mahasiswa" role="tabpanel" aria-labelledby="nav-mahasiswa-tab">
                   <div class="mb-3">
                     <a class="btn btn-primary" href="{{ route('user.create', ['role' => 'student']) }}" role="button"><i class="fas fa-plus"></i> Baru</a>
-                    <button type="button" class="btn btn-success"><i class="fas fa-file-excel"></i> Import</button>
+                    <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modalImport"><i class="fas fa-file-excel"></i> Import</button>
                   </div>
                   <div class="table-responsive">
                     <table class="table table-striped table-md" id="table-student">
@@ -263,7 +263,7 @@
       </div>
     </div>
 
-    <!-- Teacher Import -->
+    <!-- Import User -->
     <div class="modal fade" id="modalImport" tabindex="-1" role="dialog">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -273,7 +273,7 @@
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
-          <form action="{{ route('user.import') }}" method="post" autocomplete="off" id="form-teacher-import">
+          <form action="{{ route('user.import') }}" method="post" autocomplete="off" id="form-import">
             @csrf
             <div class="modal-body">
                 @csrf
