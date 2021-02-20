@@ -15,17 +15,33 @@ class UsersImport implements ToCollection, WithHeadingRow
     public function collection(Collection $rows)
     {
         foreach ($rows as $row) {
-          $teacher = User::create([
-            'name' => $row['nama'],
-            'email' => $row['email'],
-            'password' => Hash::make($row['nidn']),
-            'role' => $row['role'],
-          ]);
-          $teacher->teacher()->create([
-            'major_id' => $row['id_prodi'],
-            'nidn' => $row['nidn'],
-            'nama' => $row['nama'],
-          ]);
+          if ($row['role'] == 'student') {
+            // student
+            $user = User::create([
+              'name' => $row['nama'],
+              'email' => $row['email'],
+              'password' => Hash::make($row['nim']),
+              'role' => $row['role'],
+            ]);
+            $user->student()->create([
+              'major_id' => $row['id_prodi'],
+              'nim' => $row['nim'],
+              'nama' => $row['nama'],
+            ]);
+          } else {
+            // teacher
+            $user = User::create([
+              'name' => $row['nama'],
+              'email' => $row['email'],
+              'password' => Hash::make($row['nidn']),
+              'role' => $row['role'],
+            ]);
+            $user->teacher()->create([
+              'major_id' => $row['id_prodi'],
+              'nidn' => $row['nidn'],
+              'nama' => $row['nama'],
+            ]);
+          }
           ++$this->rows;
         }
     }
