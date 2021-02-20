@@ -12,8 +12,10 @@ class ProposalController extends Controller
 {
     public function index()
     {
-      $teacher = Teacher::with('proposals')->whereId(Auth::user()->teacher->id)->first();
-      // dd($teacher);
+      // Only show if jabatan == Pembimbing
+      $teacher = Teacher::with(['proposals' => function($q) {
+                  $q->wherePivot('jabatan', '=', 'Pembimbing')->get();
+                }])->whereId(Auth::user()->teacher->id)->first();
       return view('pages.teacher.proposal', compact('teacher'));
     }
 
@@ -49,6 +51,10 @@ class ProposalController extends Controller
 
     public function review()
     {
-      # code...
+      // Only show if jabatan == Reviewer
+      $teacher = Teacher::with(['proposals' => function($q) {
+        $q->wherePivot('jabatan', '!=', 'Pembimbing')->get();
+      }])->whereId(Auth::user()->teacher->id)->first();
+      return view('pages.teacher.reviewer', compact('teacher'));
     }
 }
