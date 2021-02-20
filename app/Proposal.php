@@ -38,6 +38,11 @@ class Proposal extends Model
       return $this->belongsToMany(Student::class)->wherePivot('jabatan', 'Anggota');
     }
 
+    public function reviewer()
+    {
+      return $this->belongsToMany(Teacher::class)->wherePivot('jabatan', '!=', 'Pembimbing');
+    }
+
     public function reviewer1()
     {
       return $this->belongsToMany(Teacher::class)->wherePivot('jabatan', 'Reviewer 1');
