@@ -57,7 +57,7 @@ $(document).ready(function () {
           populateTableTeacher(response.data)
           Swal.fire(
             "Berhasil!",
-            'User dosen sudah disimpan.',
+            response.msg,
             'success'
           )
         }
