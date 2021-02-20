@@ -29,7 +29,7 @@
                   <div class="col-lg-6">
                     <div class="form-group">
                       <label for="prodi">Prodi</label>
-                      <select class="form-control form-control-sm" name="major" id="prodi">
+                      <select class="form-control form-control-sm selectric" name="major" id="prodi">
                         <option selected disabled>- pilih -</option>
                         @foreach($majors as $major)
                         <option value="{{ $major->id }}" {{ $student->major_id == $major->id ? 'selected' : ''}}>{{ $major->full_name }}</option>
@@ -56,7 +56,7 @@
                   <div class="col-lg-6">
                     <div class="form-group">
                       <label for="jk">JK</label>
-                      <select class="form-control" name="jk" id="jk">
+                      <select class="form-control selectric" name="jk" id="jk">
                         <option selected disabled>- pilih -</option>
                         <option value="laki" {{ $student->jk == 'laki' ? 'selected' : '' }}>Laki</option>
                         <option value="perempuan" {{ $student->jk == 'perempuan' ? 'selected' : '' }}>Perempuan</option>
@@ -85,14 +85,19 @@
                   <h4 class="card-title">Ganti Password</h4>
                 </div>
                 <div class="card-body">
-                  <form action="" method="post" autocomplete="off">
+                  <form action="" method="post" autocomplete="off" id="update-password">
+                    @csrf
+                    @method('put')
+                    <input type="hidden" name="id" value="{{ $student->user->id }}">
                     <div class="form-group">
                       <label for="">Password Baru</label>
                       <input type="password" class="form-control" name="password">
+                      <div class="invalid-feedback" name="msg_password"><ul></ul></div>
                     </div>
                     <div class="form-group">
                       <label for="">Ulangi Password Baru</label>
                       <input type="password" class="form-control" name="password_confirmation">
+                      <div class="invalid-feedback" name="msg_password_confirmation"><ul></ul></div>
                     </div>
                     <button type="submit" class="btn btn-primary">Simpan</button>
                   </form>
@@ -125,6 +130,7 @@
 
 @push('lib-js')
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js" integrity="sha512-T/tUfKSV1bihCnd+MxKD0Hm1uBBroVYBOYSk1knyvQ9VyZJpc/ALb4P0r6ubwVPSGB2GvjeoMAJJImBG12TiaQ==" crossorigin="anonymous"></script>
+  <script src="{{ asset('vendor/selectric/public/jquery.selectric.min.js') }}"></script>
 @endpush
 
 @push('page-js')
@@ -133,4 +139,5 @@
 
 @push('css')
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
+  <link rel="stylesheet" href="{{ asset('vendor/selectric/public/selectric.css')}}">
 @endpush
