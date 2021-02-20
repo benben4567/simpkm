@@ -41,6 +41,7 @@ Route::group(['middleware' => ['admin'], 'prefix' => 'admin'], function () {
   Route::get('/user/show/{id}', ['as' => 'user.show', 'uses' => 'UserController@show']);
   Route::post('/user/store/{role}', ['as' => 'user.store', 'uses' => 'UserController@store']);
   Route::put('/user/update/{role}', ['as' => 'user.update', 'uses' => 'UserController@update']);
+  Route::post('/user/import', ['as' => 'user.import', 'uses' => 'UserController@import']);
 
   // Rekapitulasi
   Route::get('/recap', ['as' => 'recap.index', 'uses' => 'RecapController@index']);
