@@ -87,6 +87,7 @@
                 <div class="tab-pane fade" id="nav-dosen" role="tabpanel" aria-labelledby="nav-dosen-tab">
                   <div class="mb-3">
                     <a class="btn btn-primary" href="{{ route('user.create', ['role' => 'teacher']) }}" role="button"><i class="fas fa-plus"></i> Baru</a>
+                    <button type="button" class="btn btn-success btn-upload" data-toggle="modal" data-target="#modalImport"><i class="fas fa-file-upload"></i> Import</button>
                   </div>
                   <div class="table-responsive">
                     <table class="table table-striped table-md" id="table-teacher">
@@ -257,6 +258,38 @@
             <button type="submit" class="btn btn-primary">Simpan</button>
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
           </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Teacher Import -->
+    <div class="modal fade" id="modalImport" tabindex="-1" role="dialog">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Import Data Dosen</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <form action="{{ route('user.import') }}" method="post" autocomplete="off" id="form-teacher-import">
+            @csrf
+            <div class="modal-body">
+                @csrf
+                <div class="form-group">
+                  <div class="custom-file">
+                    <input type="file" class="custom-file-input form-control" accept=".xls,.xlsx" id="customFile" name="file">
+                    <label class="custom-file-label" for="customFile">Choose file</label>
+                    <div class="invalid-feedback" name="msg_file"><ul></ul></div>
+                  </div>
+                  <small class="text-muted">Filetype: xls, xlsx | Max: 2Mb</small>
+                </div>
+            </div>
+            <div class="modal-footer">
+              <button type="submit" class="btn btn-primary">Import</button>
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+            </div>
           </form>
         </div>
       </div>
