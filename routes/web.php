@@ -75,6 +75,7 @@ Route::group(['middleware' => ['teacher'], 'prefix' => 'teacher', 'as' => 'teach
 
   // Proposal
   Route::get('/usulan', ['as' => 'proposal.index', 'uses' => 'Teacher\ProposalController@index']);
+  Route::get('/review', ['as' => 'proposal.review', 'uses' => 'Teacher\ProposalController@review']);
   Route::get('/usulan/show/{id}', ['as' => 'proposal.show', 'uses' => 'Teacher\ProposalController@show']);
 
   Route::get('/panduan', ['as' => 'panduan.index', 'uses' => 'HomeController@panduan']);
