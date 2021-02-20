@@ -53,7 +53,7 @@
                 <div class="tab-pane fade" id="nav-mahasiswa" role="tabpanel" aria-labelledby="nav-mahasiswa-tab">
                   <div class="mb-3">
                     <a class="btn btn-primary" href="{{ route('user.create', ['role' => 'student']) }}" role="button"><i class="fas fa-plus"></i> Baru</a>
-                    <button type="button" class="btn btn-success float-right"><i class="fas fa-file-excel"></i> Import</button>
+                    <button type="button" class="btn btn-success"><i class="fas fa-file-excel"></i> Import</button>
                   </div>
                   <div class="table-responsive">
                     <table class="table table-striped table-md" id="table-student">
