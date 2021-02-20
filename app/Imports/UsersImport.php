@@ -10,6 +10,8 @@ use Maatwebsite\Excel\Concerns\WithHeadingRow;
 
 class UsersImport implements ToCollection, WithHeadingRow
 {
+    private $rows = 0;
+
     public function collection(Collection $rows)
     {
         foreach ($rows as $row) {
@@ -24,6 +26,12 @@ class UsersImport implements ToCollection, WithHeadingRow
             'nidn' => $row['nidn'],
             'nama' => $row['nama'],
           ]);
+          ++$this->rows;
         }
+    }
+
+    public function getRowCount(): int
+    {
+      return $this->rows;
     }
 }
