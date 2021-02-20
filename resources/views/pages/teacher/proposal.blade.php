@@ -16,7 +16,7 @@
                       <tr class=text-center>
                         <th>Skema</th>
                         <th>Judul</th>
-                        <th>Jabatan</th>
+                        <th>Ketua</th>
                         <th>Tanggal Diusulkan</th>
                         <th>Status Usulan</th>
                         <th>Aksi</th>
@@ -27,7 +27,8 @@
                       <tr class="text-center">
                         <td>{{ $proposal->skema }}</td>
                         <td>{{ $proposal->judul }}</td>
-                        <td>{{ $proposal->pivot->jabatan }}</td>
+                        <td>{{ $proposal->ketua[0]['nama']}}</td>
+                        {{-- <td>{{ $proposal->pivot->jabatan }}</td> --}}
                         <td>{{ $proposal->created_at->isoFormat('D MMMM Y')}}</td>
                         <td>
                           @if($proposal->status == "kompilasi")
