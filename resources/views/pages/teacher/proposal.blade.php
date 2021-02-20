@@ -106,29 +106,27 @@
               <div class="col-lg-12">
                 <dl class="row">
                   <dt class="col-sm-3">Skema</dt>
-                  <dd class="col-sm-9">{ skema}</dd>
+                  <dd class="col-sm-9" id="skema"></dd>
 
                   <dt class="col-sm-3">Judul</dt>
-                  <dd class="col-sm-9"><p>{ judul }</p></dd>
+                  <dd class="col-sm-9"><p id="judul"></p></dd>
 
                   <dt class="col-sm-3">Pembimbing</dt>
-                  <dd class="col-sm-9">{ pembimbing }</dd>
+                  <dd class="col-sm-9" id="pembimbing"></dd>
 
                   <dt class="col-sm-3">Ketua</dt>
-                  <dd class="col-sm-9">{ ketua }</dd>
+                  <dd class="col-sm-9" id="ketua"></dd>
 
                   <dt class="col-sm-3">Anggota</dt>
-                  <dd class="col-sm-9">
-                    <ul>
-
-                    </ul>
+                  <dd class="col-sm-9" id="anggota">
+                    <ul class="pl-3"></ul>
                   </dd>
 
                   <dt class="col-sm-3">Reviewer 1</dt>
-                  <dd class="col-sm-9">{ reviewer1 }</dd>
+                  <dd class="col-sm-9" id="reviewer1"></dd>
 
                   <dt class="col-sm-3">Reviewer 1</dt>
-                  <dd class="col-sm-9">{ reviewer1 }</dd>
+                  <dd class="col-sm-9" id="reviewer2"></dd>
                 </dl>
               </div>
             </div>
