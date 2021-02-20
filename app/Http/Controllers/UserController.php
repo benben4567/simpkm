@@ -224,8 +224,9 @@ class UserController extends Controller
         }
 
         // import excel using try catch
+        $import = new UsersImport;
         try {
-          Excel::import(new UsersImport, 'public/excel/'.$fileName);
+          Excel::import($import, 'public/excel/'.$fileName);
         } catch (\Throwable $th) {
           return response()->json([
             'success' => false,
@@ -238,7 +239,7 @@ class UserController extends Controller
       return response()->json([
         'success' => true,
         'data' => $teachers,
-        'msg' => 'Import berhasil'
+        'msg' => $import->getRowCount().' User berhasil di import'
       ], 200);
 
     }
