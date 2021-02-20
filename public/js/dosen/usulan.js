@@ -18,6 +18,10 @@ $(document).ready(function () {
     $('#modalDownload').modal('show')
   });
 
+  $('#modalShow').on('hidden.bs.modal', function (e) {
+    $("#anggota ul").empty();
+  })
+
   $('.btn-show').on('click', function () {
     var id = $(this).data('proposal');
     $.ajax({
