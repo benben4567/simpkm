@@ -6,11 +6,11 @@ use App\Major;
 use App\Teacher;
 use Illuminate\Http\Request;
 use App\User;
-use Exception;
-use Faker\Provider\ar_JO\Company;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Symfony\Component\Console\Input\Input;
+use App\Imports\UsersImport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class UserController extends Controller
 {
@@ -207,6 +207,40 @@ class UserController extends Controller
           'data' => ''
         ], 500);
       }
+    }
+
+    public function import(Request $request)
+    {
+      $this->validate($request, [
+        'file' => 'required|mimes:xls,xlsx|max:2048',
+      ]);
+
+        // upload
+        if($request->file('file')) {
+          $fileName = time().'.'.$request->file('file')->extension();
+          $path = $request->file('file')->storeAs(
+            'public/excel', $fileName
+          );
+        }
+
+        // import excel using try catch
+        try {
+          Excel::import(new UsersImport, 'public/excel/'.$fileName);
+        } catch (\Throwable $th) {
+          return response()->json([
+            'success' => false,
+            'data' => null,
+            'msg' => $th
+          ], 500);
+        }
+
+      $teachers = User::whereRole('teacher')->get();
+      return response()->json([
+        'success' => true,
+        'data' => $teachers,
+        'msg' => 'Import berhasil'
+      ], 200);
+
     }
 
 
