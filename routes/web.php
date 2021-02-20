@@ -52,6 +52,7 @@ Route::group(['middleware' => ['admin'], 'prefix' => 'admin'], function () {
 Route::group(['middleware' => ['student'], 'prefix' => 'student'], function () {
   // Profile
   Route::get('/profile', ['as' => 'profile.index', 'uses' => 'Student\ProfileController@index']);
+  Route::put('/password-update', ['as' => 'student.password.update', 'uses' => 'Student\ProfileController@updatePassword']);
 
   // Proposal
   Route::get('/usulan', ['as' => 'proposal.index', 'uses' => 'Student\ProposalController@index']);
@@ -72,6 +73,7 @@ Route::group(['middleware' => ['student'], 'prefix' => 'student'], function () {
 Route::group(['middleware' => ['teacher'], 'prefix' => 'teacher', 'as' => 'teacher.'], function () {
   // Profile
   Route::get('/profile', ['as' => 'profile.index', 'uses' => 'Teacher\ProfileController@index']);
+  Route::put('/password-update', ['as' => 'password.update', 'uses' => 'Teacher\ProfileController@updatePassword']);
 
   // Proposal
   Route::get('/usulan', ['as' => 'proposal.index', 'uses' => 'Teacher\ProposalController@index']);
