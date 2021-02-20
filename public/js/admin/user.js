@@ -33,7 +33,7 @@ $(document).ready(function () {
     $("#form-admin").trigger("reset");
   })
 
-  $("#form-teacher-import").submit(function (e) {
+  $("#form-import").submit(function (e) {
     e.preventDefault();
     $.ajax({
       type: "post",
@@ -49,7 +49,6 @@ $(document).ready(function () {
         $("div.invalid-feedback").find('ul').empty();
       },
       success: function (response) {
-        console.log(response)
         $('#modalImport').modal("hide")
         $('.custom-file-label').html("Choose file");
         $.LoadingOverlay("hide")
@@ -72,7 +71,6 @@ $(document).ready(function () {
               xhr.responseJSON.message,
               'error'
             )
-
             $.each(errors, function(key, value) {
               $("input[name="+ key +"]").addClass("is-invalid")
               $.each(errors[key], function(ke, val) {
@@ -80,7 +78,13 @@ $(document).ready(function () {
               })
             })
             break;
-
+          case 500:
+            Swal.fire(
+              'Error!',
+              'Terjadi kesalahan, periksa kembali data anda',
+              'error'
+            )
+            break;
           default:
             break;
         }
