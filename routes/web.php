@@ -73,6 +73,7 @@ Route::group(['middleware' => ['student'], 'prefix' => 'student'], function () {
 Route::group(['middleware' => ['teacher'], 'prefix' => 'teacher', 'as' => 'teacher.'], function () {
   // Profile
   Route::get('/profile', ['as' => 'profile.index', 'uses' => 'Teacher\ProfileController@index']);
+  Route::put('/profile', ['as' => 'profile.update', 'uses' => 'Teacher\ProfileController@update']);
   Route::put('/password-update', ['as' => 'password.update', 'uses' => 'Teacher\ProfileController@updatePassword']);
 
   // Proposal
