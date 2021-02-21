@@ -2,7 +2,7 @@ FIX:
   ✔ Pakai DB transaction saat membuat user + (student/teacher), agar ketika student/teacher dibuat table user ikut rollback @done(20-12-29 22:53)
   ✔ Function populatetable di user.js not found @done(21-01-04 22:29)
   ✔ Nama File untuk BA, FORM dan Export Excel pakai timestamp/now @done(21-01-04 22:29)
-  ☐ Update Profile (Student & Teacher)
+  ✔ Update Profile (Student & Teacher) @done(21-02-21 15:15)
   ✔ Change Password (Student & Teacher) @done(21-02-20 20:40)
   ✔ Teacher : Show proposal detail (modal) @done(21-02-20 18:51)
   ✔ Import Excel user teacher @done(21-02-20 16:12)
