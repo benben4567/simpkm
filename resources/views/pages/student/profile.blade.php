@@ -13,11 +13,14 @@
             <div class="card-header">
               <h4 class="card-title">Data Diri</h4>
             </div>
+            <form action="" method="post" autocomplete="off" id="form-student">
             <div class="card-body">
-              <form action="" method="post" autocomplete="off">
+                @csrf
+                @method('put')
+                <input type="hidden" name="id" value="{{ $student->id }}">
                 <div class="form-group">
                   <label for="nama">Nama</label>
-                  <input type="text" class="form-control" name="nama" value="{{ $student->nama }}" id="nama">
+                  <input type="text" class="form-control" name="nama" value="{{ old('nama', $student->nama) }}" id="nama">
                 </div>
                 <div class="row">
                   <div class="col-lg-6">
@@ -32,7 +35,7 @@
                       <select class="form-control form-control-sm selectric" name="major" id="prodi">
                         <option selected disabled>- pilih -</option>
                         @foreach($majors as $major)
-                        <option value="{{ $major->id }}" {{ $student->major_id == $major->id ? 'selected' : ''}}>{{ $major->full_name }}</option>
+                        <option value="{{ $major->id }}" {{ old('major', $student->major_id) == $major->id ? 'selected' : ''}}>{{ $major->full_name }}</option>
                         @endforeach
                       </select>
                     </div>
@@ -42,13 +45,13 @@
                   <div class="col-lg-6">
                     <div class="form-group">
                       <label for="">Tempat</label>
-                      <input type="text" class="form-control" name="tempat" value="{{ $student->tempat_lahir }}" id="tempat">
+                      <input type="text" class="form-control" name="tempat" value="{{ old('tempat', $student->tempat_lahir) }}" id="tempat">
                     </div>
                   </div>
                   <div class="col-lg-6">
                     <div class="form-group">
                       <label for="tgl_lahir">Tanggal Lahir</label>
-                      <input type="text" class="form-control datepicker" name="tgl" value="{{ $student->tgl_lahir }}" id="tgl">
+                      <input type="text" class="form-control datepicker" name="tgl" value="{{ old('tgl', $student->tgl_lahir) }}" id="tgl">
                     </div>
                   </div>
                 </div>
@@ -58,23 +61,23 @@
                       <label for="jk">JK</label>
                       <select class="form-control selectric" name="jk" id="jk">
                         <option selected disabled>- pilih -</option>
-                        <option value="laki" {{ $student->jk == 'laki' ? 'selected' : '' }}>Laki</option>
-                        <option value="perempuan" {{ $student->jk == 'perempuan' ? 'selected' : '' }}>Perempuan</option>
+                        <option value="laki" {{ old('jk', $student->jk) == 'laki' ? 'selected' : '' }}>Laki</option>
+                        <option value="perempuan" {{ old('jk', $student->jk) == 'perempuan' ? 'selected' : '' }}>Perempuan</option>
                       </select>
                     </div>
                   </div>
                   <div class="col-lg-6">
                     <div class="form-group">
                       <label for="no_hp">No. HP</label>
-                      <input type="text" class="form-control" name="no_hp" value="{{ $student->no_hp }}" id="no_hp">
+                      <input type="text" class="form-control" name="no_hp" value="{{ old('no_hp', $student->no_hp) }}" id="no_hp">
                     </div>
                   </div>
                 </div>
-              </form>
             </div>
             <div class="card-footer">
-              <button type="button" class="btn btn-primary">Simpan</button>
+              <button type="submit" class="btn btn-primary">Simpan</button>
             </div>
+            </form>
           </div>
         </div>
         <div class="col-lg-6 col-md-12">
