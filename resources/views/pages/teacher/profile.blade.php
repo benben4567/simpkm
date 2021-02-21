@@ -16,16 +16,17 @@
             <form action="" method="post" autocomplete="off" id="form-teacher">
             <div class="card-body">
                 @csrf
+                <input type="hidden" name="id" value="{{ $teacher->id }}">
                 <div class="form-group">
                   <label for="nama">Nama Lengkap</label>
-                  <input type="text" class="form-control" name="name" value="{{ $teacher->nama }}" id="name">
+                  <input type="text" class="form-control" name="name" value="{{ old('name', $teacher->nama) }}" id="name">
                   <div class="invalid-feedback" name="msg_name"><ul></ul></div>
                 </div>
                 <div class="row">
                   <div class="col-lg-6">
                     <div class="form-group">
                       <label for="nidn">NIDN/NIDK</label>
-                      <input type="text" class="form-control" name="nidn" value="{{ $teacher->nidn }}" id="nidn">
+                      <input type="text" class="form-control" name="nidn" value="{{ $teacher->nidn }}" id="nidn" disabled>
                       <div class="invalid-feedback" name="msg_nidn"><ul></ul></div>
                     </div>
                   </div>
@@ -35,7 +36,7 @@
                       <select class="form-control form-control-sm selectric" name="major" id="prodi">
                         <option selected disabled>- pilih -</option>
                         @foreach($majors as $major)
-                        <option value="{{ $major->id }}" {{ $teacher->major_id == $major->id ? 'selected' : ''}}>{{ $major->full_name }}</option>
+                        <option value="{{ $major->id }}" {{ old('major', $teacher->major_id) == $major->id ? 'selected' : ''}}>{{ $major->full_name }}</option>
                         @endforeach
                       </select>
                       <div class="invalid-feedback" name="msg_major"><ul></ul></div>
@@ -46,14 +47,14 @@
                   <div class="col-lg-6">
                     <div class="form-group">
                       <label for="">Tempat Lahir</label>
-                      <input type="text" class="form-control" name="tempat" value="{{ $teacher->tempat_lahir }}" id="tempat">
+                      <input type="text" class="form-control" name="tempat" value="{{ old('tempat', $teacher->tempat_lahir) }}" id="tempat">
                       <div class="invalid-feedback" name="msg_tempat"><ul></ul></div>
                     </div>
                   </div>
                   <div class="col-lg-6">
                     <div class="form-group">
                       <label for="tgl_lahir">Tanggal Lahir</label>
-                      <input type="text" class="form-control datepicker" name="tgl" value="{{ $teacher->tgl_lahir }}" id="tgl">
+                      <input type="text" class="form-control datepicker" name="tgl" value="{{ old('tgl', $teacher->tgl_lahir) }}" id="tgl">
                       <div class="invalid-feedback" name="msg_tgl"><ul></ul></div>
                     </div>
                   </div>
@@ -64,8 +65,8 @@
                       <label for="jk">JK</label>
                       <select class="form-control selectric" name="jk" id="jk">
                         <option selected disabled>- pilih -</option>
-                        <option value="laki" {{ $teacher->jk == 'laki' ? 'selected' : '' }}>Laki</option>
-                        <option value="perempuan" {{ $teacher->jk == 'perempuan' ? 'selected' : '' }}>Perempuan</option>
+                        <option value="laki" {{ old('jk', $teacher->jk) == 'laki' ? 'selected' : '' }}>Laki</option>
+                        <option value="perempuan" {{ old('jk', $teacher->jk) == 'perempuan' ? 'selected' : '' }}>Perempuan</option>
                       </select>
                       <div class="invalid-feedback" name="msg_jk"><ul></ul></div>
                     </div>
@@ -73,7 +74,7 @@
                   <div class="col-lg-6">
                     <div class="form-group">
                       <label for="no_hp">No. HP</label>
-                      <input type="text" class="form-control" name="no_hp" value="{{ $teacher->no_hp }}" id="no_hp">
+                      <input type="text" class="form-control" name="no_hp" value="{{ old('no_hp', $teacher->no_hp) }}" id="no_hp">
                       <div class="invalid-feedback" name="msg_no_hp"><ul></ul></div>
                     </div>
                   </div>
