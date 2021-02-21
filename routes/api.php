@@ -17,3 +17,7 @@ use Illuminate\Support\Facades\Route;
 // Route::middleware('auth:api')->get('/user', function (Request $request) {
 //     return $request->user();
 // });
+
+// Get User
+Route::get('/users/{role}', ['as' => 'users.index', 'uses' => 'API\UserController@index']);
+Route::get('/users/show/{id}', ['as' => 'users.show', 'uses' => 'API\UserController@show']);
