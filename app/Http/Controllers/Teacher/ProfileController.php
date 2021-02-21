@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Major;
 use App\User;
+use App\Teacher;
 
 class ProfileController extends Controller
 {
@@ -20,7 +21,40 @@ class ProfileController extends Controller
 
     public function update(Request $request)
     {
-      # code...
+      $this->validate($request, [
+        'name' => 'required',
+        'major' => 'required',
+        'tempat' => 'required',
+        'tgl' => 'required',
+        'jk' => 'required',
+        'no_hp' => 'required|digits_between:9,13'
+      ]);
+
+      if ($request->input('id')) {
+        // update record
+        $teacher = Teacher::whereId($request->input('id'))->update([
+          'major_id' => $request->input('major'),
+          'nama' => $request->input('name'),
+          'jk' => $request->input('jk'),
+          'tempat_lahir' => $request->input('tempat'),
+          'tgl_lahir' => $request->input('tgl'),
+          'no_hp' => $request->input('no_hp'),
+        ]);
+        // create response
+        if ($teacher) {
+          return response()->json([
+            'success' => true,
+            'msg' => 'Data berhasil diupdate.',
+            'data' => Auth::user()->teacher
+          ], 200);
+        } else {
+          return response()->json([
+            'success' => false,
+            'msg' => 'Data gagal diupdate.',
+            'data' => ''
+          ], 500);
+        }
+      }
     }
 
     public function updatePassword(Request $request)
