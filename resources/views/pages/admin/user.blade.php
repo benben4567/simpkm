@@ -338,7 +338,7 @@
 @endpush
 
 @push('page-js')
-  <script src="{{ asset('js/admin/user.js') }}"></script>
+  <script src="{{ asset('js/admin/user2.js') }}"></script>
 @endpush
 
 @push('css')
