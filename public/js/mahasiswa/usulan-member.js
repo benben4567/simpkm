@@ -11,7 +11,7 @@ $(document).ready(function () {
     pageLength: 5
   })
 
-  $('.btn-add').on('click', function () {
+  $('#table tbody').on('click', '.btn-add', function () {
     var proposal = $(this).data('proposal');
     var student = $(this).data('student');
     $.ajax({
