@@ -57,4 +57,66 @@ class ProposalController extends Controller
       }])->whereId(Auth::user()->teacher->id)->first();
       return view('pages.teacher.reviewer', compact('teacher'));
     }
+
+    public function download(Request $request)
+    {
+      $id = $request->id;
+
+      $proposal = Proposal::whereId($id)->first();
+      $skema = $proposal->skema;
+
+      $data = array(
+        '[KETUA]' => $proposal->ketua->first()->nama,
+        '[NIM]' => $proposal->ketua->first()->nim,
+        '[PRODI]' => $proposal->ketua->first()->major->full_name,
+        '[EMAIL]' => $proposal->ketua->first()->user->email,
+        '[PENDAMPING]' => $proposal->pembimbing->first()->nama,
+        '[JUDUL]' => $proposal->judul,
+        '[REVIEWER1]' => $proposal->reviewer1->first()->nama,
+        '[REVIEWER2]' => $proposal->reviewer2->first()->nama
+      );
+
+      $this->exportForm($data,$skema);
+    }
+
+    public function download2(Request $request)
+    {
+      $id = $request->id;
+      $proposal = Proposal::whereId($id)->first();
+      $periode = $proposal->period->tahun;
+
+      $data = array(
+        '[PEMBUKAAN]' => $proposal->period->tahun,
+        '[PENDANAAN]' => $periode + 1,
+        '[KETUA]' => $proposal->ketua->first()->nama,
+        '[PENDAMPING]' => $proposal->pembimbing->first()->nama,
+        '[JUDUL]' => $proposal->judul,
+        '[SKEMA]' => $proposal->skema,
+        '[REVIEWER1]' => $proposal->reviewer1->first()->nama,
+        '[REVIEWER2]' => $proposal->reviewer2->first()->nama,
+        '[NIDN_REVIEWER1]' => $proposal->reviewer1->first()->nidn,
+      );
+
+      $this->exportBerita($data);
+    }
+
+    public function exportBerita($data)
+    {
+      $file = asset('template/berita_acara.rtf');
+
+      $rand = uniqid();
+      $nama_file = 'BA_'.$rand.'.doc';
+
+      return \WordTemplate::export($file, $data, $nama_file);
+    }
+
+    public function exportForm($data,$skema)
+    {
+      $file = asset('template/'.$skema.'.rtf');
+
+      $rand = uniqid();
+      $nama_file = 'FORM_'.$skema.'_'.$rand.'.doc';
+
+      return \WordTemplate::export($file, $data, $nama_file);
+    }
 }
