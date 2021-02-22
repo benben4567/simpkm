@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Major;
 use App\Teacher;
+use App\Student;
 use Illuminate\Http\Request;
 use App\User;
 use Illuminate\Support\Facades\DB;
@@ -17,7 +18,8 @@ class UserController extends Controller
     public function index()
     {
       $admins = User::whereRole('admin')->get();
-      $students = User::whereRole('student')->get();
+      // $students = User::with('student')->where('role', 'student')->get();
+      $students = Student::all();
       $teachers = User::whereRole('teacher')->get();
       return view('pages.admin.user', compact('admins', 'students', 'teachers'));
     }
@@ -178,7 +180,7 @@ class UserController extends Controller
         $user->update($request->except(['password']));
       }
 
-      // update table student / teacher
+      // update table teacher
       $data = [
         'major_id' => $request->input('major'),
         'nama' => $request->input('name'),
@@ -188,15 +190,27 @@ class UserController extends Controller
         'jk' => $request->input('jk')
       ];
 
-      if ($role == 'student' ) {
-        $user->student()->update($data);
-      } elseif ($role == 'teacher') {
+      if ($role == 'teacher') {
         $user->teacher()->update($data);
       }
 
       // Send back response
       if ($user) {
-        $res = User::whereRole($role)->get();
+        if ($role == 'student') {
+          $res = DB::table('users')
+                    ->join('students', 'users.id', '=', 'students.user_id')
+                    ->select('users.*', 'students.nama', 'students.nim')
+                    ->get();
+        } elseif ($role == 'teacher') {
+          $res = DB::table('users')
+                  ->join('teachers', 'users.id', '=', 'teachers.user_id')
+                  ->join('majors', 'majors.id', '=', 'teachers.major_id')
+                  ->select('users.*', 'teachers.nama', 'teachers.nidn', 'majors.*')
+                  ->get();
+        } else {
+          $res = User::whereRole($role)->get();
+        }
+
         return response()->json([
           'success' => true,
           'data' => $res

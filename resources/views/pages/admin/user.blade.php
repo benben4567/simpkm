@@ -61,6 +61,7 @@
                         <tr class=text-center>
                           <th>No</th>
                           <th>Nama</th>
+                          <th>NIM</th>
                           <th>Email</th>
                           <th>Status</th>
                           <th>Aksi</th>
@@ -70,12 +71,13 @@
                         @foreach($students as $student)
                         <tr class="text-center">
                           <td>{{ $loop->iteration }}</td>
-                          <td>{{ $student->name }}</td>
-                          <td>{{ $student->email }}</td>
-                          <td><div class="badge {{ $student->status == 'aktif' ? 'badge-success' : 'badge-danger' }}">{{ strtoupper($student->status) }}</div></td>
+                          <td>{{ $student->nama }}</td>
+                          <td>{{ $student->nim }}</td>
+                          <td>{{ $student->user->email }}</td>
+                          <td><div class="badge {{ $student->user->status == 'aktif' ? 'badge-success' : 'badge-danger' }}">{{ strtoupper($student->user->status) }}</div></td>
                           <td>
-                            <button type="button" class="btn btn-sm btn-primary student-edit" data-id="{{ $student->id }}"><i class="fas fa-eye"></i></button>
-                            <button type="button" class="btn btn-sm btn-warning" data-id="{{ $student->id }}" data-toggle="modal" data-target="#mahasiswaSimModal"><i class="fas fa-key"></i></button>
+                            <button type="button" class="btn btn-sm btn-primary student-edit" data-id="{{ $student->user->id }}"><i class="fas fa-eye"></i></button>
+                            <button type="button" class="btn btn-sm btn-warning" data-id="{{ $student->user->id }}" data-toggle="modal" data-target="#mahasiswaSimModal"><i class="fas fa-key"></i></button>
                           </td>
                         </tr>
                         @endforeach

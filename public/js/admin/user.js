@@ -16,7 +16,7 @@ $(document).ready(function () {
   })
 
   var table2 = $("#table-student").DataTable({
-    dom: "tip",
+    dom: "ftip",
     ordering: false,
   })
 
@@ -202,6 +202,7 @@ $(document).ready(function () {
         $("div.invalid-feedback").find('ul').empty();
       },
       success: function (response) {
+        console.log(response)
         $('#studentModalEdit').modal("hide")
         $.LoadingOverlay("hide")
         if (response.success) {
@@ -371,18 +372,25 @@ $(document).ready(function () {
           "targets": 1,
           "data": null,
           "render": function (data, type, row, meta) {
-            return row.name;
+            return row.nama;
           }
         },
         {
-          "targets":2,
+          "targets": 2,
+          "data": null,
+          "render": function (data, type, row, meta) {
+            return row.nim;
+          }
+        },
+        {
+          "targets":3,
           "data": null,
           "render": function (data, type, row, meta) {
             return row.email
           }
         },
         {
-          "targets" : 3,
+          "targets" : 4,
           "data" : null,
           "render": function (data, type, row, meta) {
             if (row.status == "aktif") {
@@ -393,7 +401,7 @@ $(document).ready(function () {
           }
         },
         {
-          "targets": 4,
+          "targets": 5,
           "data": null,
           "render": function ( data, type, row, meta ) {
             return `<button type="button" class="btn btn-sm btn-icon btn-primary student-edit" data-id="${row.id}"><i class="fas fa-eye"></i></button>`
