@@ -26,6 +26,9 @@ $(function () {
         $.LoadingOverlay('hide');
         if (response.success) {
           populateTable(response.data)
+          // display print button
+          $('.btn-print').show();
+          $(".btn-print").attr("href", window.location.pathname + "/print/" + tahun)
         }
       },
       error: function(xhr, ajaxOptions, thrownError) {
@@ -39,6 +42,10 @@ $(function () {
       }
     });
   });
+
+  // $('.btn-print').on('click', function () {
+  //   alert($('#tahun').val());
+  // });
 
   function populateTable(data) {
     // destroy datatable
