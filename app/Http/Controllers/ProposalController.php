@@ -102,4 +102,20 @@ class ProposalController extends Controller
 
   }
 
+  public function print($tahun)
+  {
+    $proposals = DB::table('periods')
+                    ->join('proposals', 'periods.id', '=', 'proposals.period_id')
+                    ->select('periods.id as period_id', 'periods.tahun', 'proposals.id', 'proposals.skema', 'proposals.judul', 'proposals.status')
+                    ->where('periods.tahun', '=', $tahun)
+                    ->get();
+
+    // $proposals = Periods
+
+    return response()->json([
+      'success' => true,
+      'data' => $proposals
+    ], 200);
+  }
+
 }
