@@ -61,6 +61,7 @@ Route::group(['middleware' => ['student'], 'prefix' => 'student'], function () {
   Route::get('/usulan/create', ['as' => 'proposal.create', 'uses' => 'Student\ProposalController@create']);
   Route::get('/usulan/edit/{id}', ['as' => 'proposal.edit', 'uses' => 'Student\ProposalController@edit']);
   Route::get('/usulan/show/{id}', ['as' => 'proposal.show', 'uses' => 'Student\ProposalController@show']);
+  Route::put('/usulan/update', ['as' => 'proposal.update', 'uses' => 'Student\ProposalController@update']);
   Route::post('/usulan/store', ['as' => 'proposal.store', 'uses' => 'Student\ProposalController@store']);
   Route::post('/usulan/member/remove', ['as' => 'proposal.member.remove', 'uses' => 'Student\ProposalController@memberRemove']);
   Route::post('/usulan/member/add', ['as' => 'proposal.member.add', 'uses' => 'Student\ProposalController@memberAdd']);
@@ -82,6 +83,8 @@ Route::group(['middleware' => ['teacher'], 'prefix' => 'teacher', 'as' => 'teach
   Route::get('/usulan', ['as' => 'proposal.index', 'uses' => 'Teacher\ProposalController@index']);
   Route::get('/review', ['as' => 'proposal.review', 'uses' => 'Teacher\ProposalController@review']);
   Route::get('/usulan/show/{id}', ['as' => 'proposal.show', 'uses' => 'Teacher\ProposalController@show']);
+  Route::get('/usulan/download/form', ['as' => 'proposal.download.form', 'uses' => 'Teacher\ProposalController@download']);
+  Route::get('/usulan/download/berita', ['as' => 'proposal.download.berita', 'uses' => 'Teacher\ProposalController@download2']);
 
   Route::get('/panduan', ['as' => 'panduan.index', 'uses' => 'HomeController@panduan']);
 });
