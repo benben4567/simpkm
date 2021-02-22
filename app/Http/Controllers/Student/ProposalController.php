@@ -76,7 +76,7 @@ class ProposalController extends Controller
         $proposal->teachers()->attach($request->input('dosen'), ['jabatan' => 'Pembimbing']);
       });
 
-      return redirect()->route('proposal.index')->with('success');
+      return redirect()->route('proposal.index')->with('success', 'Data berhasil disimpan');
     }
 
     public function edit($id)
@@ -94,7 +94,43 @@ class ProposalController extends Controller
 
     public function update(Request $request)
     {
-      # code...
+      $this->validate($request, [
+        'id' => 'required',
+        'skema' => 'required',
+        'dosen' => 'required',
+        'judul' => 'required',
+        'file' => 'nullable|mimes:pdf|max:2048'
+      ]);
+
+      // DB Transaction
+      DB::transaction(function () use ($request) {
+        // Upload file Update
+        if($request->file('file')) {
+          $fileName = time().'.'.$request->file('file')->extension();
+          $path = $request->file('file')->storeAs(
+            'public/files', $fileName
+          );
+        }
+
+        if ($request->file('file')) {
+          $proposal = Proposal::whereId($request->input('id'))->update([
+            'file' => $fileName
+          ]);
+        }
+
+        // Update Proposal
+        $proposal = Proposal::whereId($request->input('id'))->update([
+          'skema' => $request->input('skema'),
+          'judul' => $request->input('judul'),
+          'status' => 'kompilasi',
+        ]);
+
+        // Attach Teacher
+        $proposal = Proposal::find($request->input('id'));
+        $proposal->teachers()->sync($request->input('dosen'), ['jabatan' => 'Pembimbing']);
+      });
+
+      return redirect()->route('proposal.index')->with('success','Data berhasil diupdate');
     }
 
     public function member($id)
@@ -167,6 +203,7 @@ class ProposalController extends Controller
       $id = $request->id;
       $proposal = Proposal::whereId($id)->first();
       $periode = $proposal->period->tahun;
+      $skema = $proposal->skema;
 
       $data = array(
         '[PEMBUKAAN]' => $proposal->period->tahun,
@@ -180,12 +217,18 @@ class ProposalController extends Controller
         '[NIDN_REVIEWER1]' => $proposal->reviewer1->first()->nidn,
       );
 
-      $this->exportBerita($data);
+      $this->exportBerita($data, $skema);
     }
 
-    public function exportBerita($data)
+    public function exportBerita($data, $skema)
     {
-      $file = asset('storage/template/berita_acara.rtf');
+      if ($skema == 'PKM-GFK') {
+        $file = asset('template/BA-GFK.rtf');
+      } elseif ($skema == 'PKM-AI' || $skema == 'PKM-GT') {
+        $file = asset('template/BA-GT-AI.rtf');
+      } else {
+        $file = asset('template/BA-5Bidang.rtf');
+      }
 
       $rand = uniqid();
       $nama_file = 'BA_'.$rand.'.doc';
@@ -195,7 +238,7 @@ class ProposalController extends Controller
 
     public function exportForm($data,$skema)
     {
-      $file = asset('storage/template/'.$skema.'.rtf');
+      $file = asset('template/'.$skema.'.rtf');
 
       $rand = uniqid();
       $nama_file = 'FORM_'.$skema.'_'.$rand.'.doc';
