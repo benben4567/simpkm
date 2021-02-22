@@ -10,6 +10,7 @@ use App\Proposal;
 use App\Student;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Codedge\Fpdf\Facades\Fpdf;
 
 class ProposalController extends Controller
@@ -113,7 +114,9 @@ class ProposalController extends Controller
         }
 
         if ($request->file('file')) {
-          $proposal = Proposal::whereId($request->input('id'))->update([
+          $proposal = Proposal::whereId($request->input('id'))->first();
+          Storage::delete('public/files/'.$proposal->file);
+          $proposal->update([
             'file' => $fileName
           ]);
         }
