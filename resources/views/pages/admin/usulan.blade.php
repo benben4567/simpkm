@@ -21,6 +21,9 @@
                   </select>
                 </div>
               </div>
+              <div class="mb-3">
+                <a name="" id="" target="_blank" class="btn btn-primary btn-print" style="display: none;" href="#" role="button"><i class="fas fa-print"></i> Cetak</a>
+              </div>
               <div class="table-responsive">
                 <table class="table table-striped table-md" id="table">
                   <thead>
