@@ -69,7 +69,7 @@
               <div class="col-6">
 
                 <div class="float-right">
-                  <form action="{{ route('proposal.download.berita') }}" id="form-berita" method="get" class="d-none">
+                  <form action="{{ route('teacher.proposal.download.berita') }}" id="form-berita" method="get" class="d-none">
                     @csrf
                     <input type="text" name="id">
                   </form>
@@ -78,7 +78,7 @@
               </div>
               <div class="col-6">
                 <div class="float-left">
-                  <form action="{{ route('proposal.download.form') }}" id="form-penilaian" method="get" class="d-none">
+                  <form action="{{ route('teacher.proposal.download.form') }}" id="form-penilaian" method="get" class="d-none">
                     @csrf
                     <input type="text" name="id">
                   </form>

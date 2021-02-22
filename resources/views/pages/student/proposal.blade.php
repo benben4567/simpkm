@@ -6,7 +6,7 @@
         <h1>Usulan Proposal</h1>
       </div>
       <div class="section-body">
-        @if(session('success'))
+        @if (session('success'))
         <div class="row">
           <div class="col-12">
             <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -70,7 +70,7 @@
                             <a class="btn btn-sm btn-warning" data-toggle="tooltip" data-placement="bottom" title="Edit" href="{{ route('proposal.edit', ["id" => $proposal->id]) }}" role="button"><i class="fas fa-pencil-alt"></i></a>
                             <a class="btn btn-sm btn-primary" data-toggle="tooltip" data-placement="bottom" title="Anggota" href="{{ route('proposal.member', ["id" => $proposal->id]) }}" role="button"><i class="fas fa-users"></i></a>
                           @endif
-                          <button type="button" data-toggle="tooltip" data-placement="bottom" title="Download" class="btn btn-sm btn-success btn-download" data-proposal="{{ $proposal->id }}"><i class="fas fa-download"></i></button>
+                          <button type="button" data-toggle="tooltip" data-placement="bottom" title="Download" class="btn btn-sm btn-success btn-download" data-proposal="{{ $proposal->id }}" {{ $proposal->status == 'kompilasi' ? 'disabled' : ''}} ><i class="fas fa-download"></i></button>
                         </td>
                       </tr>
                       @endforeach

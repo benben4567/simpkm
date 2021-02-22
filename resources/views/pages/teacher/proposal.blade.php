@@ -41,7 +41,7 @@
                         </td>
                         <td>
                           <button type="button" data-toggle="tooltip" data-placement="bottom" title="Lihat" class="btn btn-sm btn-primary btn-show" data-proposal="{{ $proposal->id }}"><i class="fas fa-eye"></i></button>
-                          <button type="button" data-toggle="tooltip" data-placement="bottom" title="Download" class="btn btn-sm btn-success btn-download" data-proposal="{{ $proposal->id }}"><i class="fas fa-download"></i></button>
+                          <button type="button" data-toggle="tooltip" data-placement="bottom" title="Download" class="btn btn-sm btn-success btn-download" data-proposal="{{ $proposal->id }}" {{ $proposal->status == 'kompilasi' ? 'disabled' : '' }}><i class="fas fa-download"></i></button>
                         </td>
                       </tr>
                       @endforeach
@@ -70,7 +70,7 @@
               <div class="col-6">
 
                 <div class="float-right">
-                  <form action="{{ route('proposal.download.berita') }}" id="form-berita" method="get" class="d-none">
+                  <form action="{{ route('teacher.proposal.download.berita') }}" id="form-berita" method="get" class="d-none">
                     @csrf
                     <input type="text" name="id">
                   </form>
@@ -79,7 +79,7 @@
               </div>
               <div class="col-6">
                 <div class="float-left">
-                  <form action="{{ route('proposal.download.form') }}" id="form-penilaian" method="get" class="d-none">
+                  <form action="{{ route('teacher.proposal.download.form') }}" id="form-penilaian" method="get" class="d-none">
                     @csrf
                     <input type="text" name="id">
                   </form>
