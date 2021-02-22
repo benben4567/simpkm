@@ -282,7 +282,7 @@ $(document).ready(function () {
           $("input[name='id']").val(data['id']);
           $("input[name='name']").val(data['name']);
           $("input[name='email']").val(data['email']);
-          $("select[name='status']").val(data['status']);
+          $("select[name='status']").val(data['status']).change().selectric('refresh')
           $("#studentModalEdit").modal("show");
         }
       },

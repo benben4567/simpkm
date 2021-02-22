@@ -228,7 +228,7 @@
           <form action="" method="post" autocomplete="off" id="form-student-edit">
           <div class="modal-body">
               @csrf
-              <input type="text" name="id" hidden>
+              <input type="hidden" name="id" value="">
               <div class="form-group">
                 <label for="">Nama</label>
                 <input type="text" class="form-control" name="name" disabled>
@@ -239,7 +239,7 @@
               </div>
               <div class="form-group">
                 <label for="">Status</label>
-                <select class="form-control selectric" name="status">
+                <select class="form-control selectric" name="status" id="student-status">
                   <option value="aktif">Aktif</option>
                   <option value="nonaktif">Nonaktif</option>
                 </select>
