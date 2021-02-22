@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ad8f69b64dd52d3600cabfe0024f4cfd",
+    "content-hash": "e2323ae799c9ba5abf9287ff94439993",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -918,6 +918,53 @@
                 "source": "https://github.com/guzzle/psr7/tree/1.7.0"
             },
             "time": "2020-09-30T07:37:11+00:00"
+        },
+        {
+            "name": "haruncpi/laravel-maintenance",
+            "version": "v1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/haruncpi/laravel-maintenance.git",
+                "reference": "37e6fdf1334a48a0475a25ecb9204ed6c29d450f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/haruncpi/laravel-maintenance/zipball/37e6fdf1334a48a0475a25ecb9204ed6c29d450f",
+                "reference": "37e6fdf1334a48a0475a25ecb9204ed6c29d450f",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.6.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Haruncpi\\LaravelMaintenance\\ServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Haruncpi\\LaravelMaintenance\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "cc-by-4.0"
+            ],
+            "authors": [
+                {
+                    "name": "Md.Harun-Ur-Rashid",
+                    "email": "harun.cox@gmail.com"
+                }
+            ],
+            "description": "A laravel maintenance that support secret route",
+            "support": {
+                "issues": "https://github.com/haruncpi/laravel-maintenance/issues",
+                "source": "https://github.com/haruncpi/laravel-maintenance/tree/v1.0.0"
+            },
+            "time": "2020-12-30T04:43:41+00:00"
         },
         {
             "name": "laravel/framework",
