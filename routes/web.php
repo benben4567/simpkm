@@ -82,6 +82,7 @@ Route::group(['middleware' => ['teacher'], 'prefix' => 'teacher', 'as' => 'teach
   // Proposal
   Route::get('/usulan', ['as' => 'proposal.index', 'uses' => 'Teacher\ProposalController@index']);
   Route::get('/review', ['as' => 'proposal.review', 'uses' => 'Teacher\ProposalController@review']);
+  Route::post('/print', ['as' => 'proposal.print', 'uses' => 'Teacher\ProposalController@print']);
   Route::get('/usulan/show/{id}', ['as' => 'proposal.show', 'uses' => 'Teacher\ProposalController@show']);
   Route::get('/usulan/download/form', ['as' => 'proposal.download.form', 'uses' => 'Teacher\ProposalController@download']);
   Route::get('/usulan/download/berita', ['as' => 'proposal.download.berita', 'uses' => 'Teacher\ProposalController@download2']);
