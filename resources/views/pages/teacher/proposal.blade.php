@@ -128,7 +128,7 @@
                   <dt class="col-sm-3">Reviewer 1</dt>
                   <dd class="col-sm-9" id="reviewer1"></dd>
 
-                  <dt class="col-sm-3">Reviewer 1</dt>
+                  <dt class="col-sm-3">Reviewer 2</dt>
                   <dd class="col-sm-9" id="reviewer2"></dd>
                 </dl>
               </div>
