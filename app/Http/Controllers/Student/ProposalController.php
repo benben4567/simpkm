@@ -34,7 +34,7 @@ class ProposalController extends Controller
 
     public function create()
     {
-      $periode = Period::where('status', '=', 'buka')->first();
+      $periode = Period::latest()->first();
       $teachers = Teacher::all();
       return view('pages.student.proposal_create', compact('periode','teachers'));
     }
