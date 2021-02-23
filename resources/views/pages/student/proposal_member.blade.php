@@ -31,7 +31,7 @@
                       <div class="col-sm-12 col-md-6">
                         <dl class="row">
                           <dt class="col-sm-3">Pembimbing</dt>
-                          <dd class="col-sm-9">{{ $pembimbing->nama }}</dd>
+                          <dd class="col-sm-9">{{ $pembimbing->nama ?? '-'}}</dd>
 
                           <dt class="col-sm-3">Reviewer 1</dt>
                           <dd class="col-sm-9">{{ $reviewer1->nama ?? '-' }}</dd>

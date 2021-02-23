@@ -130,7 +130,7 @@ class ProposalController extends Controller
 
         // Attach Teacher
         $proposal = Proposal::find($request->input('id'));
-        $proposal->teachers()->sync($request->input('dosen'), ['jabatan' => 'Pembimbing']);
+        $proposal->teachers()->sync([$request->input('dosen') => ['jabatan' => 'Pembimbing']]);
       });
 
       return redirect()->route('proposal.index')->with('success','Data berhasil diupdate');
