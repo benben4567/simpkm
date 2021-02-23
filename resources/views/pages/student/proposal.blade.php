@@ -46,6 +46,7 @@
                         <th>Jabatan</th>
                         <th>Tanggal Diusulkan</th>
                         <th>Status Usulan</th>
+                        <th>Proposal</th>
                         <th>Aksi</th>
                       </tr>
                     </thead>
@@ -65,6 +66,7 @@
                             <span class="badge badge-success">Selesai</span>
                           @endif
                         </td>
+                        <td><a class="btn btn-sm btn-danger" data-toggle="tooltip" data-placement="bottom" title="Download" href="{{ asset('storage/files/'.$proposal->file) }}" role="button"><i class="fas fa-file-pdf    "></i></a></td>
                         <td>
                           @if($proposal->pivot->jabatan == "Ketua")
                             <a class="btn btn-sm btn-warning" data-toggle="tooltip" data-placement="bottom" title="Edit" href="{{ route('proposal.edit', ["id" => $proposal->id]) }}" role="button"><i class="fas fa-pencil-alt"></i></a>
