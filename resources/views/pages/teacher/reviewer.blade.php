@@ -13,7 +13,7 @@
                 <div class="mb-3">
                   <form action="{{ route('teacher.proposal.print') }}" method="post" id="form-cetak" hidden>
                     @csrf
-                    <input type="hidden" name="jenis" value="usulan">
+                    <input type="hidden" name="jenis" value="review">
                     <input type="hidden" name="dosen" value={{ Auth::user()->teacher->id }}>
                   </form>
                 </div>
