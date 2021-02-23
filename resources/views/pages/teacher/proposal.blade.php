@@ -151,6 +151,7 @@
 @push('lib-js')
   {{-- Datatables --}}
   <script src="{{ asset('vendor/datatables/datatables.min.js') }}"></script>
+  <script src="{{ asset('vendor/datatables/buttons-1.6.5/js/dataTables.buttons.min.js') }}"></script>
 @endpush
 
 @push('page-js')
@@ -159,4 +160,5 @@
 
 @push('css')
   <link rel="stylesheet" href="{{ asset('vendor/datatables/datatables.min.css') }}">
+  <link rel="stylesheet" href="{{ asset('vendor/datatables/buttons-1.6.5/css/buttons.dataTables.min.css') }}"></script>
 @endpush
