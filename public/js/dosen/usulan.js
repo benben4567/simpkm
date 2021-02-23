@@ -16,7 +16,9 @@ $(document).ready(function () {
           text: '<i class="fas fa-print"></i> Cetak',
           className: 'btn btn-sm btn-primary',
           action: function ( e, dt, node, config ) {
-            $("#form-cetak").submit();
+            if (dt.rows().count()) {
+              $("#form-cetak").submit();
+            }
           }
       }
     ]
