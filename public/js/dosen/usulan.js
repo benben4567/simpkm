@@ -6,10 +6,19 @@ $(document).ready(function () {
   });
 
   var table = $("#table").DataTable({
-    dom: "ftip",
+    dom: "Bftip",
     ordering: false,
     columnDefs: [
       { "width": "30%", "target" : 1},
+    ],
+    buttons: [
+      {
+          text: '<i class="fas fa-print"></i> Cetak',
+          className: 'btn btn-sm btn-primary',
+          action: function ( e, dt, node, config ) {
+            $("#form-cetak").submit();
+          }
+      }
     ]
   })
 
