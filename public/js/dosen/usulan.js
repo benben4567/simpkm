@@ -42,8 +42,8 @@ $(document).ready(function () {
           $("#judul").html(data.proposal.judul);
           $("#pembimbing").html(data.pembimbing.nama);
           $("#ketua").html(data.ketua.nama);
-          $("#reviewer1").html(data.reviewer1.nama);
-          $("#reviewer2").html(data.reviewer2.nama);
+          $("#reviewer1").html(data.reviewer1 ? data.reviewer1.nama : '-');
+          $("#reviewer2").html(data.reviewer2 ? data.reviewer2.nama : '-');
           $.each(anggota, function(key, value) {
             $("#anggota ul").append('<li>'+ value.nama +'</li>');
           })
