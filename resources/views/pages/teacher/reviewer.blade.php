@@ -10,6 +10,13 @@
           <div class="col-12">
             <div class="card">
               <div class="card-body p-2">
+                <div class="mb-3">
+                  <form action="{{ route('teacher.proposal.print') }}" method="post" id="form-cetak" hidden>
+                    @csrf
+                    <input type="hidden" name="jenis" value="usulan">
+                    <input type="hidden" name="dosen" value={{ Auth::user()->teacher->id }}>
+                  </form>
+                </div>
                 <div class="table-responsive">
                   <table class="table table-striped table-md" id="table" style="width: 100%;">
                     <thead>
@@ -143,12 +150,14 @@
 @push('lib-js')
   {{-- Datatables --}}
   <script src="{{ asset('vendor/datatables/datatables.min.js') }}"></script>
+  <script src="{{ asset('vendor/datatables/buttons-1.6.5/js/dataTables.buttons.min.js') }}"></script>
 @endpush
 
 @push('page-js')
-  <script src="{{ asset('js/dosen/usulan.js') }}"></script>
+  <script src="{{ asset('js/dosen/reviewer.js') }}"></script>
 @endpush
 
 @push('css')
   <link rel="stylesheet" href="{{ asset('vendor/datatables/datatables.min.css') }}">
+  <link rel="stylesheet" href="{{ asset('vendor/datatables/buttons-1.6.5/css/buttons.dataTables.min.css') }}"></script>
 @endpush
