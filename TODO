@@ -6,11 +6,16 @@ FIX:
   ✔ Change Password (Student & Teacher) @done(21-02-20 20:40)
   ✔ Teacher : Show proposal detail (modal) @done(21-02-20 18:51)
   ✔ Import Excel user teacher @done(21-02-20 16:12)
+  ☐ Admin bisa masuk sebagai student atau teacher
+  ☐ Student bisa hapus PKM
+  ☐ Filter periode di halaman Bimbingan dan Reviewer PKM (Dosen)
+  ☐ Filter Periode di sidebar Admin
+  ☐ Update user admin nge bug.
 TODO:
   ✔ Export Excel Rekapitulasi usulan (pake FastExcel) @done(21-01-03 20:51)
   ✔ Buat Panduan SIM (Alur pengusulan dan penggunaan) (pakai wizard coba) @done(20-12-29 22:16)
   ✔ Fitur lupa password @done(21-01-07 19:33)
   ✔ Fitur download Form Penilaian berdasarkan Skema PKM @done(21-01-02 22:40)
   ✔ Buat halaman panduan di landing page (tanpa login) @done(21-02-17 21:06)
-  ☐ Tombol download proposal di halaman usulan proposal admin
-  ☐ Add kolom NIM di User Student (Admin)
+  ✔ Tombol download proposal di halaman usulan proposal admin @done(21-02-23 22:47)
+  ✔ Add kolom NIM di User Student (Admin) @done(21-02-23 22:47)
