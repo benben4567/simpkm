@@ -48,8 +48,10 @@
                         </td>
                         <td><a class="btn btn-sm btn-danger" href="{{ asset('/storage/files/'.$proposal->file) }}" role="button"><i class="fas fa-file-pdf"></i></a></td>
                         <td>
-                          <button type="button" data-toggle="tooltip" data-placement="bottom" title="Lihat" class="btn btn-sm btn-primary btn-show" data-proposal="{{ $proposal->id }}"><i class="fas fa-eye"></i></button>
-                          <button type="button" data-toggle="tooltip" data-placement="bottom" title="Download" class="btn btn-sm btn-success btn-download" data-proposal="{{ $proposal->id }}"><i class="fas fa-download"></i></button>
+                          <div class="btn-group">
+                            <button type="button" data-toggle="tooltip" data-placement="bottom" title="Lihat" class="btn btn-sm btn-primary btn-show" data-proposal="{{ $proposal->id }}"><i class="fas fa-eye"></i></button>
+                            <button type="button" data-toggle="tooltip" data-placement="bottom" title="Download" class="btn btn-sm btn-success btn-download" data-proposal="{{ $proposal->id }}"><i class="fas fa-download"></i></button>
+                          </div>
                         </td>
                       </tr>
                       @endforeach
