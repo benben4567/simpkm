@@ -122,13 +122,27 @@ class ProposalController extends Controller
 
     public function print(Request $request)
     {
-      $teacher = Teacher::with(['proposals' => function($q) {
-        $q->wherePivot('jabatan', '!=', 'Pembimbing')->get();
-      }])->whereId(Auth::user()->teacher->id)->first();
+      if ($request->input('jenis') == 'usulan') {
+        $teacher = Teacher::with(['proposals' => function($q) {
+          $q->wherePivot('jabatan', '=', 'Pembimbing')->get();
+        }])->whereId(Auth::user()->teacher->id)->first();
 
-      // tahun periode
-      $period = $teacher->proposals->first();
-      $tahun = $period->period->tahun;
-      return view('pages.teacher.print_reviewer', compact('teacher','tahun'));
+        $period = $teacher->proposals->first();
+        $tahun = $period->period->tahun;
+
+        return view('pages.teacher.print_usulan', compact('teacher','tahun'));
+
+      } else {
+        $teacher = Teacher::with(['proposals' => function($q) {
+          $q->wherePivot('jabatan', '!=', 'Pembimbing')->get();
+        }])->whereId(Auth::user()->teacher->id)->first();
+
+        $period = $teacher->proposals->first();
+        $tahun = $period->period->tahun;
+        return view('pages.teacher.print_reviewer', compact('teacher','tahun'));
+      }
+
+
+
     }
 }
