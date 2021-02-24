@@ -6,7 +6,7 @@ $(function () {
   });
 
   var table = $("#table").DataTable({
-      dom: "tip",
+      dom: "ftip",
       ordering: false,
       columnDefs: [
         { "width": "10%", "targets": 0},
@@ -27,8 +27,8 @@ $(function () {
         if (response.success) {
           populateTable(response.data)
           // display print button
-          $('.btn-print').show();
-          $(".btn-print").attr("href", window.location.pathname + "/print/" + tahun)
+          // $('.btn-print').show();
+          // $(".btn-print").attr("href", window.location.pathname + "/print/" + tahun)
         }
       },
       error: function(xhr, ajaxOptions, thrownError) {
@@ -53,7 +53,7 @@ $(function () {
     // re-initiate filled datatable
     window.table = $('#table').DataTable({
       stateSave: true,
-      dom: "tip",
+      dom: "ftip",
       data: data,
       responsive: true,
       ordering: false,
