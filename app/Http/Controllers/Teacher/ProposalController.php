@@ -84,6 +84,7 @@ class ProposalController extends Controller
       $id = $request->id;
       $proposal = Proposal::whereId($id)->first();
       $periode = $proposal->period->tahun;
+      $skema = $proposal->skema;
 
       $data = array(
         '[PEMBUKAAN]' => $proposal->period->tahun,
@@ -97,12 +98,18 @@ class ProposalController extends Controller
         '[NIDN_REVIEWER1]' => $proposal->reviewer1->first()->nidn,
       );
 
-      $this->exportBerita($data);
+      $this->exportBerita($data, $skema);
     }
 
-    public function exportBerita($data)
+    public function exportBerita($data, $skema)
     {
-      $file = asset('template/berita_acara.rtf');
+      if ($skema == 'PKM-GFK') {
+        $file = asset('template/BA-GFK.rtf');
+      } elseif ($skema == 'PKM-AI' || $skema == 'PKM-GT') {
+        $file = asset('template/BA-GT-AI.rtf');
+      } else {
+        $file = asset('template/BA-5Bidang.rtf');
+      }
 
       $rand = uniqid();
       $nama_file = 'BA_'.$rand.'.doc';
