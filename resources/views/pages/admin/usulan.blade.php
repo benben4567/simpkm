@@ -16,7 +16,7 @@
                   <select class="form-control selectric" name="tahun" id="tahun">
                     <option selected disabled>Pilih Tahun</option>
                     @foreach($periods as $period)
-                      <option value="{{ $period->tahun }}">{{ $period->tahun }}</option>
+                      <option value="{{ $period->tahun }}" {{ $loop->first ? 'selected' : '' }}>{{ $period->tahun }}</option>
                     @endforeach
                   </select>
                 </div>
@@ -25,7 +25,7 @@
                 <a name="" id="" target="_blank" class="btn btn-primary btn-print" style="display: none;" href="#" role="button"><i class="fas fa-print"></i> Cetak</a>
               </div>
               <div class="table-responsive">
-                <table class="table table-striped table-md" id="table">
+                <table class="table table-striped table-md" id="table" style="width: 100%;">
                   <thead>
                     <tr class=text-center>
                       <th>#</th>
@@ -35,6 +35,32 @@
                     </tr>
                   </thead>
                   <tbody>
+                    @foreach($proposals as $proposal)
+                      <tr>
+                        <td>{{ $loop->iteration }}</td>
+                        <td>
+                          <span style="word-break: normal">{{ $proposal->judul }}</span></br>
+                          <strong>
+                            {{$proposal->skema}}
+                          </strong>
+                        </td>
+                        <td class="text-center">
+                          @if($proposal->status == "kompilasi")
+                            <span class="badge badge-primary">Kompilasi</span>
+                          @elseif($proposal->status == "proses")
+                            <span class="badge badge-warning">Proses</span>
+                          @else
+                            <span class="badge badge-warning">Selesai</span>
+                          @endif
+                        </td>
+                        <td class="text-center">
+                          <div class="btn-group">
+                            <button type="button" class="btn btn-icon btn-sm btn-primary btn-show" title="Show" data-id="{{ $proposal->id }}"><i class="fas fa-eye"></i></button>
+                            <button type="button" class="btn btn-icon btn-sm btn-warning btn-edit" title="Edit" data-id="{{ $proposal->id }}"><i class="fas fa-pencil-alt"></i></button>
+                          </div>
+                        </td>
+                      </tr>
+                    @endforeach
                   </tbody>
                 </table>
               </div>
