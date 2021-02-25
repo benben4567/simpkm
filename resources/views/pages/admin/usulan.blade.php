@@ -29,7 +29,6 @@
                   <thead>
                     <tr class=text-center>
                       <th>#</th>
-                      <th>Skema</th>
                       <th>Judul</th>
                       <th>Status Review</th>
                       <th>Edit</th>
@@ -116,8 +115,8 @@
 @push('lib-js')
   {{-- Datatables --}}
   <script src="{{ asset('vendor/datatables/datatables.min.js') }}"></script>
-  <script src="{{ asset('vendor/datatables/Buttons-1.6.5/js/buttons.bootstrap4.min.js') }}"></script>
-  <script src="{{ asset('vendor/datatables/Buttons-1.6.5/js/buttons.print.min.js') }}"></script>
+  <script src="{{ asset('vendor/datatables/buttons-1.6.5/js/buttons.bootstrap4.min.js') }}"></script>
+  <script src="{{ asset('vendor/datatables/buttons-1.6.5/js/buttons.print.min.js') }}"></script>
   {{-- Selectric --}}
   <script src="{{ asset('vendor/selectric/public/jquery.selectric.min.js') }}"></script>
 @endpush
@@ -129,7 +128,7 @@
 @push('css')
   {{-- Datatables --}}
   <link rel="stylesheet" href="{{ asset('vendor/datatables/datatables.min.css') }}">
-  <link rel="stylesheet" href="{{ asset('vendor/datatables/Buttons-1.6.5/css/buttons.bootstrap4.min.css') }}">
+  <link rel="stylesheet" href="{{ asset('vendor/datatables/buttons-1.6.5/css/buttons.bootstrap4.min.css') }}">
   {{-- Selectric --}}
   <link rel="stylesheet" href="{{ asset('vendor/selectric/public/selectric.css') }}">
 @endpush

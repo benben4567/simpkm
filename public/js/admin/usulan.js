@@ -9,7 +9,10 @@ $(function () {
       dom: "ftip",
       ordering: false,
       columnDefs: [
-        { "width": "10%", "targets": 0},
+        { "width": "5%", "targets": 0},
+        { "width": "65%", "targets": 1},
+        { "width": "15%", "targets": 2},
+        { "width": "15%", "targets": 3},
       ]
   })
 
@@ -58,8 +61,11 @@ $(function () {
       responsive: true,
       ordering: false,
       "columnDefs": [
-        { "className": "text-center text-nowrap", "targets": "_all" },
-        { "width": "10%", "targets": 0},
+        { "className": "text-center", "targets": [0,2,3] },
+        { "width": "5%", "targets": 0},
+        { "width": "65%", "targets": 1},
+        { "width": "15%", "targets": 2},
+        { "width": "15%", "targets": 3},
         {
           "targets": 0,
           "data": null,
@@ -68,21 +74,14 @@ $(function () {
           }
         },
         {
-          "targets": 1,
+          "targets":1,
           "data": null,
           "render": function (data, type, row, meta) {
-            return row.skema;
+            return `<span style="word-break: normal"> ${row.judul} </span></br><strong>${row.skema}</strong>`
           }
         },
         {
-          "targets":2,
-          "data": null,
-          "render": function (data, type, row, meta) {
-            return row.judul
-          }
-        },
-        {
-          "targets" : 3,
+          "targets" : 2,
           "data" : null,
           "render": function (data, type, row, meta) {
             if (row.status == "kompilasi") {
@@ -92,16 +91,18 @@ $(function () {
             } else {
               return `<span class="badge badge-success">Selesai</span>`;
             }
-
-
           }
         },
         {
-          "targets": 4,
+          "targets": 3,
           "data": null,
           "render": function ( data, type, row, meta ) {
-            return `<button type="button" class="btn btn-icon btn-sm btn-warning btn-edit" title="Edit" data-id="${row.id}"><i class="fas fa-pencil-alt"></i></button>`
-          }
+            return `
+              <div class="btn-group">
+                <button type="button" class="btn btn-icon btn-sm btn-primary btn-show" title="Show" data-id="${row.id}"><i class="fas fa-eye"></i></button>
+                <button type="button" class="btn btn-icon btn-sm btn-warning btn-edit" title="Edit" data-id="${row.id}"><i class="fas fa-pencil-alt"></i></button>
+              </div>`
+            }
         },
       ]
     });
