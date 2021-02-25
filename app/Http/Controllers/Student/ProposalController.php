@@ -217,7 +217,7 @@ class ProposalController extends Controller
         '[SKEMA]' => $proposal->skema,
         '[REVIEWER1]' => $proposal->reviewer1->first()->nama,
         '[REVIEWER2]' => $proposal->reviewer2->first()->nama,
-        '[NIDN_REVIEWER1]' => $proposal->reviewer1->first()->nidn,
+        '[NIDNREVIEWER1]' => $proposal->reviewer1->first()->nidn,
       );
 
       $this->exportBerita($data, $skema);
