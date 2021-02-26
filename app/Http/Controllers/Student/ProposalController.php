@@ -97,8 +97,8 @@ class ProposalController extends Controller
     {
       $this->validate($request, [
         'id' => 'required',
-        'skema' => 'required',
-        'dosen' => 'required',
+        // 'skema' => 'required',
+        // 'dosen' => 'required',
         'judul' => 'required',
         'file' => 'nullable|mimes:pdf|max:2048'
       ]);
@@ -123,14 +123,14 @@ class ProposalController extends Controller
 
         // Update Proposal
         $proposal = Proposal::whereId($request->input('id'))->update([
-          'skema' => $request->input('skema'),
+          // 'skema' => $request->input('skema'),
           'judul' => $request->input('judul'),
-          'status' => 'kompilasi',
+          // 'status' => 'kompilasi',
         ]);
 
         // Attach Teacher
-        $proposal = Proposal::find($request->input('id'));
-        $proposal->teachers()->sync([$request->input('dosen') => ['jabatan' => 'Pembimbing']]);
+        // $proposal = Proposal::find($request->input('id'));
+        // $proposal->teachers()->sync([$request->input('dosen') => ['jabatan' => 'Pembimbing']]);
       });
 
       return redirect()->route('proposal.index')->with('success','Data berhasil diupdate');
