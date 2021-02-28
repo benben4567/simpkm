@@ -59,6 +59,7 @@ Route::group(['middleware' => ['student'], 'prefix' => 'student'], function () {
   // Proposal
   Route::get('/usulan', ['as' => 'proposal.index', 'uses' => 'Student\ProposalController@index']);
   Route::get('/usulan/create', ['as' => 'proposal.create', 'uses' => 'Student\ProposalController@create']);
+  Route::delete('/usulan/delete', ['as' => 'proposal.delete', 'uses' => 'Student\ProposalController@destroy']);
   Route::get('/usulan/edit/{id}', ['as' => 'proposal.edit', 'uses' => 'Student\ProposalController@edit']);
   Route::get('/usulan/show/{id}', ['as' => 'proposal.show', 'uses' => 'Student\ProposalController@show']);
   Route::put('/usulan/update', ['as' => 'proposal.update', 'uses' => 'Student\ProposalController@update']);

@@ -16,10 +16,34 @@ use Codedge\Fpdf\Facades\Fpdf;
 class ProposalController extends Controller
 {
 
-    public function index()
+    public function index(Request $request)
     {
-      $student = Student::with('proposals')->whereId(Auth::user()->student->id)->first();
-      return view('pages.student.proposal', compact('student'));
+      $periods = Period::all()->sortByDesc('tahun');
+      $now = $periods->first();
+
+      if ($request->input('periode')) {
+        $periode = $request->input('periode');
+        $now = Period::where('id', $periode)->first();
+        $student = Student::with(['proposals' => function($q) use ($now) {
+                      $q->where('period_id', $now->id);
+                    }])->whereId(Auth::user()->student->id)->first();
+
+
+        return view('pages.student.proposal', compact('student', 'periods', 'now', 'periode'));
+
+        // return redirect()->back()->withInput()->with([
+        //   'student' => $student,
+        //   'periods' => $periods,
+        //   'now' => $now
+        // ]);
+
+      } else {
+        $student = Student::with(['proposals' => function($q) use ($now) {
+                    $q->where('period_id', $now->id);
+                  }])->whereId(Auth::user()->student->id)->first();
+      }
+
+      return view('pages.student.proposal', compact('student', 'periods', 'now'));
     }
 
     public function show($id)
@@ -34,7 +58,7 @@ class ProposalController extends Controller
 
     public function create()
     {
-      $periode = Period::latest()->first();
+      $periode = Period::all()->sortByDesc('tahun')->first();
       $teachers = Teacher::all();
       return view('pages.student.proposal_create', compact('periode','teachers'));
     }
@@ -123,14 +147,8 @@ class ProposalController extends Controller
 
         // Update Proposal
         $proposal = Proposal::whereId($request->input('id'))->update([
-          // 'skema' => $request->input('skema'),
           'judul' => $request->input('judul'),
-          // 'status' => 'kompilasi',
         ]);
-
-        // Attach Teacher
-        // $proposal = Proposal::find($request->input('id'));
-        // $proposal->teachers()->sync([$request->input('dosen') => ['jabatan' => 'Pembimbing']]);
       });
 
       return redirect()->route('proposal.index')->with('success','Data berhasil diupdate');
@@ -247,5 +265,26 @@ class ProposalController extends Controller
       $nama_file = 'FORM_'.$skema.'_'.$rand.'.doc';
 
       return \WordTemplate::export($file, $data, $nama_file);
+    }
+
+    public function destroy(Request $request)
+    {
+      $proposal = Proposal::where('id', $request->input('id'))->first();
+      $status = $proposal->period->status;
+      // cek apakah periode terkait ditutup atau dibuka.
+      if ($status == 'tutup') {
+        return response()->json([
+            'success' => false,
+            'msg' => 'Usulan tidak dapat dihapus karena periode sudah ditutup.'
+          ], 200);
+      }
+
+      // delete file
+      $proposal = Proposal::whereId($request->input('id'))->first();
+      Storage::delete('public/files/'.$proposal->file);
+
+      // delete proposal
+      $proposal = Proposal::destroy($request->input('id'));
+      return redirect()->back();
     }
 }
