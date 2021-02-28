@@ -78,9 +78,23 @@ class PeriodController extends Controller
 
     public function update(Request $request)
     {
-      $period = Period::whereId($request->input('id'))->update([
-        'status' => $request->input('status')
-      ]);
+      if ($request->input('status') == 'buka') {
+        $count = Period::where('status', '=', 'buka')->count();
+        if ($count == 0) {
+          $period = Period::whereId($request->input('id'))->update([
+            'status' => $request->input('status')
+          ]);
+        } else {
+          return response()->json([
+            'success' => false,
+            'msg' => 'Tidak bisa membuka periode. Ada periode yang belum ditutup.'
+          ]);
+        }
+      } else {
+        $period = Period::whereId($request->input('id'))->update([
+          'status' => $request->input('status')
+        ]);
+      }
 
       if ($period) {
         $periods = Period::withCount('proposals')->get();

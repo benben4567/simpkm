@@ -27,22 +27,7 @@
                     <div class="col-md-12 col-lg-6">
                       <div class="form-group">
                         <label for="">Skema PKM</label>
-                        <select class="form-control selectric @error('skema') is-invalid @enderror" name="skema" id="skema" disabled>
-                          <option selected disabled>- pilih -</option>
-                          <option value="PKM-R" {{ old('skema', $proposal->skema) == 'PKM-R' ? 'selected' : ''}}>PKM-R</option>
-                          <option value="PKM-K" {{ old('skema', $proposal->skema) == 'PKM-K' ? 'selected' : ''}}>PKM-K</option>
-                          <option value="PKM-PM" {{ old('skema', $proposal->skema) == 'PKM-PM' ? 'selected' : ''}}>PKM-PM</option>
-                          <option value="PKM-PI" {{ old('skema', $proposal->skema) == 'PKM-PI' ? 'selected' : ''}}>PKM-PI</option>
-                          <option value="PKM-KC" {{ old('skema', $proposal->skema) == 'PKM-KC' ? 'selected' : ''}}>PKM-KC</option>
-                          <option value="PKM-GFK" {{ old('skema', $proposal->skema) == 'PKM-GFK' ? 'selected' : ''}}>PKM-GFK</option>
-                          <option value="PKM-AI" {{ old('skema', $proposal->skema) == 'PKM-AI' ? 'selected' : ''}}>PKM-AI</option>
-                          <option value="PKM-GT" {{ old('skema', $proposal->skema) == 'PKM-GT' ? 'selected' : ''}}>PKM-GT</option>
-                        </select>
-                        @error('skema')
-                          <div class="invalid-feedback">
-                            {{ $message }}
-                          </div>
-                        @enderror
+                        <input type="text" class="form-control" value="{{ $proposal->skema }}" disabled>
                       </div>
                     </div>
                   </div>
@@ -50,23 +35,13 @@
                     <div class="col-md-12 col-lg-6">
                       <div class="form-group">
                         <label for="jabatan">Jabatan</label>
-                        <input type="text" class="form-control @error('jabatan') is-invalid @enderror" name="jabatan" value="Ketua Kelompok" id="jabatan" disabled>
-                        @error('jabatan')
-                          <div class="invalid-feedback">
-                            {{ $message }}
-                          </div>
-                        @enderror
+                        <input type="text" class="form-control" value="Ketua Kelompok" id="jabatan" disabled>
                       </div>
                     </div>
                     <div class="col-md-12 col-lg-6">
                       <div class="form-group">
                         <label for="dosen">Dosen Pendamping</label>
-                        <select class="form-control selectric" name="dosen" id="dosen" disabled>
-                          <option selected disabled>- pilih -</option>
-                          @foreach($teachers as $teacher)
-                          <option value="{{ $teacher->id }}" {{ $teacher->id == $pembimbing->id ? 'selected' : '' }}>{{ $teacher->nama }}</option>
-                          @endforeach
-                        </select>
+                          <input type="text" class="form-control" value="{{ $pembimbing->nama }}" disabled>
                       </div>
                     </div>
                   </div>

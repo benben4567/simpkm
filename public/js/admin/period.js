@@ -49,43 +49,37 @@ $(function () {
 
   $("#edit-periode").submit(function (e) {
     e.preventDefault();
-    Swal.fire({
-      title: 'Anda yakin?',
-      text: "Periode yang sudah ditutup tidak dapat dibuka kembali.",
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Ya!',
-      cancelButtonText: 'Batal'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        $.ajax({
-          type: "put",
-          url: "/admin/periode/update",
-          data: $(this).serialize(),
-          beforeSend: function() {
-            $.LoadingOverlay('show')
-          },
-          success: function (response) {
-            $.LoadingOverlay('hide')
-            if (response.success) {
-              populateTable(response.data);
-              $("#modalUpdate").modal("hide");
-              Swal.fire(
-                'Berhasil!',
-                'Periode pembukaan sudah ditutup.',
-                'success'
-              )
-            }
-          },
-          error: function(xhr, ajaxOptions, thrownError) {
-            $.LoadingOverlay('hide')
-            console.log(xhr.responseText)
-          }
-        });
+    $.ajax({
+      type: "put",
+      url: "/admin/periode/update",
+      data: $(this).serialize(),
+      beforeSend: function() {
+        $.LoadingOverlay('show')
+      },
+      success: function (response) {
+        $.LoadingOverlay('hide')
+        if (response.success) {
+          populateTable(response.data);
+          $("#modalUpdate").modal("hide");
+          Swal.fire(
+            'Berhasil!',
+            'Periode berhasil diubah.',
+            'success'
+          )
+        } else {
+          $("#modalUpdate").modal("hide");
+          Swal.fire(
+            'Oops!',
+            response.msg,
+            'error'
+          )
+        }
+      },
+      error: function(xhr, ajaxOptions, thrownError) {
+        $.LoadingOverlay('hide')
+        console.log(xhr.responseText)
       }
-    })
+    });
   });
 
   function populateTable(data) {
@@ -136,11 +130,7 @@ $(function () {
           "targets": 4,
           "data": null,
           "render": function ( data, type, row, meta ) {
-            if (row.status == "buka") {
-              return `<button type="button" class="btn btn-icon btn-sm btn-warning" title="Edit" data-id="${row.id}"><i class="fas fa-pencil-alt"></i></button>`
-            } else {
-              return `<button type="button" class="btn btn-icon btn-sm btn-danger" disabled><i class="fas fa-times"></i></button>`
-            }
+            return `<button type="button" class="btn btn-icon btn-sm btn-warning" title="Edit" data-id="${row.id}"><i class="fas fa-pencil-alt"></i></button>`
           }
         },
       ]
@@ -165,7 +155,8 @@ $(function () {
           console.log(data);
           $("input[name='id']").val(data.id);
           $("input[name='tahun']").val(data.tahun);
-          $("select[name='status']").val(data.status);
+          // $("select[name='status']").val(data.status);
+          $("select[name='status']").val(data.status).change().selectric('refresh');
           $("#modalUpdate").modal("show");
         }
       }

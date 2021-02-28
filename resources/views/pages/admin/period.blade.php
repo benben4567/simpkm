@@ -33,11 +33,7 @@
                         <td>{{ $period->proposals_count }}</td>
                         <td><span class="badge {{ $period->status == "buka" ? "badge-success" : "badge-danger" }}">{{ ucfirst($period->status) }}</span></td>
                         <td>
-                          @if($period->status == 'buka')
                           <button type="button" class="btn btn-icon btn-sm btn-warning" title="Edit" data-id="{{ $period->id }}"><i class="fas fa-pencil-alt"></i></button>
-                          @else
-                          <button type="button" class="btn btn-icon btn-sm btn-warning text-white" disabled><i class="fas fa-pencil-alt"></i></button>
-                          @endif
                         </td>
                       </tr>
                     @endforeach
