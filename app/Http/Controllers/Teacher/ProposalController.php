@@ -7,16 +7,34 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Teacher;
 use App\Proposal;
+use App\Period;
 
 class ProposalController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-      // Only show if jabatan == Pembimbing
-      $teacher = Teacher::with(['proposals' => function($q) {
-                  $q->wherePivot('jabatan', '=', 'Pembimbing')->get();
-                }])->whereId(Auth::user()->teacher->id)->first();
-      return view('pages.teacher.proposal', compact('teacher'));
+      $periods = Period::all()->sortByDesc('tahun');
+      $now = $periods->first();
+
+      if ($request->input('periode')) {
+        $periode = $request->input('periode');
+        $now = Period::where('id', $periode)->first();
+
+        $teacher = Teacher::with(['proposals' => function($q) use ($now) {
+                $q->where('period_id', $now->id);
+                $q->wherePivot('jabatan', '=', 'Pembimbing')->get();
+              }])->whereId(Auth::user()->teacher->id)->first();
+
+        return view('pages.teacher.proposal', compact('teacher', 'periods', 'now', 'periode'));
+      } else {
+        // Only show if jabatan == Pembimbing
+        $teacher = Teacher::with(['proposals' => function($q) use ($now) {
+                    $q->where('period_id', $now->id);
+                    $q->wherePivot('jabatan', '=', 'Pembimbing')->get();
+                  }])->whereId(Auth::user()->teacher->id)->first();
+      }
+
+      return view('pages.teacher.proposal', compact('teacher', 'periods', 'now'));
     }
 
     public function show(Request $request, $id)
@@ -49,13 +67,29 @@ class ProposalController extends Controller
       }
     }
 
-    public function review()
+    public function review(Request $request)
     {
-      // Only show if jabatan == Reviewer
-      $teacher = Teacher::with(['proposals' => function($q) {
-        $q->wherePivot('jabatan', '!=', 'Pembimbing')->get();
-      }])->whereId(Auth::user()->teacher->id)->first();
-      return view('pages.teacher.reviewer', compact('teacher'));
+      $periods = Period::all()->sortByDesc('tahun');
+      $now = $periods->first();
+
+      if ($request->input('periode')) {
+        $periode = $request->input('periode');
+        $now = Period::where('id', $periode)->first();
+
+        $teacher = Teacher::with(['proposals' => function($q) use ($now){
+                      $q->where('period_id', $now->id);
+                      $q->wherePivot('jabatan', '!=', 'Pembimbing')->get();
+                  }])->whereId(Auth::user()->teacher->id)->first();
+
+        return view('pages.teacher.reviewer', compact('teacher', 'periods', 'now', 'periode'));
+      } else {
+        // Only show if jabatan == Reviewer
+        $teacher = Teacher::with(['proposals' => function($q) use ($now) {
+          $q->where('period_id', $now->id);
+          $q->wherePivot('jabatan', '!=', 'Pembimbing')->get();
+        }])->whereId(Auth::user()->teacher->id)->first();
+      }
+      return view('pages.teacher.reviewer', compact('teacher', 'periods', 'now'));
     }
 
     public function download(Request $request)

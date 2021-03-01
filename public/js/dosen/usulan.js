@@ -9,7 +9,7 @@ $(document).ready(function () {
     dom: "Bftip",
     ordering: false,
     columnDefs: [
-      { "width": "30%", "target" : 1},
+      { "width": "20%", "target" : 1},
     ],
     buttons: [
       {
@@ -23,6 +23,10 @@ $(document).ready(function () {
       }
     ]
   })
+
+  $('#periode').on('change', function () {
+    $("#form-periode").submit();
+  });
 
   $('.btn-download').on('click', function () {
     $("input[name='id']").val($(this).data('proposal'));

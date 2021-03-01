@@ -24,7 +24,10 @@ $(document).ready(function () {
     ]
   })
 
-  $("div.toolbar").html('<button type="button">Click Me!</button>');
+  $('#periode').on('change', function () {
+    $("#form-periode").submit();
+  });
+
 
   $('.btn-download').on('click', function () {
     $("input[name='id']").val($(this).data('proposal'));

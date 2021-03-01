@@ -10,54 +10,67 @@
           <div class="col-12">
             <div class="card">
               <div class="card-body p-2">
-                <div class="mb-3">
-                  <form action="{{ route('teacher.proposal.print') }}" method="post" id="form-cetak" hidden>
-                    @csrf
-                    <input type="hidden" name="jenis" value="usulan">
-                    <input type="hidden" name="dosen" value={{ Auth::user()->teacher->id }}>
-                  </form>
+                <div class="row">
+                  <div class="col-lg-12">
+                    <form action="{{ route('teacher.proposal.index') }}" method="get" id="form-periode">
+                      <div class="form-group mb-0">
+                        <select class="form-control selectric" name="periode" id="periode">
+                          @foreach($periods as $period)
+                            <option value="{{ $period->id }}" {{ ($periode ?? '') == $period->id ? 'selected' : '' }}>{{ $period->tahun }}</option>
+                          @endforeach
+                        </select>
+                      </div>
+                    </form>
+                  </div>
                 </div>
-                <div class="table-responsive">
-                  <table class="table table-striped table-md" id="table" style="width: 100%;">
-                    <thead>
-                      <tr class=text-center>
-                        <th>Skema</th>
-                        <th>Judul</th>
-                        <th>Ketua</th>
-                        <th>Tanggal Diusulkan</th>
-                        <th>Status Usulan</th>
-                        <th>Proposal</th>
-                        <th>Aksi</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      @foreach($teacher->proposals as $proposal)
-                      <tr class="text-center">
-                        <td>{{ $proposal->skema }}</td>
-                        <td>{{ $proposal->judul }}</td>
-                        <td>{{ $proposal->ketua[0]['nama']}}</td>
-                        {{-- <td>{{ $proposal->pivot->jabatan }}</td> --}}
-                        <td>{{ $proposal->created_at->isoFormat('D MMMM Y')}}</td>
-                        <td>
-                          @if($proposal->status == "kompilasi")
-                            <span class="badge badge-primary">Kompilasi</span>
-                          @elseif($proposal->status == "proses")
-                            <span class="badge badge-warning">Proses Review</span>
-                          @else
-                            <span class="badge badge-success">Selesai</span>
-                          @endif
-                        </td>
-                        <td><a data-toggle="tooltip" data-placement="bottom" title="Download" class="btn btn-sm btn-danger" href="{{ asset('storage/files/'.$proposal->file) }}" role="button"><i class="fas fa-file-pdf"></i></a></td>
-                        <td>
-                          <div class="btn-group">
-                            <button type="button" data-toggle="tooltip" data-placement="bottom" title="Lihat" class="btn btn-sm btn-primary btn-show" data-proposal="{{ $proposal->id }}"><i class="fas fa-eye"></i></button>
-                            <button type="button" data-toggle="tooltip" data-placement="bottom" title="Download" class="btn btn-sm btn-success btn-download" data-proposal="{{ $proposal->id }}" {{ $proposal->status == 'kompilasi' ? 'disabled' : '' }}><i class="fas fa-download"></i></button>
-                          </div>
-                        </td>
-                      </tr>
-                      @endforeach
-                    </tbody>
-                  </table>
+                <div class="row">
+                  <div class="col-lg-12">
+                    <div class="mb-3">
+                      <form action="{{ route('teacher.proposal.print') }}" method="post" id="form-cetak" hidden>
+                        @csrf
+                        <input type="hidden" name="jenis" value="usulan">
+                        <input type="hidden" name="dosen" value={{ Auth::user()->teacher->id }}>
+                      </form>
+                    </div>
+                    <div class="table-responsive">
+                      <table class="table table-striped table-md" id="table" style="width: 100%;">
+                        <thead>
+                          <tr class=text-center>
+                            <th>Judul</th>
+                            <th>Status Usulan</th>
+                            <th>Proposal</th>
+                            <th>Aksi</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          @foreach($teacher->proposals as $proposal)
+                          <tr class="text-center">
+                            <td class="text-left">
+                              {{ $proposal->judul }}</br>
+                              <strong>{{ $proposal->skema }}</strong>
+                            </td>
+                            <td>
+                              @if($proposal->status == "kompilasi")
+                                <span class="badge badge-primary">Kompilasi</span>
+                              @elseif($proposal->status == "proses")
+                                <span class="badge badge-warning">Proses Review</span>
+                              @else
+                                <span class="badge badge-success">Selesai</span>
+                              @endif
+                            </td>
+                            <td><a data-toggle="tooltip" data-placement="bottom" title="Download" class="btn btn-sm btn-danger" href="{{ asset('storage/files/'.$proposal->file) }}" role="button"><i class="fas fa-file-pdf"></i></a></td>
+                            <td>
+                              <div class="btn-group">
+                                <button type="button" data-toggle="tooltip" data-placement="bottom" title="Lihat" class="btn btn-sm btn-primary btn-show" data-proposal="{{ $proposal->id }}"><i class="fas fa-eye"></i></button>
+                                <button type="button" data-toggle="tooltip" data-placement="bottom" title="Download" class="btn btn-sm btn-success btn-download" data-proposal="{{ $proposal->id }}" {{ $proposal->status == 'kompilasi' ? 'disabled' : '' }}><i class="fas fa-download"></i></button>
+                              </div>
+                            </td>
+                          </tr>
+                          @endforeach
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
