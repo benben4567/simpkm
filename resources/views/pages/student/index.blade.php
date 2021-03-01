@@ -45,8 +45,8 @@
                   <thead>
                     <tr class="text-center">
                       <th>#</th>
-                      <th>Skema</th>
                       <th>Judul</th>
+                      <th>Tahun</th>
                       <th>Dosen Pembimbing</th>
                     </tr>
                   </thead>
@@ -54,8 +54,11 @@
                   @foreach($proposals as $proposal)
                     <tr>
                       <td class="text-center">{{ $loop->iteration }}</td>
-                      <td class="text-center">{{ $proposal->skema }}</td>
-                      <td><a href="{{route('proposal.show', ['id' => $proposal->id])}}">{{ $proposal->judul }}</a></td>
+                      <td>
+                        <a href="{{route('proposal.show', ['id' => $proposal->id])}}">{{ $proposal->judul }}</a></br>
+                        <span><strong>{{ $proposal->skema }}</strong></span>
+                      </td>
+                      <td class="text-center" >{{ $proposal->period->tahun }}</td>
                       <td class="text-center">
                         @foreach($proposal->pembimbing as $pembimbing)
                           {{ $pembimbing->nama }}
