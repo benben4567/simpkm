@@ -256,7 +256,7 @@ $(document).ready(function () {
           $("input[name='id']").val(data['id']);
           $("input[name='name']").val(data['name']);
           $("input[name='email']").val(data['email']);
-          $("select[name='status']").val(data['status']);
+          $("select[name='status']").val(data['status']).change().selectric('refresh');
           $("#adminModalEdit").modal("show");
         }
       },
@@ -404,7 +404,7 @@ $(document).ready(function () {
           "targets": 5,
           "data": null,
           "render": function ( data, type, row, meta ) {
-            return `<button type="button" class="btn btn-sm btn-icon btn-primary student-edit" data-id="${row.id}"><i class="fas fa-eye"></i></button>`
+            return `<button type="button" class="btn btn-sm btn-icon btn-primary student-edit" data-id="${row.id}"><i class="fas fa-eye"></i></button><button type="button" class="btn btn-sm btn-warning ml-1" data-id="${row.id}" data-toggle="modal" data-target="#mahasiswaSimModal"><i class="fas fa-key"></i></button>`
           }
         },
       ]
