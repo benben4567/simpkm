@@ -10,6 +10,7 @@ FIX:
   ✔ Student bisa hapus PKM @done(21-03-01 19:29)
   ✔ Filter periode di halaman Bimbingan dan Reviewer PKM (Dosen) @done(21-03-01 20:57)
   ✔ Update user admin nge bug. @done(21-03-01 21:08)
+  ✔ Fix chart (admin) @done(21-03-01 21:53)
 TODO:
   ✔ Export Excel Rekapitulasi usulan (pake FastExcel) @done(21-01-03 20:51)
   ✔ Buat Panduan SIM (Alur pengusulan dan penggunaan) (pakai wizard coba) @done(20-12-29 22:16)
