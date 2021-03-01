@@ -50,7 +50,7 @@
                           @elseif($proposal->status == "proses")
                             <span class="badge badge-warning">Proses</span>
                           @else
-                            <span class="badge badge-warning">Selesai</span>
+                            <span class="badge badge-success">Selesai</span>
                           @endif
                         </td>
                         <td class="text-center">
