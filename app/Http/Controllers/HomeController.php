@@ -33,7 +33,8 @@ class HomeController extends Controller
             $lolos = Proposal::lolos()->count();
             $major = Major::all()->count();
             $student = Student::all()->count();
-            return view('pages.admin.index', compact('proposal', 'lolos', 'major', 'student'));
+            $periods = Period::all();
+            return view('pages.admin.index', compact('proposal', 'lolos', 'major', 'student', 'periods'));
         } elseif (Auth::user()->role == 'student') {
             $proposals = Proposal::with('teachers')->whereHas('students', function($q) {
               $q->where('student_id', '=', Auth::user()->student->id);
@@ -67,6 +68,15 @@ class HomeController extends Controller
         ], 404);
       }
 
+    }
+
+    public function chart()
+    {
+      $periods = Period::withCount('proposals')->get()->pluck('proposals_count', 'tahun')->toArray();
+      return response()->json([
+        'success' => true,
+        'data' => $periods
+      ], 200);
     }
 
     public function panduan(){
