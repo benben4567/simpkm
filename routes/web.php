@@ -48,6 +48,8 @@ Route::group(['middleware' => ['admin'], 'prefix' => 'admin'], function () {
   Route::get('/recap', ['as' => 'recap.index', 'uses' => 'RecapController@index']);
   Route::post('/recap/download', ['as' => 'recap.download', 'uses' => 'RecapController@download']);
 
+  // Chart
+  Route::get('/chart', ['as' => 'chart.index', 'uses' => 'HomeController@chart']);
 });
 
 Route::group(['middleware' => ['student'], 'prefix' => 'student'], function () {

@@ -85,7 +85,9 @@
                 <div class="form-group">
                   <select class="form-control selectric" name="periode">
                     <option selected diabled>-pilih-</option>
-                    <option>2021</option>
+                    @foreach($periods as $period)
+                      <option>{{ $period->tahun }}</option>
+                    @endforeach
                   </select>
                 </div>
               </div>
