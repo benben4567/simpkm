@@ -84,7 +84,7 @@
               <div class="py-2 px-2">
                 <div class="form-group">
                   <select class="form-control selectric" name="periode">
-                    <option selected diabled>-pilih-</option>
+                    <option selected disabled>-pilih-</option>
                     @foreach($periods as $period)
                       <option>{{ $period->tahun }}</option>
                     @endforeach
