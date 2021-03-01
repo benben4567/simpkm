@@ -6,11 +6,10 @@ FIX:
   ✔ Change Password (Student & Teacher) @done(21-02-20 20:40)
   ✔ Teacher : Show proposal detail (modal) @done(21-02-20 18:51)
   ✔ Import Excel user teacher @done(21-02-20 16:12)
-  ☐ Admin bisa masuk sebagai student atau teacher
-  ☐ Student bisa hapus PKM
-  ☐ Filter periode di halaman Bimbingan dan Reviewer PKM (Dosen)
-  ☐ Filter Periode di sidebar Admin
-  ☐ Update user admin nge bug.
+  ✘ Admin bisa masuk sebagai student atau teacher @cancelled(21-03-01 21:25)
+  ✔ Student bisa hapus PKM @done(21-03-01 19:29)
+  ✔ Filter periode di halaman Bimbingan dan Reviewer PKM (Dosen) @done(21-03-01 20:57)
+  ✔ Update user admin nge bug. @done(21-03-01 21:08)
 TODO:
   ✔ Export Excel Rekapitulasi usulan (pake FastExcel) @done(21-01-03 20:51)
   ✔ Buat Panduan SIM (Alur pengusulan dan penggunaan) (pakai wizard coba) @done(20-12-29 22:16)
