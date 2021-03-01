@@ -34,28 +34,31 @@ class ProposalController extends Controller
     return view('pages.admin.usulan', compact('periods', 'teachers', 'proposals'));
   }
 
-  public function show($id)
+  public function show(Request $request, $id)
   {
     $proposal = Proposal::with('teachers')->whereId($id)->first();
     $pembimbing = $proposal->pembimbing->first();
     $reviewer1 = $proposal->reviewer1->first();
     $reviewer2 = $proposal->reviewer2->first();
-    if ($proposal) {
-      return response()->json([
-        'success' => true,
-        'data' => [
-          'proposal' => $proposal,
-          'pembimbing' => $pembimbing,
-          'reviewer1' => $reviewer1,
-          'reviewer2' => $reviewer2,
+    $anggota = $proposal->anggota->toArray();
+    if ($request->ajax()) {
+      if ($proposal) {
+        return response()->json([
+          'success' => true,
+          'data' => [
+            'proposal' => $proposal,
+            'pembimbing' => $pembimbing,
+            'reviewer1' => $reviewer1,
+            'reviewer2' => $reviewer2,
 
-        ],
-      ]);
-    } else {
-      return response()->json([
-        'success' => false,
-        'msg' => 'Data not found.'
-      ], 404);
+          ],
+        ]);
+      } else {
+        return response()->json([
+          'success' => false,
+          'msg' => 'Data not found.'
+        ], 404);
+      }
     }
   }
 

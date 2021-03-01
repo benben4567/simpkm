@@ -55,7 +55,7 @@
                         </td>
                         <td class="text-center">
                           <div class="btn-group">
-                            <button type="button" class="btn btn-icon btn-sm btn-primary btn-show" title="Show" data-id="{{ $proposal->id }}"><i class="fas fa-eye"></i></button>
+                            {{-- <button type="button" class="btn btn-icon btn-sm btn-primary btn-show" title="Lihat" data-id="{{ $proposal->id }}"><i class="fas fa-eye"></i></button> --}}
                             <button type="button" class="btn btn-icon btn-sm btn-warning btn-edit" title="Edit" data-id="{{ $proposal->id }}"><i class="fas fa-pencil-alt"></i></button>
                           </div>
                         </td>
@@ -132,6 +132,50 @@
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
           </div>
           </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Show -->
+    <div class="modal fade" id="modalShow" tabindex="-1" role="dialog">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Detail Usulan</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-lg-12">
+                <dl class="row">
+                  <dt class="col-sm-3">Skema</dt>
+                  <dd class="col-sm-9" id="skema"></dd>
+
+                  <dt class="col-sm-3">Judul</dt>
+                  <dd class="col-sm-9"><p id="judul"></p></dd>
+
+                  <dt class="col-sm-3">Pembimbing</dt>
+                  <dd class="col-sm-9" id="pembimbing"></dd>
+
+                  <dt class="col-sm-3">Ketua</dt>
+                  <dd class="col-sm-9" id="ketua"></dd>
+
+                  <dt class="col-sm-3">Anggota</dt>
+                  <dd class="col-sm-9" id="anggota">
+                    <ul class="pl-3"></ul>
+                  </dd>
+
+                  <dt class="col-sm-3">Reviewer 1</dt>
+                  <dd class="col-sm-9" id="reviewer1"></dd>
+
+                  <dt class="col-sm-3">Reviewer 2</dt>
+                  <dd class="col-sm-9" id="reviewer2"></dd>
+                </dl>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

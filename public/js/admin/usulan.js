@@ -191,10 +191,51 @@ $(function () {
     });
   });
 
-  function populateSelect(data) {
-
-    // $(".teacher").append(data).selectric();
-  }
+  $('#table tbody').on('click', 'button.btn-show', function (e) {
+    e.preventDefault();
+    var id = $(this).data('id');
+    $.ajax({
+      type: "get",
+      url: "usulan/show/"+id,
+      data: null,
+      dataType: "JSON",
+      beforeSend: function() {
+        $.LoadingOverlay("show")
+      },
+      success: function (response) {
+        // console.log(response)
+        $.LoadingOverlay("hide")
+        if (response.success) {
+          var data = response.data
+          var anggota = data.anggota
+          $("#skema").html(data.proposal.skema);
+          $("#judul").html(data.proposal.judul);
+          $("#pembimbing").html(data.pembimbing.nama);
+          $("#ketua").html(data.ketua.nama);
+          $("#reviewer1").html(data.reviewer1 ? data.reviewer1.nama : '-');
+          $("#reviewer2").html(data.reviewer2 ? data.reviewer2.nama : '-');
+          $.each(anggota, function(key, value) {
+            $("#anggota ul").append('<li>'+ value.nama +'</li>');
+          })
+        }
+      },
+      error: function(xhr) {
+        $.LoadingOverlay('hide')
+        switch (xhr.status) {
+          case 404:
+            Swal.fire(
+              'Oops!',
+              'Usulan tidak ditemukan.',
+              'error'
+            )
+            break;
+          default:
+            break;
+        }
+      }
+    });
+    $('#modalShow').modal('show')
+  });
 
 
 });
