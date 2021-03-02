@@ -121,8 +121,6 @@ $(function () {
       success: function (response) {
         $.LoadingOverlay('hide')
         if (response.success) {
-          $("select").val("").selectric('refresh');
-
           var data = response.data;
           var proposal = data.proposal;
           var pembimbing = data.pembimbing;
