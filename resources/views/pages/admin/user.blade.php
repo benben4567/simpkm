@@ -18,105 +18,105 @@
                   <a class="nav-item nav-link" id="nav-dosen-tab" data-toggle="tab" href="#nav-dosen" role="tab" aria-controls="nav-dosen" aria-selected="false">Dosen</a>
                 </div>
               </nav>
-              <div class="tab-content" id="nav-tabContent">
-                <!-- Admin -->
-                <div class="tab-pane fade show active" id="nav-admin" role="tabpanel" aria-labelledby="nav-admin-tab">
-                  <div class="mb-3">
-                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#adminModal"><i class="fas fa-plus"></i> Baru</button>
-                  </div>
-                  <div class="table-responsive">
-                    <table class="table table-striped table-md" id="table-admin">
-                      <thead>
-                        <tr class=text-center>
-                          <th>No</th>
-                          <th>Nama</th>
-                          <th>Email</th>
-                          <th>Status</th>
-                          <th>Aksi</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        @foreach($admins as $admin)
-                        <tr class="text-center">
-                          <td>{{ $loop->iteration }}</td>
-                          <td>{{ $admin->name }}</td>
-                          <td>{{ $admin->email }}</td>
-                          <td><div class="badge {{ $admin->status == 'aktif' ? 'badge-success' : 'badge-danger' }}">{{ strtoupper($admin->status) }}</div></td>
-                          <td><button type="button" class="btn btn-sm btn-icon btn-primary admin-edit" data-id="{{ $admin->id }}"><i class="fas fa-eye"></i></button></td>
-                        </tr>
-                        @endforeach
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-                <!-- Mahasiswa -->
-                <div class="tab-pane fade" id="nav-mahasiswa" role="tabpanel" aria-labelledby="nav-mahasiswa-tab">
-                  <div class="mb-3">
-                    <a class="btn btn-primary" href="{{ route('user.create', ['role' => 'student']) }}" role="button"><i class="fas fa-plus"></i> Baru</a>
-                    <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modalImport"><i class="fas fa-file-excel"></i> Import</button>
-                  </div>
-                  <div class="table-responsive">
-                    <table class="table table-striped table-md" id="table-student">
-                      <thead>
-                        <tr class=text-center>
-                          <th>No</th>
-                          <th>Nama</th>
-                          <th>NIM</th>
-                          <th>Email</th>
-                          <th>Status</th>
-                          <th>Aksi</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        @foreach($students as $student)
-                        <tr class="text-center">
-                          <td>{{ $loop->iteration }}</td>
-                          <td>{{ $student->nama }}</td>
-                          <td>{{ $student->nim }}</td>
-                          <td>{{ $student->user->email }}</td>
-                          <td><div class="badge {{ $student->user->status == 'aktif' ? 'badge-success' : 'badge-danger' }}">{{ strtoupper($student->user->status) }}</div></td>
-                          <td>
-                            <button type="button" class="btn btn-sm btn-primary student-edit" data-id="{{ $student->user->id }}"><i class="fas fa-eye"></i></button>
-                            <button type="button" class="btn btn-sm btn-warning" data-id="{{ $student->user->id }}" data-toggle="modal" data-target="#mahasiswaSimModal"><i class="fas fa-key"></i></button>
-                          </td>
-                        </tr>
-                        @endforeach
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-                <!-- Dosen -->
-                <div class="tab-pane fade" id="nav-dosen" role="tabpanel" aria-labelledby="nav-dosen-tab">
-                  <div class="mb-3">
-                    <a class="btn btn-primary" href="{{ route('user.create', ['role' => 'teacher']) }}" role="button"><i class="fas fa-plus"></i> Baru</a>
-                    <button type="button" class="btn btn-success btn-upload" data-toggle="modal" data-target="#modalImport"><i class="fas fa-file-upload"></i> Import</button>
-                  </div>
-                  <div class="table-responsive">
-                    <table class="table table-striped table-md" id="table-teacher">
-                      <thead>
-                        <tr class=text-center>
-                          <th>No</th>
-                          <th>Nama</th>
-                          <th>Email</th>
-                          <th>Status</th>
-                          <th>Aksi</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        @foreach($teachers as $teacher)
-                        <tr class="text-center">
-                          <td>{{ $loop->iteration }}</td>
-                          <td>{{ $teacher->name }}</td>
-                          <td>{{ $teacher->email }}</td>
-                          <td><div class="badge {{ $teacher->status == 'aktif' ? 'badge-success' : 'badge-danger' }}">{{ strtoupper($teacher->status) }}</div></td>
-                          <td>
-                            {{-- <button type="button" class="btn btn-sm btn-primary" data-id="{{ $teacher->id }}"><i class="fas fa-eye"></i></button> --}}
-                            <a class="btn btn-sm btn-icon btn-primary" href="{{ route('user.show', ['id' => $teacher->id]) }}"><i class="fas fa-eye"></i></a>
-                          </td>
-                        </tr>
-                        @endforeach
-                      </tbody>
-                    </table>
+              <div class="row">
+                <div class="col-lg-12">
+                  <div class="tab-content" id="nav-tabContent">
+                    <!-- Admin -->
+                    <div class="tab-pane fade show active" id="nav-admin" role="tabpanel" aria-labelledby="nav-admin-tab">
+                      <div class="mb-3">
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#adminModal"><i class="fas fa-plus"></i> Baru</button>
+                      </div>
+                      <div class="table-responsive">
+                        <table class="table table-striped table-md" id="table-admin">
+                          <thead>
+                            <tr class=text-center>
+                              <th>No</th>
+                              <th>Nama</th>
+                              <th>Email</th>
+                              <th>Status</th>
+                              <th>Aksi</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            @foreach($admins as $admin)
+                            <tr class="text-center">
+                              <td>{{ $loop->iteration }}</td>
+                              <td>{{ $admin->name }}</td>
+                              <td>{{ $admin->email }}</td>
+                              <td><div class="badge {{ $admin->status == 'aktif' ? 'badge-success' : 'badge-danger' }}">{{ strtoupper($admin->status) }}</div></td>
+                              <td><button type="button" class="btn btn-sm btn-icon btn-primary admin-edit" data-id="{{ $admin->id }}"><i class="fas fa-eye"></i></button></td>
+                            </tr>
+                            @endforeach
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                    <!-- Mahasiswa -->
+                    <div class="tab-pane fade" id="nav-mahasiswa" role="tabpanel" aria-labelledby="nav-mahasiswa-tab">
+                      <div class="table-responsive">
+                        <table class="table table-striped table-md" id="table-student">
+                          <thead>
+                            <tr class=text-center>
+                              <th>No</th>
+                              <th>Nama</th>
+                              <th>NIM</th>
+                              <th>Email</th>
+                              <th>Status</th>
+                              <th>Aksi</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            @foreach($students as $student)
+                            <tr class="text-center">
+                              <td>{{ $loop->iteration }}</td>
+                              <td>{{ $student->nama }}</td>
+                              <td>{{ $student->nim }}</td>
+                              <td>{{ $student->user->email }}</td>
+                              <td><div class="badge {{ $student->user->status == 'aktif' ? 'badge-success' : 'badge-danger' }}">{{ strtoupper($student->user->status) }}</div></td>
+                              <td>
+                                <button type="button" class="btn btn-sm btn-primary student-edit" data-id="{{ $student->user->id }}"><i class="fas fa-eye"></i></button>
+                                <button type="button" class="btn btn-sm btn-warning" data-id="{{ $student->user->id }}" data-toggle="modal" data-target="#mahasiswaSimModal"><i class="fas fa-key"></i></button>
+                              </td>
+                            </tr>
+                            @endforeach
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                    <!-- Dosen -->
+                    <div class="tab-pane fade" id="nav-dosen" role="tabpanel" aria-labelledby="nav-dosen-tab">
+                      <div class="mb-3">
+                        <a class="btn btn-primary" href="{{ route('user.create', ['role' => 'teacher']) }}" role="button"><i class="fas fa-plus"></i> Baru</a>
+                        <button type="button" class="btn btn-success btn-upload" data-toggle="modal" data-target="#modalImport"><i class="fas fa-file-upload"></i> Import</button>
+                      </div>
+                      <div class="table-responsive">
+                        <table class="table table-striped table-md" id="table-teacher">
+                          <thead>
+                            <tr class=text-center>
+                              <th>No</th>
+                              <th>Nama</th>
+                              <th>Email</th>
+                              <th>Status</th>
+                              <th>Aksi</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            @foreach($teachers as $teacher)
+                            <tr class="text-center">
+                              <td>{{ $loop->iteration }}</td>
+                              <td>{{ $teacher->name }}</td>
+                              <td>{{ $teacher->email }}</td>
+                              <td><div class="badge {{ $teacher->status == 'aktif' ? 'badge-success' : 'badge-danger' }}">{{ strtoupper($teacher->status) }}</div></td>
+                              <td>
+                                {{-- <button type="button" class="btn btn-sm btn-primary" data-id="{{ $teacher->id }}"><i class="fas fa-eye"></i></button> --}}
+                                <a class="btn btn-sm btn-icon btn-primary" href="{{ route('user.show', ['id' => $teacher->id]) }}"><i class="fas fa-eye"></i></a>
+                              </td>
+                            </tr>
+                            @endforeach
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -333,6 +333,7 @@
 @push('lib-js')
   {{-- Datatables --}}
   <script src="{{ asset('vendor/datatables/datatables.min.js') }}"></script>
+  <script src="{{ asset('vendor/datatables/buttons-1.6.5/js/dataTables.buttons.min.js') }}"></script>
   {{-- Selectric --}}
   <script src="{{ asset('vendor/selectric/public/jquery.selectric.min.js') }}"></script>
 @endpush
@@ -344,6 +345,7 @@
 @push('css')
   {{-- Datatables --}}
   <link rel="stylesheet" href="{{ asset('vendor/datatables/datatables.min.css') }}">
+  <link rel="stylesheet" href="{{ asset('vendor/datatables/buttons-1.6.5/css/buttons.dataTables.min.css') }}"></script>
   {{-- Selectric --}}
   <link rel="stylesheet" href="{{ asset('vendor/selectric/public/selectric.css') }}">
 @endpush
