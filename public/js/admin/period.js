@@ -157,6 +157,7 @@ $(function () {
           $("input[name='tahun']").val(data.tahun);
           // $("select[name='status']").val(data.status);
           $("select[name='status']").val(data.status).change().selectric('refresh');
+          $("select[name='pendaftaran']").val(data.pendaftaran).change().selectric('refresh');
           $("#modalUpdate").modal("show");
         }
       }

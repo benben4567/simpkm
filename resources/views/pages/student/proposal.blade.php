@@ -25,8 +25,12 @@
               <div class="alert-icon"><i class="far fa-lightbulb"></i></div>
               <div class="alert-body">
                 <div class="alert-title">Perhatian</div>
-                @if($now->status == 'tutup')
-                  <strong>Usulan Proposal Tahun {{ $now->tahun }} sudah ditutup.</strong> Peserta tidak dapat membuat usulan baru ataupun menghapus usulan yang telah dibuat.
+                @if($now->pendaftaran == 'tutup')
+                  @if($now->tahun <= date("Y"))
+                    <strong>Usulan Proposal Tahun {{ $now->tahun }} sudah ditutup.</strong> Peserta tidak dapat membuat usulan baru ataupun menghapus usulan yang telah dibuat.
+                  @else
+                    <strong>Usulan Proposal Tahun {{ $now->tahun }} belum dibuka.</strong>
+                  @endif
                 @else
                   Pengusulan PKM <strong>hanya</strong> dilakukan oleh Ketua Kelompok masing-masing PKM. Anggota kelompok cukup sampai melengkapi <strong>Data Diri</strong> saja. Silahkan baca <a class="btn btn-primary btn-sm" href="{{ route('panduan.index') }}" role="button">Panduan SIM</a> pada menu disamping untuk informasi lebih lanjut.
                 @endif
@@ -52,7 +56,11 @@
                   </div>
                   <div class="col-md-2">
                     <div class="form-group">
-                      <a class="form-control btn btn-lg btn-primary btn-usulan" href="{{ route('proposal.create') }}" role="button" {{ $now->status == 'tutup' ? 'hidden' : '' }} ><i class="fas fa-plus"></i> Usulan Baru</a>
+                      @if($now->pendaftaran == 'buka')
+                        <a class="form-control btn btn-lg btn-primary btn-usulan" href="{{ route('proposal.create') }}" role="button"><i class="fas fa-plus"></i> Usulan Baru</a>
+                      @else
+                        <a class="form-control btn btn-lg btn-secondary" href="#" role="button"><i class="fas fa-plus"></i> Usulan Baru</a>
+                      @endif
                     </div>
                   </div>
                 </div>
@@ -90,7 +98,7 @@
                             <td><a class="btn btn-sm btn-danger" data-toggle="tooltip" data-placement="bottom" title="Download" href="{{ asset('storage/files/'.$proposal->file) }}" role="button"><i class="fas fa-file-pdf    "></i></a></td>
                             <td>
                               <div class="btn-group">
-                                @if($proposal->period->status == 'tutup' || $proposal->status == 'selesai' )
+                                @if($proposal->period->status == 'tutup')
                                   @if($proposal->pivot->jabatan == "Ketua")
                                     <button class="btn btn-sm btn-secondary" type="button" data-toggle="tooltip" data-placement="bottom" title="Edit"><i class="fas fa-pencil-alt"></i></a>
                                     <button class="btn btn-sm btn-secondary" type="button" data-toggle="tooltip" data-placement="bottom" title="Anggota"><i class="fas fa-users"></i></a>
@@ -107,7 +115,7 @@
                             </td>
                             <td>
                               @if($proposal->pivot->jabatan == "Ketua")
-                                @if($proposal->period->status == 'tutup' || $proposal->status == 'selesai')
+                                @if($proposal->period->status == 'tutup' || $proposal->status != 'kompilasi')
                                   <button type="button" class="btn btn-sm btn-secondary" data-toggle="tooltip" data-placement="bottom" title="Hapus"><i class="fas fa-times"></i></button>
                                 @else
                                   <form action="{{ route('proposal.delete') }}" class="form-delete" method="post">

@@ -82,7 +82,8 @@ class PeriodController extends Controller
         $count = Period::where('status', '=', 'buka')->count();
         if ($count == 0) {
           $period = Period::whereId($request->input('id'))->update([
-            'status' => $request->input('status')
+            'status' => $request->input('status'),
+            'pendaftaran' => $request->input('pendaftaran')
           ]);
         } else {
           return response()->json([

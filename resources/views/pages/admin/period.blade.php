@@ -100,6 +100,13 @@
                   <option value="tutup">Tutup</option>
                 </select>
               </div>
+              <div class="form-group">
+                <label for="">Pendaftaran</label>
+                <select class="form-control selectric" name="pendaftaran" id="pendaftaran">
+                  <option value="buka">Buka</option>
+                  <option value="tutup">Tutup</option>
+                </select>
+              </div>
               <div>
                 <button type="submit" class="btn btn-primary" v-on:click="simpan">Simpan</button>
               </div>
