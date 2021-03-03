@@ -17,6 +17,7 @@ class CreatePeriodsTable extends Migration
             $table->id();
             $table->year('tahun')->nullable();
             $table->enum('status', ['buka', 'tutup'])->nullable()->default('buka');
+            $table->enum('pendaftaran', ['buka', 'tutup'])->nullable()->default('buka');
             $table->timestamps();
         });
     }
