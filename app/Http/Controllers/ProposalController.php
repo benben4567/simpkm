@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use App\Period;
 use App\Proposal;
 use App\Teacher;
@@ -121,6 +122,32 @@ class ProposalController extends Controller
       'success' => true,
       'data' => $proposals
     ], 200);
+  }
+
+  public function destroy(Request $request)
+  {
+    $proposal = Proposal::where('id', $request->input('id'))->first();
+
+    // delete file
+    $proposal = Proposal::whereId($request->input('id'))->first();
+    Storage::delete('public/files/'.$proposal->file);
+
+    // delete proposal
+    $proposal = Proposal::destroy($request->input('id'));
+    if ($proposal) {
+      $proposals = DB::table('periods')
+                    ->join('proposals', 'periods.id', '=', 'proposals.period_id')
+                    ->select('periods.id as period_id', 'periods.tahun', 'proposals.id', 'proposals.skema', 'proposals.judul', 'proposals.status')
+                    ->where('periods.tahun', '=', $request->input('tahun'))
+                    ->get();
+
+      return response()->json([
+        'success' => true,
+        'msg' => 'Usulan berhasil dihapus.',
+        'data' => $proposals
+      ], 200);
+    }
+
   }
 
 }

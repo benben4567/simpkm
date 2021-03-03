@@ -35,6 +35,7 @@ Route::group(['middleware' => ['admin'], 'prefix' => 'admin'], function () {
   Route::get('/usulan/show/{id}', ['as' => 'usulan.show', 'uses' => 'ProposalController@show']);
   Route::put('/usulan/update', ['as' => 'usulan.update', 'uses' => 'ProposalController@update']);
   Route::get('/usulan/print/{tahun}', ['as' => 'usulan.print', 'uses' => 'ProposalController@print']);
+  Route::delete('/usulan', ['as' => 'usulan.delete', 'uses' => 'ProposalController@destroy']);
 
   // User
   Route::get('/user', ['as' => 'user.index', 'uses' => 'UserController@index']);

@@ -101,6 +101,7 @@ $(function () {
               <div class="btn-group">
                 <button type="button" class="btn btn-icon btn-sm btn-primary btn-show" title="Show" data-id="${row.id}"><i class="fas fa-eye"></i></button>
                 <button type="button" class="btn btn-icon btn-sm btn-warning btn-edit" title="Edit" data-id="${row.id}"><i class="fas fa-pencil-alt"></i></button>
+                <button type="button" class="btn btn-icon btn-sm btn-danger btn-delete" title="Delete" data-id="${row.id}"><i class="fas fa-trash"></i></button>
               </div>`
             }
         },
@@ -233,6 +234,53 @@ $(function () {
       }
     });
     $('#modalShow').modal('show')
+  });
+
+  $('#table tbody').on('click', 'button.btn-delete', function (e) {
+    e.preventDefault();
+    var id = $(this).data('id');
+    Swal.fire({
+      title: 'Anda yakin?',
+      text: "Proposal akan dihapus.",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Ya!',
+      cancelButtonText: 'Batal'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        var tahun = $('#tahun').val();
+        $.ajax({
+          type: "delete",
+          url: "usulan",
+          data: {id: id, tahun: tahun},
+          dataType: "JSON",
+          beforeSend: function() {
+            $.LoadingOverlay("show")
+          },
+          success: function (response) {
+            $.LoadingOverlay("hide")
+            if (response.success) {
+              populateTable(response.data)
+              Swal.fire(
+                "Berhasil!",
+                response.msg,
+                'success'
+              )
+            }
+          },
+          error: function(xhr) {
+            $.LoadingOverlay('hide')
+            Swal.fire(
+              'Error!',
+              xhr.responseJSON.message,
+              'error'
+            )
+          }
+        });
+      }
+    })
   });
 
 

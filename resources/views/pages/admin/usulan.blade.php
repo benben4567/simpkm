@@ -31,7 +31,7 @@
                       <th>#</th>
                       <th>Judul</th>
                       <th>Status Review</th>
-                      <th>Edit</th>
+                      <th>Aksi</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -55,8 +55,9 @@
                         </td>
                         <td class="text-center">
                           <div class="btn-group">
-                            {{-- <button type="button" class="btn btn-icon btn-sm btn-primary btn-show" title="Lihat" data-id="{{ $proposal->id }}"><i class="fas fa-eye"></i></button> --}}
+                            <button type="button" class="btn btn-icon btn-sm btn-primary btn-show" title="Show" data-id="{{ $proposal->id }}"><i class="fas fa-eye"></i></button>
                             <button type="button" class="btn btn-icon btn-sm btn-warning btn-edit" title="Edit" data-id="{{ $proposal->id }}"><i class="fas fa-pencil-alt"></i></button>
+                            <button type="button" class="btn btn-icon btn-sm btn-danger btn-delete" title="Delete" data-id="{{ $proposal->id }}"><i class="fas fa-trash"></i></button>
                           </div>
                         </td>
                       </tr>
