@@ -38,6 +38,7 @@ class ProposalController extends Controller
   public function show(Request $request, $id)
   {
     $proposal = Proposal::with('teachers')->whereId($id)->first();
+    $ketua = $proposal->ketua->first();
     $pembimbing = $proposal->pembimbing->first();
     $reviewer1 = $proposal->reviewer1->first();
     $reviewer2 = $proposal->reviewer2->first();
@@ -48,11 +49,12 @@ class ProposalController extends Controller
           'success' => true,
           'data' => [
             'proposal' => $proposal,
+            'ketua' => $ketua,
             'pembimbing' => $pembimbing,
             'reviewer1' => $reviewer1,
             'reviewer2' => $reviewer2,
-
-          ],
+            'anggota' => $anggota
+        ],
         ]);
       } else {
         return response()->json([

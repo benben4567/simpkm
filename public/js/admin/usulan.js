@@ -202,7 +202,7 @@ $(function () {
         $.LoadingOverlay("show")
       },
       success: function (response) {
-        // console.log(response)
+        console.log(response)
         $.LoadingOverlay("hide")
         if (response.success) {
           var data = response.data
@@ -213,9 +213,11 @@ $(function () {
           $("#ketua").html(data.ketua.nama);
           $("#reviewer1").html(data.reviewer1 ? data.reviewer1.nama : '-');
           $("#reviewer2").html(data.reviewer2 ? data.reviewer2.nama : '-');
-          $.each(anggota, function(key, value) {
-            $("#anggota ul").append('<li>'+ value.nama +'</li>');
-          })
+          if (anggota.length > 0) {
+            $.each(anggota, function(key, value) {
+              $("#anggota ul").append('<li>'+ value.nama +'</li>');
+            })
+          }
         }
       },
       error: function(xhr) {
