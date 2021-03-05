@@ -75,7 +75,7 @@
                               <td><div class="badge {{ $student->user->status == 'aktif' ? 'badge-success' : 'badge-danger' }}">{{ strtoupper($student->user->status) }}</div></td>
                               <td>
                                 <button type="button" class="btn btn-sm btn-primary student-edit" data-id="{{ $student->user->id }}"><i class="fas fa-eye"></i></button>
-                                <button type="button" class="btn btn-sm btn-warning" data-id="{{ $student->user->id }}" data-toggle="modal" data-target="#mahasiswaSimModal"><i class="fas fa-key"></i></button>
+                                <button type="button" class="btn btn-sm btn-warning student-sim" data-id="{{ $student->user->id }}" data-toggle="modal" data-target="#mahasiswaSimModal"><i class="fas fa-key"></i></button>
                               </td>
                             </tr>
                             @endforeach
@@ -307,22 +307,23 @@
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
-          <div class="modal-body">
-            <form action="" method="post" autocomplete="off">
+          <form action="" method="post" autocomplete="off" id="form-update-sim">
+            <div class="modal-body">
+              <input type="hidden" name="id">
               <div class="form-group">
                 <label for="">Username</label>
-                <input type="text" class="form-control" name="username_sim">
+                <input type="text" class="form-control" name="username_sim" required>
               </div>
               <div class="form-group">
                 <label for="">Password</label>
-                <input type="password" class="form-control" name="password_sim">
+                <input type="text" class="form-control" name="password_sim" required>
               </div>
-            </form>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-primary">Simpan</button>
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
-          </div>
+            </div>
+            <div class="modal-footer">
+              <button type="submit" class="btn btn-primary">Simpan</button>
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+            </div>
+          </form>
         </div>
       </div>
     </div>

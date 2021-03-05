@@ -258,6 +258,36 @@ class UserController extends Controller
 
     }
 
+    public function showSim($id)
+    {
+      $user = User::whereId($id)->first();
+      $student = DB::table('students')->select('username_sim', 'password_sim')->where('user_id', $user->id)->first();
+      if ($user) {
+        return response()->json([
+          'success' => true,
+          'data' => $student
+        ], 200);
+      } else {
+        return response()->json([
+          'success' => false,
+          'msg' => 'Data tidak ditemukan'
+        ], 404);
+      }
+    }
+
+    public function updateSim(Request $request)
+    {
+      $user = User::findOrFail($request->input('id'));
+      $user->student->username_sim = $request->input('username_sim');
+      $user->student->password_sim = $request->input('password_sim');
+      $user->student->save();
+
+      return response()->json([
+        'success' => true,
+        'msg' => 'Data berhasil diupdate'
+      ], 200);
+    }
+
 
 
 

@@ -52,6 +52,10 @@ $(document).ready(function () {
     $("#form-admin-edit").trigger("reset");
   })
 
+  $('#mahasiswaSimModal').on('hidden.bs.modal', function (e) {
+    $("#form-update-sim").trigger("reset");
+  })
+
   $('#adminModal').on('show.bs.modal', function (e) {
     $("#form-admin").trigger("reset");
   })
@@ -259,6 +263,76 @@ $(document).ready(function () {
           default:
             break;
         }
+      }
+    });
+  });
+
+  $("#form-update-sim").submit(function (e) {
+    e.preventDefault();
+    $.ajax({
+      type: "put",
+      url: "user/sim",
+      data: $(this).serialize(),
+      dataType: "JSON",
+      beforeSend: function() {
+        $.LoadingOverlay("show")
+      },
+      success: function (response) {
+        $.LoadingOverlay("hide")
+        $('#mahasiswaSimModal').modal("hide")
+        Swal.fire({
+          position: 'center',
+          icon: 'success',
+          title: response.msg,
+          showConfirmButton: false,
+          timer: 1500
+        })
+      },
+      error: function(xhr) {
+        $.LoadingOverlay('hide')
+        switch (xhr.status) {
+          case 422:
+            let errors = xhr.responseJSON.errors
+            Swal.fire(
+              'Error!',
+              xhr.responseJSON.message,
+              'error'
+            )
+            break;
+
+          default:
+            break;
+        }
+      }
+    });
+  });
+
+  $('.table tbody').on( 'click', 'button.student-sim', function () {
+    var id = $(this).data('id');
+    $.ajax({
+      type: "get",
+      url: `user/sim/${id}`,
+      data: null,
+      dataType: "JSON",
+      beforeSend: function() {
+        $.LoadingOverlay("show")
+      },
+      success: function (response) {
+        $.LoadingOverlay("hide")
+        if (response.success) {
+          $('input[name="id"]').val(id);
+          $('input[name="username_sim"]').val(response.data.username_sim);
+          $('input[name="password_sim"]').val(response.data.password_sim);
+          $('#mahasiswaSimModal').modal("show")
+        }
+      },
+      error: function(xhr) {
+        $.LoadingOverlay('hide')
+        Swal.fire(
+          'Error!',
+          xhr.responseJSON.message,
+          'error'
+        )
       }
     });
   });
