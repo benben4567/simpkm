@@ -113,7 +113,11 @@
                   <h4 class="card-title">Akun SIM Belmawa</h4>
                 </div>
                 <div class="card-body">
-                  <p class="text-center"><a href="https://simbelmawa.kemdikbud.go.id/Login.aspx" target="_blank">https://simbelmawa.kemdikbud.go.id/Login.aspx</a></p>
+                  <p class="text-center">
+                    <a href="https://simbelmawa.kemdikbud.go.id/Login.aspx" target="_blank">https://simbelmawa.kemdikbud.go.id/Login.aspx</a>
+                    <br>
+                    <a name="" id="" class="btn btn-sm btn-danger" href="https://drive.google.com/file/d/1WpdOFAGbSuowQKzWI9joLh8XAJB4Rnwi/view" role="button" target="_blank"><i class="fas fa-file-pdf"></i> Panduan</a>
+                  </p>
                   <dl class="row">
                     <dt class="col-sm-3">Username</dt>
                     <dd class="col-sm-9">{{ $student->username_sim ?? "-" }}</dd>
