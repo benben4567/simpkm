@@ -38,9 +38,11 @@
             <div class="d-sm-none d-lg-inline-block">Hi, {{ first_name(Auth::user()->name) }}</div></a>
             <div class="dropdown-menu dropdown-menu-right">
               <div class="dropdown-title">Menu</div>
-              <a href="#" class="dropdown-item has-icon">
-                <i class="far fa-user"></i> Profile
-              </a>
+              @if(Auth::user()->role != 'admin')
+                <a href="{{ Auth::user()->role . "/profile"}}" class="dropdown-item has-icon">
+                  <i class="far fa-user"></i> Profile
+                </a>
+              @endif
               <div class="dropdown-divider"></div>
               <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="dropdown-item has-icon text-danger">
                 <i class="fas fa-sign-out-alt"></i> Logout
