@@ -263,10 +263,19 @@ class UserController extends Controller
       $user = User::whereId($id)->first();
       $student = DB::table('students')->select('username_sim', 'password_sim')->where('user_id', $user->id)->first();
       if ($user) {
-        return response()->json([
-          'success' => true,
-          'data' => $student
-        ], 200);
+        if ($student->username_sim) {
+          return response()->json([
+            'success' => true,
+            'data' => $student
+          ], 200);
+        } else {
+          return response()->json([
+            'success' => true,
+            'data' => [
+              'username_sim' => '072026'.$user->student->nim
+            ]
+          ], 200);
+        }
       } else {
         return response()->json([
           'success' => false,
