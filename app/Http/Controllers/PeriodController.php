@@ -79,17 +79,25 @@ class PeriodController extends Controller
     public function update(Request $request)
     {
       if ($request->input('status') == 'buka') {
-        $count = Period::where('status', '=', 'buka')->count();
-        if ($count == 0) {
+        $count_period = Period::count();
+        $count_open = Period::where('status', '=', 'buka')->count();
+        if ($count_period <=1) {
           $period = Period::whereId($request->input('id'))->update([
             'status' => $request->input('status'),
             'pendaftaran' => $request->input('pendaftaran')
           ]);
         } else {
-          return response()->json([
-            'success' => false,
-            'msg' => 'Tidak bisa membuka periode. Ada periode yang belum ditutup.'
-          ]);
+          if ($count_open == 0) {
+            $period = Period::whereId($request->input('id'))->update([
+              'status' => $request->input('status'),
+              'pendaftaran' => $request->input('pendaftaran')
+            ]);
+          } else {
+            return response()->json([
+              'success' => false,
+              'msg' => 'Tidak bisa membuka periode. Ada periode yang belum ditutup.'
+            ]);
+          }
         }
       } else {
         $period = Period::whereId($request->input('id'))->update([
