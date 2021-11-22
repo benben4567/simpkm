@@ -107,9 +107,9 @@
                                 @else
                                   @if($proposal->pivot->jabatan == "Ketua")
                                     <a class="btn btn-sm btn-warning" data-toggle="tooltip" data-placement="bottom" title="Edit" href="{{ route('proposal.edit', ["id" => $proposal->id]) }}" role="button"><i class="fas fa-pencil-alt"></i></a>
-                                    <a class="btn btn-sm btn-primary" data-toggle="tooltip" data-placement="bottom" title="Anggota" href="{{ route('proposal.member', ["id" => $proposal->id]) }}" role="button"><i class="fas fa-users"></i></a>
+                                    <a class="btn btn-sm btn-primary mx-1" data-toggle="tooltip" data-placement="bottom" title="Anggota" href="{{ route('proposal.member', ["id" => $proposal->id]) }}" role="button"><i class="fas fa-users"></i></a>
                                   @endif
-                                  <button type="button" class="btn btn-sm btn-success btn-download" data-toggle="tooltip" data-placement="bottom" title="Download" data-proposal="{{ $proposal->id }}" {{ $proposal->status == 'kompilasi' ? 'disabled' : ''}} ><i class="fas fa-download"></i></button>
+                                  <button type="button" class="btn btn-sm {{ $proposal->status == 'kompilasi' ? 'btn-secondary' : 'btn-success'}} btn-download" data-toggle="tooltip" data-placement="bottom" title="Download" data-proposal="{{ $proposal->id }}" {{ $proposal->status == 'kompilasi' ? 'disabled' : ''}}><i class="fas fa-download"></i></button>
                                 @endif
                               </div>
                             </td>
