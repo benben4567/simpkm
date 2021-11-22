@@ -47,6 +47,12 @@ Route::group(['middleware' => ['admin'], 'prefix' => 'admin'], function () {
   Route::get('/user/sim/{id}', ['as' => 'user.getsim', 'uses' => 'UserController@showSim']);
   Route::put('/user/sim', ['as' => 'user.sim', 'uses' => 'UserController@updateSim']);
 
+  // Major
+  Route::get('/major', ['as' => 'major.index', 'uses' => 'MajorController@index']);
+  Route::post('/major/store', ['as' => 'major.store', 'uses' => 'MajorController@store']);
+  Route::get('/major/show/{id}', ['as' => 'major.show', 'uses' => 'MajorController@show']);
+  Route::put('/major/update', ['as' => 'major.update', 'uses' => 'MajorController@update']);
+
   // Rekapitulasi
   Route::get('/recap', ['as' => 'recap.index', 'uses' => 'RecapController@index']);
   Route::post('/recap/download', ['as' => 'recap.download', 'uses' => 'RecapController@download']);
