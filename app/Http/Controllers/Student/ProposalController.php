@@ -252,7 +252,7 @@ class ProposalController extends Controller
       }
 
       $rand = uniqid();
-      $nama_file = 'BA_'.$rand.'.doc';
+      $nama_file = 'BA_'.$skema.'_'.$rand.'.doc';
 
       return \WordTemplate::export($file, $data, $nama_file);
     }
