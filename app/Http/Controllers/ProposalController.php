@@ -112,6 +112,37 @@ class ProposalController extends Controller
 
   }
 
+  public function nilai(Request $request)
+  {
+    $this->validate($request, [
+      'id-proposal' => 'required',
+      'nilai1' => 'required|numeric',
+      'nilai2' => 'required|numeric',
+    ]);
+
+    $proposal = Proposal::where('id', $request->input('id-proposal'));
+    $tahun = $proposal->first()->period->tahun;
+    $update = $proposal->update(['nilai1' => $request->input('nilai1'), 'nilai2' => $request->input('nilai2')]);
+
+    if($update) {
+      $proposals = DB::table('periods')
+                      ->join('proposals', 'periods.id', '=', 'proposals.period_id')
+                      ->select('periods.id as period_id', 'periods.tahun', 'proposals.id', 'proposals.skema', 'proposals.judul', 'proposals.status', 'proposals.nilai1', 'proposals.nilai2')
+                      ->where('periods.tahun', '=', $tahun)
+                      ->get();
+
+      return response()->json([
+        'success' => true,
+        'data' => $proposals
+      ], 201);
+    } else {
+      return response()->json([
+        'success' => false,
+        'data' => null
+      ], 500);
+    }
+  }
+
   public function print($tahun)
   {
     $proposals = DB::table('periods')
