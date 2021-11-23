@@ -19,6 +19,8 @@ class CreateProposalsTable extends Migration
             $table->string('skema')->nullable();
             $table->text('judul')->nullable();
             $table->string('status')->nullable();
+            $table->integer('nilai1')->default(0)->nullable();
+            $table->integer('nilai2')->default(0)->nullable();
             $table->string('file')->nullable();
             $table->timestamps();
         });
