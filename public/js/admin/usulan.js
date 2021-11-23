@@ -16,12 +16,13 @@ $(function () {
       ]
   })
 
-  $('#tahun').on('change', function() {
-    var tahun = $(this).val();
+  $('#tahun, #skema').on('change', function() {
+    var tahun = $("#tahun").val();
+    var skema = $('#skema').val();
     $.ajax({
       type: "get",
       url: "/admin/usulan",
-      data: {tahun: tahun},
+      data: {tahun: tahun, skema: skema},
       beforeSend: function () {
         $.LoadingOverlay('show');
       },
