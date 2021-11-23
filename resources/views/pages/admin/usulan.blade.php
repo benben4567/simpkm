@@ -12,13 +12,31 @@
           <div class="card">
             <div class="card-body p-2">
               <div class="mb-2">
-                <div class="form-group">
-                  <select class="form-control selectric" name="tahun" id="tahun">
-                    <option selected disabled>Pilih Tahun</option>
-                    @foreach($periods as $period)
-                      <option value="{{ $period->tahun }}" {{ $loop->first ? 'selected' : '' }}>{{ $period->tahun }}</option>
-                    @endforeach
-                  </select>
+                <div class="row">
+                  <div class="col">
+                    <div class="form-group">
+                      <select class="form-control selectric" name="tahun" id="tahun">
+                        <option selected disabled>Pilih Tahun</option>
+                        @foreach($periods as $period)
+                          <option value="{{ $period->tahun }}" {{ $loop->first ? 'selected' : '' }}>{{ $period->tahun }}</option>
+                        @endforeach
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col">
+                    <div class="form-group">
+                      <select class="form-control selectric" name="skema" id="skema">
+                        <option value="" selected>Semua Skema</option>
+                        <option value="PKM-R">PKM-R</option>
+                        <option value="PKM-PM">PKM-PM</option>
+                        <option value="PKM-K">PKM-K</option>
+                        <option value="PKM-PI">PKM-PI</option>
+                        <option value="PKM-KC">PKM-KC</option>
+                        <option value="PKM-GT">PKM-GT</option>
+                        <option value="PKM-AI">PKM-AI</option>
+                      </select>
+                    </div>
+                  </div>
                 </div>
               </div>
               <div class="mb-3">

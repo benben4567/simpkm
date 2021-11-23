@@ -14,18 +14,20 @@ class ProposalController extends Controller
   public function index(Request $request)
   {
     if ($request->ajax()) {
-      if ($request->input('tahun')) {
-        $proposals = DB::table('periods')
-                    ->join('proposals', 'periods.id', '=', 'proposals.period_id')
-                    ->select('periods.id as period_id', 'periods.tahun', 'proposals.id', 'proposals.skema', 'proposals.judul', 'proposals.status')
-                    ->where('periods.tahun', '=', $request->input('tahun'))
-                    ->get();
+      $skema = $request->input('skema');
+      $proposals = DB::table('periods')
+                  ->join('proposals', 'periods.id', '=', 'proposals.period_id')
+                  ->select('periods.id as period_id', 'periods.tahun', 'proposals.id', 'proposals.skema', 'proposals.judul', 'proposals.status')
+                  ->where('periods.tahun', '=', $request->input('tahun'))
+                  ->when($skema, function($q) use ($skema) {
+                    return $q->where('skema', '=', $skema);
+                  })
+                  ->get();
 
-        return response()->json([
-          'success' => true,
-          'data' => $proposals
-        ], 200);
-      }
+      return response()->json([
+        'success' => true,
+        'data' => $proposals
+      ], 200);
     }
 
     $periods = Period::orderBy('tahun', 'DESC')->get();
