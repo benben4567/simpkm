@@ -16,7 +16,7 @@ $(document).ready(function () {
   })
 
   var table2 = $("#table-student").DataTable({
-    dom: "Bftip",
+    dom: "Bfrtip",
     ordering: false,
     buttons: [
       {
@@ -36,17 +36,35 @@ $(document).ready(function () {
     ]
   })
 
-  // biar button ngga gandeng
-  $('.btn-import').parent('.dt-buttons').removeClass('btn-group');
+
 
   var table3 = $("#table-teacher").DataTable({
-    dom: "tip",
+    dom: "Bfrtip",
     ordering: false,
     columnDefs: [
       { "width": "10%", "target" : 0},
       { "width": "40%", "target" : 1},
     ],
+    buttons: [
+      {
+          text: '<i class="fas fa-plus"></i> Baru',
+          className: 'btn btn-sm btn-primary btn-baru',
+          action: function ( e, dt, node, config ) {
+            location.href = 'user/create/student'
+          }
+      },
+      {
+        text: '<i class="fas fa-file-excel"></i> Import',
+        className: 'btn btn-sm btn-success btn-import',
+        action: function ( e, dt, node, config ) {
+          $('#modalImport').modal('show')
+        }
+      }
+    ]
   })
+
+    // biar button ngga gandeng
+  $('.btn-import').parent('.dt-buttons').removeClass('btn-group');
 
   $('#adminModalEdit').on('hidden.bs.modal', function (e) {
     $("#form-admin-edit").trigger("reset");
