@@ -22,6 +22,7 @@ class MajorSeeder extends Seeder
         ['degree' => 'S1', 'name' => 'Fisioterapi'],
         ['degree' => 'S1', 'name' => 'Farmasi'],
         ['degree' => 'S1', 'name' => 'Informatika'],
+        ['degree' => 'S1', 'name' => 'Keperawatan'],
       ];
 
       foreach ($majors as $major) {
