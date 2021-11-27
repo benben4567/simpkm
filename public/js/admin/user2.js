@@ -5,65 +5,220 @@ $(document).ready(function () {
       }
   });
 
+  $(".datepicker").datepicker({
+    format: "yyyy-mm-dd"
+  })
+
   $('input[type="file"]').change(function(e){
     var fileName = e.target.files[0].name;
     $('.custom-file-label').html(fileName);
   });
 
   var table1 = $("#table-admin").DataTable({
+    ajax: "/admin/user?role=admin",
     dom: "tip",
+    responsive: true,
     ordering: false,
-  })
-
-  var table2 = $("#table-student").DataTable({
-    dom: "Bfrtip",
-    ordering: false,
-    buttons: [
+    "columnDefs": [
       {
-          text: '<i class="fas fa-plus"></i> Baru',
-          className: 'btn btn-sm btn-primary btn-baru',
-          action: function ( e, dt, node, config ) {
-            location.href = 'user/create/student'
-          }
+        "targets": 0,
+        "data": null,
+        "className": "text-center text-nowrap",
+        "render": function (data, type, row, meta) {
+          return meta.row + meta.settings._iDisplayStart + 1;
+        }
       },
       {
-        text: '<i class="fas fa-file-excel"></i> Import',
-        className: 'btn btn-sm btn-success btn-import',
-        action: function ( e, dt, node, config ) {
-          $('#modalImport').modal('show')
+        "targets": 1,
+        "data": 'name',
+        "className": "text-center text-nowrap",
+        "render": function (data, type, row, meta) {
+          return data;
         }
-      }
+      },
+      {
+        "targets":2,
+        "data": 'email',
+        "className": "text-center text-nowrap",
+        "render": function (data, type, row, meta) {
+          return row.email
+        }
+      },
+      {
+        "targets" : 3,
+        "data" : 'status',
+        "className": "text-center text-nowrap",
+        "render": function (data, type, row, meta) {
+          if (data == "aktif") {
+            return `<span class="badge badge-success">AKTIF</span>`;
+          } else {
+            return `<span class="badge badge-danger">NONAKTIF</span>`;
+          }
+        }
+      },
+      {
+        "targets": 4,
+        "data": 'id',
+        "className": "text-center text-nowrap",
+        "render": function ( data, type, row, meta ) {
+          return `<button type="button" class="btn btn-sm btn-icon btn-primary admin-edit" data-id="${data}"><i class="fas fa-eye"></i></button>`
+        }
+      },
     ]
   })
 
-
-
-  var table3 = $("#table-teacher").DataTable({
+  var table2 = $("#table-student").DataTable({
+    ajax: "/admin/user?role=student",
     dom: "Bfrtip",
     ordering: false,
+    responsive: true,
+    autoWidth: false,
     columnDefs: [
-      { "width": "10%", "target" : 0},
-      { "width": "40%", "target" : 1},
+      {
+        "targets": 0,
+        "data": null,
+        "className": "text-center text-nowrap",
+        "render": function (data, type, row, meta) {
+          return meta.row + meta.settings._iDisplayStart + 1;
+        }
+      },
+      {
+        "targets": 1,
+        "data": 'student.nama',
+        "className": "text-center text-nowrap",
+        "render": function (data, type, row, meta) {
+          return data;
+        }
+      },
+      {
+        "targets": 2,
+        "data": 'student.nim',
+        "className": "text-center text-nowrap",
+        "render": function (data, type, row, meta) {
+          return data;
+        }
+      },
+      {
+        "targets":3,
+        "data": 'email',
+        "className": "text-center text-nowrap",
+        "render": function (data, type, row, meta) {
+          return data
+        }
+      },
+      {
+        "targets" : 4,
+        "data" : 'status',
+        "className": "text-center text-nowrap",
+        "render": function (data, type, row, meta) {
+          if (data == "aktif") {
+            return `<span class="badge badge-success">AKTIF</span>`;
+          } else {
+            return `<span class="badge badge-danger">NONAKTIF</span>`;
+          }
+        }
+      },
+      {
+        "targets": 5,
+        "data": 'id',
+        "className": "text-center text-nowrap",
+        "render": function ( data, type, row, meta ) {
+          return `<button type="button" class="btn btn-sm btn-icon btn-primary student-edit" data-id="${data}"><i class="fas fa-eye"></i></button><button type="button" class="btn btn-sm btn-warning ml-1" data-id="${data}" data-toggle="modal" data-target="#mahasiswaSimModal"><i class="fas fa-key"></i></button>`
+        }
+      },
+    ],
+      buttons: [
+        {
+            text: '<i class="fas fa-plus"></i> Baru',
+            className: 'btn btn-sm btn-primary btn-baru',
+            action: function ( e, dt, node, config ) {
+              location.href = 'user/create/student'
+            }
+        },
+        {
+          text: '<i class="fas fa-file-excel"></i> Import',
+          className: 'btn btn-sm btn-success btn-import',
+          action: function ( e, dt, node, config ) {
+            $('#modalImportStudent').modal('show')
+          }
+        }
+      ],
+  })
+
+  var table3 = $("#table-teacher").DataTable({
+    ajax: "/admin/user?role=teacher",
+    dom: "Bfrtip",
+    ordering: false,
+    responsive: true,
+    autoWidth: false,
+    columnDefs: [
+      { "className": "text-center text-nowrap", "targets": "_all" },
+      {
+        "targets": 0,
+        "width": "10%",
+        "className": "text-center text-nowrap",
+        "data": null,
+        "render": function (data, type, row, meta) {
+          return meta.row + meta.settings._iDisplayStart + 1;
+        }
+      },
+      {
+        "targets": 1,
+        "className": "text-center text-nowrap",
+        "data": 'name',
+        "render": function (data, type, row, meta) {
+          return data;
+        }
+      },
+      {
+        "targets":2,
+        "className": "text-center text-nowrap",
+        "width": "40%",
+        "data": 'email',
+        "render": function (data, type, row, meta) {
+          return data;
+        }
+      },
+      {
+        "targets" : 3,
+        "className": "text-center text-nowrap",
+        "data" : 'status',
+        "render": function (data, type, row, meta) {
+          if (data == "aktif") {
+            return `<span class="badge badge-success">AKTIF</span>`;
+          } else {
+            return `<span class="badge badge-danger">NONAKTIF</span>`;
+          }
+        }
+      },
+      {
+        "targets": 4,
+        "className": "text-center text-nowrap",
+        "data": 'id',
+        "render": function ( data, type, row, meta ) {
+          return `<button type="button" class="btn btn-sm btn-icon btn-primary teacher-edit" data-id="${data}"><i class="fas fa-eye"></i></button>`
+        }
+      },
     ],
     buttons: [
       {
           text: '<i class="fas fa-plus"></i> Baru',
           className: 'btn btn-sm btn-primary btn-baru',
           action: function ( e, dt, node, config ) {
-            location.href = 'user/create/student'
+            location.href = 'user/create/teacher'
           }
       },
       {
         text: '<i class="fas fa-file-excel"></i> Import',
         className: 'btn btn-sm btn-success btn-import',
         action: function ( e, dt, node, config ) {
-          $('#modalImport').modal('show')
+          $('#modalImportTeacher').modal('show')
         }
       }
     ]
   })
 
-    // biar button ngga gandeng
+  // biar button ngga gandeng
   $('.btn-import').parent('.dt-buttons').removeClass('btn-group');
 
   $('#adminModalEdit').on('hidden.bs.modal', function (e) {
@@ -98,7 +253,8 @@ $(document).ready(function () {
         $('.custom-file-label').html("Choose file");
         $.LoadingOverlay("hide")
         if (response.success) {
-          populateTableTeacher(response.data)
+          table3.ajax.reload();
+          table2.ajax.reload();
           Swal.fire(
             "Berhasil!",
             response.msg,
@@ -152,7 +308,7 @@ $(document).ready(function () {
         $('#adminModal').modal("hide")
         $.LoadingOverlay("hide")
         if (response.success) {
-          populateTableAdmin(response.data)
+          table1.ajax.reload();
           Swal.fire(
             "Berhasil!",
             'User admin sudah disimpan.',
@@ -201,7 +357,7 @@ $(document).ready(function () {
         $('#adminModalEdit').modal("hide")
         $.LoadingOverlay("hide")
         if (response.success) {
-          populateTableAdmin(response.data)
+          table1.ajax.reload()
           Swal.fire(
             "Berhasil!",
             'Perubahan user sudah disimpan.',
@@ -251,7 +407,57 @@ $(document).ready(function () {
         $('#studentModalEdit').modal("hide")
         $.LoadingOverlay("hide")
         if (response.success) {
-          populateTableStudent(response.data)
+          table2.ajax.reload()
+          Swal.fire(
+            "Berhasil!",
+            'Perubahan user sudah disimpan.',
+            'success'
+          )
+        }
+      },
+      error: function(xhr) {
+        $.LoadingOverlay('hide')
+        switch (xhr.status) {
+          case 422:
+            let errors = xhr.responseJSON.errors
+            Swal.fire(
+              'Error!',
+              xhr.responseJSON.message,
+              'error'
+            )
+
+            $.each(errors, function(key, value) {
+              $("input[name="+ key +"]").addClass("is-invalid")
+              $.each(errors[key], function(ke, val) {
+                $('<li>'+val+"</li>").appendTo($("div[name=msg_"+ key +"_edit]").find('ul'));
+              })
+            })
+            break;
+
+          default:
+            break;
+        }
+      }
+    });
+  });
+
+  $("#form-teacher-edit").submit(function (e) {
+    e.preventDefault();
+    $.ajax({
+      type: "PUT",
+      url: "user/update/teacher",
+      data: $(this).serialize(),
+      beforeSend: function() {
+        $.LoadingOverlay("show")
+        $("*").removeClass('is-invalid')
+        $("div.invalid-feedback").find('ul').empty();
+      },
+      success: function (response) {
+        console.log(response)
+        $('#teacherModalEdit').modal("hide")
+        $.LoadingOverlay("hide")
+        if (response.success) {
+          table3.ajax.reload()
           Swal.fire(
             "Berhasil!",
             'Perubahan user sudah disimpan.',
@@ -359,7 +565,7 @@ $(document).ready(function () {
     var id = $(this).data('id');
     $.ajax({
       type: "get",
-      url: "/admin/user/show/"+id,
+      url: "/admin/user/show/admin/"+id,
       data: '',
       beforeSend: function() {
         $.LoadingOverlay('show')
@@ -368,10 +574,10 @@ $(document).ready(function () {
         $.LoadingOverlay('hide')
         if (response.data) {
           var data = response.data;
-          $("input[name='id']").val(data['id']);
-          $("input[name='name']").val(data['name']);
-          $("input[name='email']").val(data['email']);
-          $("select[name='status']").val(data['status']).change().selectric('refresh');
+          $("input[name='id']").val(data.id);
+          $("input[name='name']").val(data.name);
+          $("input[name='email']").val(data.email);
+          $("select[name='status']").val(data.status).change().selectric('refresh');
           $("#adminModalEdit").modal("show");
         }
       },
@@ -386,7 +592,7 @@ $(document).ready(function () {
     var id = $(this).data('id');
     $.ajax({
       type: "get",
-      url: "/admin/user/show/"+id,
+      url: "/admin/user/show/student/"+id,
       data: '',
       beforeSend: function() {
         $.LoadingOverlay('show')
@@ -395,10 +601,16 @@ $(document).ready(function () {
         $.LoadingOverlay('hide')
         if (response.data) {
           var data = response.data;
-          $("input[name='id']").val(data['id']);
-          $("input[name='name']").val(data['name']);
-          $("input[name='email']").val(data['email']);
-          $("select[name='status']").val(data['status']).change().selectric('refresh')
+          $("input[name='id']").val(data.id);
+          $("input[name='name']").val(data.student.nama);
+          $("input[name='nim']").val(data.student.nim);
+          $("input[name='tempat']").val(data.student.tempat_lahir);
+          $("input[name='tgl']").val(data.student.tgl_lahir);
+          $("input[name='email']").val(data.email);
+          $("input[name='no_hp']").val(data.student.no_hp);
+          $("select[name='jk']").val(data.student.jk).change().selectric('refresh')
+          $("select[name='status']").val(data.status).change().selectric('refresh')
+          $("select[name='major']").val(data.student.major_id).change().selectric('refresh')
           $("#studentModalEdit").modal("show");
         }
       },
@@ -409,176 +621,37 @@ $(document).ready(function () {
     });
   });
 
-  function populateTableAdmin(data) {
-    // destroy datatable
-    $('#table-admin').DataTable().clear().destroy();
-    // re-initiate filled datatable
-    window.table = $('#table-admin').DataTable({
-      stateSave: true,
-      dom: "tip",
-      data: data,
-      responsive: true,
-      ordering: false,
-      "columnDefs": [
-        { "className": "text-center text-nowrap", "targets": "_all" },
-        {
-          "targets": 0,
-          "data": null,
-          "render": function (data, type, row, meta) {
-            return meta.row + meta.settings._iDisplayStart + 1;
-          }
-        },
-        {
-          "targets": 1,
-          "data": null,
-          "render": function (data, type, row, meta) {
-            return row.name;
-          }
-        },
-        {
-          "targets":2,
-          "data": null,
-          "render": function (data, type, row, meta) {
-            return row.email
-          }
-        },
-        {
-          "targets" : 3,
-          "data" : null,
-          "render": function (data, type, row, meta) {
-            if (row.status == "aktif") {
-              return `<span class="badge badge-success">AKTIF</span>`;
-            } else {
-              return `<span class="badge badge-danger">NONAKTIF</span>`;
-            }
-          }
-        },
-        {
-          "targets": 4,
-          "data": null,
-          "render": function ( data, type, row, meta ) {
-            return `<button type="button" class="btn btn-sm btn-icon btn-primary admin-edit" data-id="${row.id}"><i class="fas fa-eye"></i></button>`
-          }
-        },
-      ]
+  $('.table tbody').on( 'click', 'button.teacher-edit', function () {
+    var id = $(this).data('id');
+    $.ajax({
+      type: "get",
+      url: "/admin/user/show/teacher/"+id,
+      data: '',
+      beforeSend: function() {
+        $.LoadingOverlay('show')
+      },
+      success: function (response) {
+        $.LoadingOverlay('hide')
+        if (response.data) {
+          var data = response.data;
+          $("input[name='id']").val(data.id);
+          $("input[name='name']").val(data.teacher.nama);
+          $("input[name='email']").val(data.email);
+          $("select[name='status']").val(data.status).change().selectric('refresh')
+          $("input[name='nidn']").val(data.teacher.nidn);
+          $("input[name='tempat']").val(data.teacher.tempat_lahir);
+          $("input[name='tgl']").val(data.teacher.tgl_lahir);
+          $("input[name='no_hp']").val(data.teacher.no_hp);
+          $("select[name='jk']").val(data.teacher.jk).change().selectric('refresh')
+          $("select[name='major']").val(data.teacher.major_id).change().selectric('refresh')
+          $("#teacherModalEdit").modal("show");
+        }
+      },
+      error: function(xhr, ajaxOptions, thrownError) {
+        $.LoadingOverlay('hide')
+        console.log(xhr.responseText)
+      }
     });
-  }
-
-  function populateTableStudent(data) {
-    // destroy datatable
-    $('#table-student').DataTable().clear().destroy();
-    // re-initiate filled datatable
-    window.table = $('#table-student').DataTable({
-      stateSave: true,
-      dom: "tip",
-      data: data,
-      responsive: true,
-      ordering: false,
-      "columnDefs": [
-        { "className": "text-center text-nowrap", "targets": "_all" },
-        {
-          "targets": 0,
-          "data": null,
-          "render": function (data, type, row, meta) {
-            return meta.row + meta.settings._iDisplayStart + 1;
-          }
-        },
-        {
-          "targets": 1,
-          "data": null,
-          "render": function (data, type, row, meta) {
-            return row.nama;
-          }
-        },
-        {
-          "targets": 2,
-          "data": null,
-          "render": function (data, type, row, meta) {
-            return row.nim;
-          }
-        },
-        {
-          "targets":3,
-          "data": null,
-          "render": function (data, type, row, meta) {
-            return row.email
-          }
-        },
-        {
-          "targets" : 4,
-          "data" : null,
-          "render": function (data, type, row, meta) {
-            if (row.status == "aktif") {
-              return `<span class="badge badge-success">AKTIF</span>`;
-            } else {
-              return `<span class="badge badge-danger">NONAKTIF</span>`;
-            }
-          }
-        },
-        {
-          "targets": 5,
-          "data": null,
-          "render": function ( data, type, row, meta ) {
-            return `<button type="button" class="btn btn-sm btn-icon btn-primary student-edit" data-id="${row.id}"><i class="fas fa-eye"></i></button><button type="button" class="btn btn-sm btn-warning ml-1" data-id="${row.id}" data-toggle="modal" data-target="#mahasiswaSimModal"><i class="fas fa-key"></i></button>`
-          }
-        },
-      ]
-    });
-  }
-
-  function populateTableTeacher(data) {
-    // destroy datatable
-    $('#table-teacher').DataTable().clear().destroy();
-    // re-initiate filled datatable
-    window.table = $('#table-teacher').DataTable({
-      stateSave: true,
-      dom: "tip",
-      data: data,
-      responsive: true,
-      ordering: false,
-      "columnDefs": [
-        { "className": "text-center text-nowrap", "targets": "_all" },
-        {
-          "targets": 0,
-          "data": null,
-          "render": function (data, type, row, meta) {
-            return meta.row + meta.settings._iDisplayStart + 1;
-          }
-        },
-        {
-          "targets": 1,
-          "data": null,
-          "render": function (data, type, row, meta) {
-            return row.name;
-          }
-        },
-        {
-          "targets":2,
-          "data": null,
-          "render": function (data, type, row, meta) {
-            return row.email
-          }
-        },
-        {
-          "targets" : 3,
-          "data" : null,
-          "render": function (data, type, row, meta) {
-            if (row.status == "aktif") {
-              return `<span class="badge badge-success">AKTIF</span>`;
-            } else {
-              return `<span class="badge badge-danger">NONAKTIF</span>`;
-            }
-          }
-        },
-        {
-          "targets": 4,
-          "data": null,
-          "render": function ( data, type, row, meta ) {
-            return `<button type="button" class="btn btn-sm btn-icon btn-primary student-edit" data-id="${row.id}"><i class="fas fa-eye"></i></button>`
-          }
-        },
-      ]
-    });
-  }
+  });
 
 });
