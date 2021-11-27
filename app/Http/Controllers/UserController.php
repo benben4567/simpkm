@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\ResponseFormatter;
 use App\Major;
 use App\Teacher;
 use App\Student;
@@ -15,13 +16,29 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class UserController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-      $admins = User::whereRole('admin')->get();
-      // $students = User::with('student')->where('role', 'student')->get();
-      $students = Student::all();
-      $teachers = User::whereRole('teacher')->get();
-      return view('pages.admin.user', compact('admins', 'students', 'teachers'));
+      if ($request->ajax()) {
+        switch ($request->input('role')) {
+          case 'admin':
+            $admins = User::whereRole('admin')->get();
+            return ResponseFormatter::success($admins, 'Data ditemukan');
+            break;
+          case 'student':
+            $students = User::whereRole('student')->with('student')->get();
+            return ResponseFormatter::success($students, 'Data ditemukan');
+            break;
+          case 'teacher':
+            $teachers = User::whereRole('teacher')->get();
+            return ResponseFormatter::success($teachers, 'Data ditemukan');
+            break;
+          default:
+            break;
+        }
+      }
+
+      $majors = Major::all();
+      return view('pages.admin.user', compact('majors'));
     }
 
     public function create($role)
@@ -125,11 +142,23 @@ class UserController extends Controller
       ], 201);
     }
 
-    public function show(Request $request, $id)
+    public function show(Request $request, $role, $id)
     {
       // $user = DB::table('users')->where('id', '=', $request->input('id'))->first();
       // $user = DB::table('users')->where('id', '=', $id)->first();
-      $user = User::findOrFail($id);
+      switch ($role) {
+        case 'admin':
+          $user = User::whereId($id)->first();
+          break;
+        case 'student':
+          $user = User::whereId($id)->with('student')->first();
+          break;
+        case 'teacher':
+          $user = User::whereId($id)->with('teacher')->first();
+          break;
+        default:
+          break;
+      }
       if ($user) {
         if ($request->ajax()) {
           return response()->json([
@@ -154,20 +183,34 @@ class UserController extends Controller
 
     public function update(Request $request, $role)
     {
-      if ($role == 'admin' || $role == "student") {
-        $rules = [
-          'password' => 'nullable|min:8|confirmed',
-        ];
-      } else {
-        $rules = [
-          'password' => 'nullable|min:8|confirmed',
-          'major' => 'required',
-          'tempat' => 'required',
-          'tgl' => 'required|date_format:Y-m-d',
-          'jk' => 'required',
-          'no_hp' => 'required|digits_between:11,13'
-        ];
+      switch ($role) {
+        case 'admin':
+          $rules = [
+            'password' => 'nullable|min:8|confirmed',
+          ];
+          break;
+        case 'student':
+          $rules = [
+            'name' => 'required',
+            'major' => 'required',
+            'nim' => 'required',
+            'email' => 'required',
+            'password' => 'nullable|min:8|confirmed',
+          ];
+          break;
+        case 'teacher':
+          $rules = [
+            'name' => 'required',
+            'major' => 'required',
+            'nidn' => 'required',
+            'email' => 'required',
+            'password' => 'nullable|min:8|confirmed',
+          ];
+          break;
+        default:
+          break;
       }
+
       $this->validate($request, $rules);
 
       // update table user
@@ -181,17 +224,32 @@ class UserController extends Controller
       }
 
       // update table teacher
-      $data = [
-        'major_id' => $request->input('major'),
-        'nama' => $request->input('name'),
-        'tempat_lahir' => $request->input('tempat'),
-        'tgl_lahir' => $request->input('tgl'),
-        'no_hp' => $request->input('no_hp'),
-        'jk' => $request->input('jk')
-      ];
-
-      if ($role == 'teacher') {
-        $user->teacher()->update($data);
+      switch ($role) {
+        case 'teacher':
+          $data = [
+            'major_id' => $request->input('major'),
+            'nama' => $request->input('name'),
+            'tempat_lahir' => $request->input('tempat'),
+            'tgl_lahir' => $request->input('tgl'),
+            'no_hp' => $request->input('no_hp'),
+            'jk' => $request->input('jk')
+          ];
+          $user->teacher()->update($data);
+          break;
+        case 'student':
+          $data = [
+            'major_id' => $request->input('major'),
+            'nim' => $request->input('nim'),
+            'nama' => $request->input('name'),
+            'tempat_lahir' => $request->input('tempat'),
+            'tgl_lahir' => $request->input('tgl'),
+            'no_hp' => $request->input('no_hp'),
+            'jk' => $request->input('jk')
+          ];
+          $user->student()->update($data);
+          break;
+        default:
+          break;
       }
 
       // Send back response

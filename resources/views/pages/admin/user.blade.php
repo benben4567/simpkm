@@ -38,15 +38,6 @@
                             </tr>
                           </thead>
                           <tbody>
-                            @foreach($admins as $admin)
-                            <tr class="text-center">
-                              <td>{{ $loop->iteration }}</td>
-                              <td>{{ $admin->name }}</td>
-                              <td>{{ $admin->email }}</td>
-                              <td><div class="badge {{ $admin->status == 'aktif' ? 'badge-success' : 'badge-danger' }}">{{ strtoupper($admin->status) }}</div></td>
-                              <td><button type="button" class="btn btn-sm btn-icon btn-primary admin-edit" data-id="{{ $admin->id }}"><i class="fas fa-eye"></i></button></td>
-                            </tr>
-                            @endforeach
                           </tbody>
                         </table>
                       </div>
@@ -54,7 +45,7 @@
                     <!-- Mahasiswa -->
                     <div class="tab-pane fade" id="nav-mahasiswa" role="tabpanel" aria-labelledby="nav-mahasiswa-tab">
                       <div class="table-responsive">
-                        <table class="table table-striped table-md" id="table-student">
+                        <table class="table table-striped table-md" id="table-student" class="width: 100%;">
                           <thead>
                             <tr class=text-center>
                               <th>No</th>
@@ -66,19 +57,6 @@
                             </tr>
                           </thead>
                           <tbody>
-                            @foreach($students as $student)
-                            <tr class="text-center">
-                              <td>{{ $loop->iteration }}</td>
-                              <td>{{ $student->nama }}</td>
-                              <td>{{ $student->nim }}</td>
-                              <td>{{ $student->user->email }}</td>
-                              <td><div class="badge {{ $student->user->status == 'aktif' ? 'badge-success' : 'badge-danger' }}">{{ strtoupper($student->user->status) }}</div></td>
-                              <td>
-                                <button type="button" class="btn btn-sm btn-primary student-edit" data-id="{{ $student->user->id }}"><i class="fas fa-eye"></i></button>
-                                <button type="button" class="btn btn-sm btn-warning student-sim" data-id="{{ $student->user->id }}" data-toggle="modal" data-target="#mahasiswaSimModal"><i class="fas fa-key"></i></button>
-                              </td>
-                            </tr>
-                            @endforeach
                           </tbody>
                         </table>
                       </div>
@@ -97,18 +75,6 @@
                             </tr>
                           </thead>
                           <tbody>
-                            @foreach($teachers as $teacher)
-                            <tr class="text-center">
-                              <td>{{ $loop->iteration }}</td>
-                              <td>{{ $teacher->name }}</td>
-                              <td>{{ $teacher->email }}</td>
-                              <td><div class="badge {{ $teacher->status == 'aktif' ? 'badge-success' : 'badge-danger' }}">{{ strtoupper($teacher->status) }}</div></td>
-                              <td>
-                                {{-- <button type="button" class="btn btn-sm btn-primary" data-id="{{ $teacher->id }}"><i class="fas fa-eye"></i></button> --}}
-                                <a class="btn btn-sm btn-icon btn-primary" href="{{ route('user.show', ['id' => $teacher->id]) }}"><i class="fas fa-eye"></i></a>
-                              </td>
-                            </tr>
-                            @endforeach
                           </tbody>
                         </table>
                       </div>
@@ -215,7 +181,7 @@
 
     <!-- Student Edit-->
     <div class="modal fade" id="studentModalEdit" tabindex="-1" role="dialog">
-      <div class="modal-dialog" role="document">
+      <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title">Edit Mahasiswa</h5>
@@ -227,29 +193,208 @@
           <div class="modal-body">
               @csrf
               <input type="hidden" name="id" value="">
-              <div class="form-group">
-                <label for="">Nama</label>
-                <input type="text" class="form-control" name="name" disabled>
+              <div class="row">
+                <div class="col-lg-6 border-right">
+                  <div class="form-group">
+                    <label for="nama">Nama Lengkap</label>
+                    <input type="text" class="form-control" name="name"  id="nama">
+                    <div class="invalid-feedback" name="msg_name"><ul></ul></div>
+                  </div>
+                  <div class="row">
+                    <div class="col-lg-6">
+                      <div class="form-group">
+                        <label for="nim">NIM</label>
+                        <input type="text" class="form-control" name="nim" id="nim">
+                        <div class="invalid-feedback" name="msg_nim"><ul></ul></div>
+                      </div>
+                    </div>
+                    <div class="col-lg-6">
+                      <div class="form-group">
+                        <label for="prodi">Prodi</label>
+                        <select class="form-control form-control-sm selectric" name="major" id="prodi">
+                          <option selected disabled>- pilih -</option>
+                          @foreach($majors as $major)
+                          <option value="{{ $major->id }}">{{ $major->full_name }}</option>
+                          @endforeach
+                        </select>
+                        <div class="invalid-feedback" name="msg_major"><ul></ul></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-lg-6">
+                      <div class="form-group">
+                        <label for="">Tempat</label>
+                        <input type="text" class="form-control" name="tempat" id="tempat">
+                        <div class="invalid-feedback" name="msg_tempat"><ul></ul></div>
+                      </div>
+                    </div>
+                    <div class="col-lg-6">
+                      <div class="form-group">
+                        <label for="tgl_lahir">Tanggal Lahir</label>
+                        <input type="text" class="form-control datepicker" name="tgl" id="tgl">
+                        <div class="invalid-feedback" name="msg_tgl"><ul></ul></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-lg-6">
+                      <div class="form-group">
+                        <label for="jk">JK</label>
+                        <select class="form-control selectric" name="jk" id="jk">
+                          <option selected disabled>- pilih -</option>
+                          <option value="laki">Laki</option>
+                          <option value="perempuan">Perempuan</option>
+                        </select>
+                        <div class="invalid-feedback" name="msg_jk"><ul></ul></div>
+                      </div>
+                    </div>
+                    <div class="col-lg-6">
+                      <div class="form-group">
+                        <label for="no_hp">No. HP</label>
+                        <input type="text" class="form-control" name="no_hp" id="no_hp">
+                        <div class="invalid-feedback" name="msg_no_hp"><ul></ul></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-6">
+                  <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" class="form-control" name="email" id="email" required>
+                    <div class="invalid-feedback" name="msg_email"><ul></ul></div>
+                  </div>
+                  <div class="form-group">
+                    <label for="status">Status</label>
+                    <select class="form-control selectric" name="status" id="student-status" required>
+                      <option value="aktif">Aktif</option>
+                      <option value="nonaktif">Nonaktif</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="password">Password (opsional)</label>
+                    <input type="password" class="form-control" name="password" id="password">
+                    <div class="invalid-feedback" name="msg_password"><ul></ul></div>
+                  </div>
+                  <div class="form-group">
+                    <label for="password_confirmation">Ulangi Password (opsional)</label>
+                    <input type="password" class="form-control" name="password_confirmation" id="password_confirmation">
+                    <div class="invalid-feedback" name="msg_password"><ul></ul></div>
+                  </div>
+                </div>
               </div>
-              <div class="form-group">
-                <label for="">Email</label>
-                <input type="email" class="form-control" name="email" disabled>
-              </div>
-              <div class="form-group">
-                <label for="">Status</label>
-                <select class="form-control selectric" name="status" id="student-status">
-                  <option value="aktif">Aktif</option>
-                  <option value="nonaktif">Nonaktif</option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label for="">Password Baru (opsional)</label>
-                <input type="password" class="form-control" name="password" >
-                <div class="invalid-feedback" name="msg_password_edit"><ul></ul></div>
-              </div>
-              <div class="form-group">
-                <label for="">Ulangi Password (opsional)</label>
-                <input type="password" class="form-control" name="password_confirmation" >
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Simpan</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+          </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Teacher Edit-->
+    <div class="modal fade" id="teacherModalEdit" tabindex="-1" role="dialog">
+      <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Edit Dosen</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <form action="" method="post" autocomplete="off" id="form-teacher-edit">
+          <div class="modal-body">
+              @csrf
+              <input type="hidden" name="id" value="">
+              <div class="row">
+                <div class="col-lg-6 border-right">
+                  <div class="form-group">
+                    <label for="nama">Nama Lengkap</label>
+                    <input type="text" class="form-control" name="name" id="name" required>
+                    <div class="invalid-feedback" name="msg_name"><ul></ul></div>
+                  </div>
+                  <div class="row">
+                    <div class="col-lg-6">
+                      <div class="form-group">
+                        <label for="nidn">NIDN/NIDK</label>
+                        <input type="text" class="form-control" name="nidn" id="nidn" required>
+                        <div class="invalid-feedback" name="msg_nidn"><ul></ul></div>
+                      </div>
+                    </div>
+                    <div class="col-lg-6">
+                      <div class="form-group">
+                        <label for="prodi">Prodi</label>
+                        <select class="form-control form-control-sm selectric" name="major" id="prodi" required>
+                          <option selected disabled>- pilih -</option>
+                          @foreach($majors as $major)
+                          <option value="{{ $major->id }}">{{ $major->full_name }}</option>
+                          @endforeach
+                        </select>
+                        <div class="invalid-feedback" name="msg_major"><ul></ul></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-lg-6">
+                      <div class="form-group">
+                        <label for="">Tempat Lahir</label>
+                        <input type="text" class="form-control" name="tempat" id="tempat" required>
+                        <div class="invalid-feedback" name="msg_tempat"><ul></ul></div>
+                      </div>
+                    </div>
+                    <div class="col-lg-6">
+                      <div class="form-group">
+                        <label for="tgl_lahir">Tanggal Lahir</label>
+                        <input type="text" class="form-control datepicker" name="tgl" id="tgl" required>
+                        <div class="invalid-feedback" name="msg_tgl"><ul></ul></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-lg-6">
+                      <div class="form-group">
+                        <label for="jk">JK</label>
+                        <select class="form-control selectric" name="jk" id="jk" required>
+                          <option selected disabled>- pilih -</option>
+                          <option value="laki">Laki</option>
+                          <option value="perempuan">Perempuan</option>
+                        </select>
+                        <div class="invalid-feedback" name="msg_jk"><ul></ul></div>
+                      </div>
+                    </div>
+                    <div class="col-lg-6">
+                      <div class="form-group">
+                        <label for="no_hp">No. HP</label>
+                        <input type="text" class="form-control" name="no_hp" id="no_hp" required>
+                        <div class="invalid-feedback" name="msg_no_hp"><ul></ul></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-6">
+                  <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" class="form-control" name="email" id="email" required>
+                    <div class="invalid-feedback" name="msg_email"><ul></ul></div>
+                  </div>
+                  <div class="form-group">
+                    <label for="status">Status</label>
+                    <select class="form-control selectric" name="status" id="teacher-status" required>
+                      <option value="aktif">Aktif</option>
+                      <option value="nonaktif">Nonaktif</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" class="form-control" name="password" id="password">
+                    <div class="invalid-feedback" name="msg_password"><ul></ul></div>
+                  </div>
+                  <div class="form-group">
+                    <label for="password_confirmation">Ulangi Password</label>
+                    <input type="password" class="form-control" name="password_confirmation" id="password_confirmation">
+                  </div>
+                </div>
               </div>
           </div>
           <div class="modal-footer">
@@ -266,7 +411,7 @@
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title">Import Data Dosen</h5>
+            <h5 class="modal-title">Import Data User</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
@@ -333,6 +478,7 @@
   <script src="{{ asset('vendor/datatables/buttons-1.6.5/js/dataTables.buttons.min.js') }}"></script>
   {{-- Selectric --}}
   <script src="{{ asset('vendor/selectric/public/jquery.selectric.min.js') }}"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js" integrity="sha512-T/tUfKSV1bihCnd+MxKD0Hm1uBBroVYBOYSk1knyvQ9VyZJpc/ALb4P0r6ubwVPSGB2GvjeoMAJJImBG12TiaQ==" crossorigin="anonymous"></script>
 @endpush
 
 @push('page-js')
@@ -345,4 +491,5 @@
   <link rel="stylesheet" href="{{ asset('vendor/datatables/buttons-1.6.5/css/buttons.dataTables.min.css') }}"></script>
   {{-- Selectric --}}
   <link rel="stylesheet" href="{{ asset('vendor/selectric/public/selectric.css') }}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
 @endpush

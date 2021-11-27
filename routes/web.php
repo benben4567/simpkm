@@ -41,7 +41,7 @@ Route::group(['middleware' => ['admin'], 'prefix' => 'admin'], function () {
   // User
   Route::get('/user', ['as' => 'user.index', 'uses' => 'UserController@index']);
   Route::get('/user/create/{role}', ['as' => 'user.create', 'uses' => 'UserController@create']);
-  Route::get('/user/show/{id}', ['as' => 'user.show', 'uses' => 'UserController@show']);
+  Route::get('/user/show/{role}/{id}', ['as' => 'user.show', 'uses' => 'UserController@show']);
   Route::post('/user/store/{role}', ['as' => 'user.store', 'uses' => 'UserController@store']);
   Route::put('/user/update/{role}', ['as' => 'user.update', 'uses' => 'UserController@update']);
   Route::post('/user/import', ['as' => 'user.import', 'uses' => 'UserController@import']);
