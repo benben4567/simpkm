@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\ResponseFormatter;
+use App\Imports\StudentImport;
+use App\Imports\TeacherImport;
 use App\Major;
 use App\Teacher;
 use App\Student;
@@ -10,8 +12,6 @@ use Illuminate\Http\Request;
 use App\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Symfony\Component\Console\Input\Input;
-use App\Imports\UsersImport;
 use Maatwebsite\Excel\Facades\Excel;
 
 class UserController extends Controller
@@ -291,12 +291,16 @@ class UserController extends Controller
         if($request->file('file')) {
           $fileName = time().'.'.$request->file('file')->extension();
           $path = $request->file('file')->storeAs(
-            'public/excel', $fileName
+            'public/excel', $request->input('role').'_import'.$fileName
           );
         }
 
+        if ($request->input('role') == 'student') {
+          $import = new StudentImport;
+        } else {
+          $import = new TeacherImport;
+        }
         // import excel using try catch
-        $import = new UsersImport;
         try {
           Excel::import($import, 'public/excel/'.$fileName);
         } catch (\Throwable $th) {
@@ -307,11 +311,16 @@ class UserController extends Controller
           ], 500);
         }
 
-      $teachers = User::whereRole('teacher')->get();
+      if ($request->input('role') == 'student') {
+        $users = User::whereRole('student')->with('student')->get();
+      } else {
+        $users = User::whereRole('teacher')->with('teacher')->get();
+      }
+
       return response()->json([
         'success' => true,
-        'data' => $teachers,
-        'msg' => $import->getRowCount().' User berhasil di import'
+        'data' => $users,
+        'msg' => $import->getRowCount().' User berhasil di import.'
       ], 200);
 
     }

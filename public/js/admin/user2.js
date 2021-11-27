@@ -139,7 +139,7 @@ $(document).ready(function () {
           text: '<i class="fas fa-file-excel"></i> Import',
           className: 'btn btn-sm btn-success btn-import',
           action: function ( e, dt, node, config ) {
-            $('#modalImport').modal('show')
+            $('#modalImportStudent').modal('show')
           }
         }
       ],
@@ -212,7 +212,7 @@ $(document).ready(function () {
         text: '<i class="fas fa-file-excel"></i> Import',
         className: 'btn btn-sm btn-success btn-import',
         action: function ( e, dt, node, config ) {
-          $('#modalImport').modal('show')
+          $('#modalImportTeacher').modal('show')
         }
       }
     ]

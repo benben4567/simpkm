@@ -406,12 +406,12 @@
       </div>
     </div>
 
-    <!-- Import User -->
-    <div class="modal fade" id="modalImport" tabindex="-1" role="dialog">
+    <!-- Import Student -->
+    <div class="modal fade" id="modalImportStudent" tabindex="-1" role="dialog">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title">Import Data User</h5>
+            <h5 class="modal-title">Import User Mahasiswa</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
@@ -420,6 +420,42 @@
             @csrf
             <div class="modal-body">
                 @csrf
+                <p>Download <a href="{{asset('template/template_mahasiswa.xlsx')}}" target="_blank" rel="noopener noreferrer">Template Excel</a></p>
+                <input type="text" class="d-none" name="role" value="student">
+                <div class="form-group">
+                  <div class="custom-file">
+                    <input type="file" class="custom-file-input form-control" accept=".xls,.xlsx" id="customFile" name="file">
+                    <label class="custom-file-label" for="customFile">Choose file</label>
+                    <div class="invalid-feedback" name="msg_file"><ul></ul></div>
+                  </div>
+                  <small class="text-muted">Filetype: xls, xlsx | Max: 2Mb</small>
+                </div>
+            </div>
+            <div class="modal-footer">
+              <button type="submit" class="btn btn-primary">Import</button>
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Import Teacher -->
+    <div class="modal fade" id="modalImportTeacher" tabindex="-1" role="dialog">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Import User Dosen</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <form action="{{ route('user.import') }}" method="post" autocomplete="off" id="form-import">
+            @csrf
+            <div class="modal-body">
+                @csrf
+                <p>Download <a href="{{asset('template/template_dosen.xlsx')}}" target="_blank" rel="noopener noreferrer">Template Excel</a></p>
+                <input type="text" class="d-none" name="role" value="teacher">
                 <div class="form-group">
                   <div class="custom-file">
                     <input type="file" class="custom-file-input form-control" accept=".xls,.xlsx" id="customFile" name="file">
