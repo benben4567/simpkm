@@ -220,7 +220,19 @@ class UserController extends Controller
         $request->merge(['password' => Hash::make($request->input('password'))]);
         $user->update($request->all());
       } else {
-        $user->update($request->except(['password']));
+        if ($user->role == 'admin') {
+          $admin = User::where('role', 'admin')->where('status', 'aktif')->count();
+          if ($admin < 2 && $request->input('status') == "nonaktif") {
+            return response()->json([
+              'success' => false,
+              'message' => 'Minimal 1 admin harus aktif.'
+            ], 422);
+          } else {
+            $user->update($request->except(['password']));
+          }
+        } else {
+          $user->update($request->except(['password']));
+        }
       }
 
       // update table teacher
