@@ -101,7 +101,8 @@ class PeriodController extends Controller
         }
       } else {
         $period = Period::whereId($request->input('id'))->update([
-          'status' => $request->input('status')
+          'status' => $request->input('status'),
+          'pendaftaran' => $request->input('pendaftaran')
         ]);
       }
 
