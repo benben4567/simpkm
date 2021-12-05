@@ -17,9 +17,9 @@ use Illuminate\Support\Facades\Route;
 Route::view('/', 'landing');
 Route::view('/panduan', 'panduan')->name('panduan');
 
-Auth::routes();
+Auth::routes(['verify' => true]);
 
-Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/home', 'HomeController@index')->middleware('verified')->name('home');
 
 Route::group(['middleware' => ['admin'], 'prefix' => 'admin'], function () {
   Route::get('/home/recap/{tahun}', ['as' => 'home.recap', 'uses' => 'HomeController@recap']);
@@ -62,7 +62,7 @@ Route::group(['middleware' => ['admin'], 'prefix' => 'admin'], function () {
   Route::get('/chart', ['as' => 'chart.index', 'uses' => 'HomeController@chart']);
 });
 
-Route::group(['middleware' => ['student'], 'prefix' => 'student'], function () {
+Route::group(['middleware' => ['student', 'verified'], 'prefix' => 'student'], function () {
   // Profile
   Route::get('/profile', ['as' => 'profile.index', 'uses' => 'Student\ProfileController@index']);
   Route::put('/profile', ['as' => 'profile.update', 'uses' => 'Student\ProfileController@update']);
