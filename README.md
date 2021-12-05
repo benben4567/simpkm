@@ -6,6 +6,7 @@ SIM PKM merupakan Sistem Informasi yang dibuat dengan tujuan untuk memudahkan da
 
 - Multi Role (Admin, Dosen, Mahasiswa)
 - Manajemen User
+- Manajemen Program Studi
 - Manajemen Periode
 - Manajemen Proposal Usulan
 - Export Rekapitulasi Usulan per Periode
@@ -16,9 +17,12 @@ SIM PKM merupakan Sistem Informasi yang dibuat dengan tujuan untuk memudahkan da
 
 ## To-do
 
-- Integration Test
-- Implementasi Service Layer
-- Support API
+- [x] Email Verification on Register
+- [x] Scoring feature
+- [x] Major Management
+- [ ] Integration Test
+- [ ] Implementasi Service Layer
+- [ ] Support API
 
 ## Tech
 
