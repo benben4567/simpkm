@@ -23,6 +23,7 @@ SIM PKM merupakan Sistem Informasi yang dibuat dengan tujuan untuk memudahkan da
 - [ ] Integration Test
 - [ ] Implementasi Service Layer
 - [ ] Support API
+- [ ] Google Drive Storage
 
 ## Tech
 
