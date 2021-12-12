@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Helpers\ResponseFormatter;
 use App\Major;
-use App\Service\MajorService;
+use App\Services\MajorService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
