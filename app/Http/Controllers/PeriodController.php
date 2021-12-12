@@ -8,9 +8,9 @@ use Illuminate\Http\Request;
 
 class PeriodController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request, PeriodService $periodService)
     {
-      $periods = Period::withCount('proposals')->get();
+      $periods = $periodService->showAll();
 
       if ($request->ajax()) {
         return response()->json([
