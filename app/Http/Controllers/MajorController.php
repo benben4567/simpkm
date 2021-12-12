@@ -4,22 +4,23 @@ namespace App\Http\Controllers;
 
 use App\Helpers\ResponseFormatter;
 use App\Major;
+use App\Service\MajorService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
 class MajorController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request, MajorService $majorService)
     {
       if ($request->ajax()) {
-        $majors = Major::all();
+        $majors = $majorService->showAll();
         return ResponseFormatter::success($majors, 'Data ditemukan');
       }
 
       return view('pages.admin.prodi');
     }
 
-    public function store(Request $request)
+    public function store(Request $request, MajorService $majorService)
     {
       $validator = Validator::make($request->all(), [
         'jenjang' => 'required',
@@ -30,10 +31,7 @@ class MajorController extends Controller
         return ResponseFormatter::error($validator->errors(), 'Data yg dikirim tidak valid', 422);
       }
 
-      $major = Major::create([
-        'degree' => $request->input('jenjang'),
-        'name' => $request->input('nama'),
-      ]);
+      $major = $majorService->store($request->all());
 
       if ($major) {
         return ResponseFormatter::success(Major::all(), 'Data berhasil disimpan');
@@ -42,9 +40,9 @@ class MajorController extends Controller
       }
     }
 
-    public function show($id)
+    public function show(MajorService $majorService, $id)
     {
-      $major = Major::find($id);
+      $major = $majorService->show($id);
       if ($major) {
         return ResponseFormatter::success($major, 'Data ditemukan');
       } else {
@@ -52,7 +50,7 @@ class MajorController extends Controller
       }
     }
 
-    public function update(Request $request)
+    public function update(Request $request, MajorService $majorService)
     {
       $validator = Validator::make($request->all(), [
         'id' => 'required',
@@ -64,10 +62,7 @@ class MajorController extends Controller
         return ResponseFormatter::error($validator->errors(), 'Data yang dikirim tidak valid', 422);
       }
 
-      $major = Major::where('id', $request->id)->update([
-        'degree' => $request->jenjang,
-        'name' => $request->nama,
-      ]);
+      $major = $majorService->update($request->all());
 
       if ($major) {
         return ResponseFormatter::success(Major::all(), 'Data berhasil disimpan');
