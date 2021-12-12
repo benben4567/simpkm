@@ -6,6 +6,12 @@ use App\Period;
 
 class PeriodService
 {
+  public function showAll()
+  {
+    $periods = Period::withCount('proposals')->get();
+    return $periods;
+  }
+
   public function store($data)
   {
     $period = Period::create([
