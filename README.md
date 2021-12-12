@@ -21,7 +21,7 @@ SIM PKM merupakan Sistem Informasi yang dibuat dengan tujuan untuk memudahkan da
 - [x] Scoring feature
 - [x] Major Management
 - [ ] Integration Test
-- [ ] Implementasi Service Layer
+- [ ] Implement Service Layer
 - [ ] Support API
 - [ ] Google Drive Storage
 
