@@ -64,6 +64,7 @@ $(function () {
       "columnDefs": [
         { "className": "text-center", "targets": [0,2,3,4,5] },
         { "width": "5%", "targets": 0},
+        { "width": "10%", "targets": 2},
         { "width": "9%", "targets": 3},
         { "width": "9%", "targets": 4},
         { "width": "10%", "targets": 5},
@@ -162,9 +163,9 @@ $(function () {
 
   $('#table tbody').on('click', 'button.btn-nilai', function (e) {
     e.preventDefault()
-    var data = table.row( $(this).parents('tr') ).data();
-    var nilai1 = data[3];
-    var nilai2 = data[4];
+    var data = window.table.row( $(this).parents('tr') ).data();
+    var nilai1 = data.nilai1;
+    var nilai2 = data.nilai2;
     $('input[name="id-proposal"]').val($(this).data('id'));
     $('input[name="nilai1"]').val(nilai1);
     $('input[name="nilai2"]').val(nilai2);
