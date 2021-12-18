@@ -6,6 +6,7 @@ use App\Helpers\ResponseFormatter;
 use App\Imports\StudentImport;
 use App\Imports\TeacherImport;
 use App\Major;
+use App\Services\UserService;
 use App\Teacher;
 use App\Student;
 use Illuminate\Http\Request;
@@ -16,20 +17,20 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class UserController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request, UserService $userService)
     {
       if ($request->ajax()) {
         switch ($request->input('role')) {
           case 'admin':
-            $admins = User::whereRole('admin')->get();
+            $admins = $userService->showAll('admin');
             return ResponseFormatter::success($admins, 'Data ditemukan');
             break;
           case 'student':
-            $students = User::whereRole('student')->with('student')->get();
+            $students = $userService->showAll('student');
             return ResponseFormatter::success($students, 'Data ditemukan');
             break;
           case 'teacher':
-            $teachers = User::whereRole('teacher')->get();
+            $teachers = $userService->showAll('teacher');
             return ResponseFormatter::success($teachers, 'Data ditemukan');
             break;
           default:
@@ -57,7 +58,7 @@ class UserController extends Controller
       }
     }
 
-    public function store(Request $request, $role)
+    public function store(Request $request, UserService $userService, $role)
     {
       $rules = [
         'email' => 'required|unique:users,email',
@@ -65,100 +66,49 @@ class UserController extends Controller
         'password' => 'required|min:8|confirmed'
       ];
 
-      if ($role == 'student') {
-        $rules['nim'] = 'required|unique:students,nim';
-        $rules['major'] = 'required';
-        $rules['tempat'] = 'required';
-        $rules['tgl'] = 'required|date_format:Y-m-d';
-        $rules['jk'] = 'required';
-        $rules['no_hp'] = 'required|digits_between:11,13';
-        $this->validate($request,$rules);
-      } elseif ($role == 'teacher') {
-        $rules['nidn'] = 'required|unique:teachers,nidn';
-        $rules['major'] = 'required';
-        $rules['tempat'] = 'required';
-        $rules['tgl'] = 'required|date_format:Y-m-d';
-        $rules['jk'] = 'required';
-        $rules['no_hp'] = 'required|digits_between:11,13';
-        $this->validate($request,$rules);
-      } else {
-        $this->validate($request,$rules);
+      switch ($role) {
+        case 'student':
+          $rules['nim'] = 'required|unique:students,nim';
+          $rules['major'] = 'required';
+          $rules['tempat'] = 'required';
+          $rules['tgl'] = 'required|date_format:Y-m-d';
+          $rules['jk'] = 'required';
+          $rules['no_hp'] = 'required|digits_between:11,13';
+          $this->validate($request,$rules);
+          break;
+        case 'teacher':
+          $rules['nidn'] = 'required|unique:teachers,nidn';
+          $rules['major'] = 'required';
+          $rules['tempat'] = 'required';
+          $rules['tgl'] = 'required|date_format:Y-m-d';
+          $rules['jk'] = 'required';
+          $rules['no_hp'] = 'required|digits_between:11,13';
+          $this->validate($request,$rules);
+          break;
+        default:
+          $this->validate($request,$rules);
+          break;
       }
 
       $request->merge(['role' => $role]);
       $request->merge(['password' => Hash::make($request->input('password'))]);
 
-      try {
-        DB::transaction(function () use ($request, $role) {
-          $user = User::create($request->all());
-          if ($role == 'student') {
-            $user->student()->create([
-              'nim' => $request->input('nim'),
-              'major_id' => $request->input('major'),
-              'nama' => $request->input('name'),
-              'tempat_lahir' => $request->input('tempat'),
-              'tgl_lahir' => $request->input('tgl'),
-              'no_hp' => $request->input('no_hp'),
-              'jk' => $request->input('jk')
-            ]);
-          } elseif ($role == 'teacher') {
-            $user->teacher()->create([
-              'nidn' => $request->input('nidn'),
-              'major_id' => $request->input('major'),
-              'nama' => $request->input('name'),
-              'tempat_lahir' => $request->input('tempat'),
-              'tgl_lahir' => $request->input('tgl'),
-              'no_hp' => $request->input('no_hp'),
-              'jk' => $request->input('jk')
-            ]);
-          }
-        });
-      } catch (\Throwable $th) {
-        return response()->json([
-          'success' => false,
-          'data' => null,
-          'msg' => $th
-        ], 500);
-      }
-
-      switch ($role) {
-        case 'admin':
-          $data = User::whereRole('admin')->get();
-          break;
-        case 'student':
-          $data = User::whereRole('student')->get();
-          break;
-        case 'teacher':
-          $data = User::whereRole('teacher')->get();
-          break;
-        default:
-          $data = null;
-          break;
-      }
+      $user = $userService->store($request->all());
 
       return response()->json([
-        'success' => true,
-        'data' => $data
-      ], 201);
+        'success' => $user['success'],
+        'data' => $user['data'],
+        'msg' => $user['msg']
+      ], $user['code']);
+
     }
 
-    public function show(Request $request, $role, $id)
+    public function show(Request $request, UserService $userService, $role, $id)
     {
       // $user = DB::table('users')->where('id', '=', $request->input('id'))->first();
       // $user = DB::table('users')->where('id', '=', $id)->first();
-      switch ($role) {
-        case 'admin':
-          $user = User::whereId($id)->first();
-          break;
-        case 'student':
-          $user = User::whereId($id)->with('student')->first();
-          break;
-        case 'teacher':
-          $user = User::whereId($id)->with('teacher')->first();
-          break;
-        default:
-          break;
-      }
+      $user = $userService->show($role, $id);
+
       if ($user) {
         if ($request->ajax()) {
           return response()->json([
@@ -181,7 +131,7 @@ class UserController extends Controller
       }
     }
 
-    public function update(Request $request, $role)
+    public function update(Request $request, UserService $userService, $role)
     {
       switch ($role) {
         case 'admin':
@@ -214,83 +164,13 @@ class UserController extends Controller
       $this->validate($request, $rules);
 
       // update table user
-      $user = User::whereId($request->input('id'))->first();
+      $update = $userService->update($request->all(), $role);
 
-      if ($request->input('password')) {
-        $request->merge(['password' => Hash::make($request->input('password'))]);
-        $user->update($request->all());
-      } else {
-        if ($user->role == 'admin') {
-          $admin = User::where('role', 'admin')->where('status', 'aktif')->count();
-          if ($admin < 2 && $request->input('status') == "nonaktif") {
-            return response()->json([
-              'success' => false,
-              'message' => 'Minimal 1 admin harus aktif.'
-            ], 422);
-          } else {
-            $user->update($request->except(['password']));
-          }
-        } else {
-          $user->update($request->except(['password']));
-        }
-      }
-
-      // update table teacher
-      switch ($role) {
-        case 'teacher':
-          $data = [
-            'major_id' => $request->input('major'),
-            'nama' => $request->input('name'),
-            'tempat_lahir' => $request->input('tempat'),
-            'tgl_lahir' => $request->input('tgl'),
-            'no_hp' => $request->input('no_hp'),
-            'jk' => $request->input('jk')
-          ];
-          $user->teacher()->update($data);
-          break;
-        case 'student':
-          $data = [
-            'major_id' => $request->input('major'),
-            'nim' => $request->input('nim'),
-            'nama' => $request->input('name'),
-            'tempat_lahir' => $request->input('tempat'),
-            'tgl_lahir' => $request->input('tgl'),
-            'no_hp' => $request->input('no_hp'),
-            'jk' => $request->input('jk')
-          ];
-          $user->student()->update($data);
-          break;
-        default:
-          break;
-      }
-
-      // Send back response
-      if ($user) {
-        if ($role == 'student') {
-          $res = DB::table('users')
-                    ->join('students', 'users.id', '=', 'students.user_id')
-                    ->select('users.*', 'students.nama', 'students.nim')
-                    ->get();
-        } elseif ($role == 'teacher') {
-          $res = DB::table('users')
-                  ->join('teachers', 'users.id', '=', 'teachers.user_id')
-                  ->join('majors', 'majors.id', '=', 'teachers.major_id')
-                  ->select('users.*', 'teachers.nama', 'teachers.nidn', 'majors.*')
-                  ->get();
-        } else {
-          $res = User::whereRole($role)->get();
-        }
-
-        return response()->json([
-          'success' => true,
-          'data' => $res
-        ], 201);
-      } else {
-        return response()->json([
-          'success' => false,
-          'data' => ''
-        ], 500);
-      }
+      return response()->json([
+        'success' => $update['success'],
+        'data' => $update['data'],
+        'msg' => $update['msg'],
+      ], $update['code']);
     }
 
     public function import(Request $request)
@@ -337,46 +217,25 @@ class UserController extends Controller
 
     }
 
-    public function showSim($id)
+    public function showSim(UserService $userService, $id)
     {
-      $user = User::whereId($id)->first();
-      $student = DB::table('students')->select('username_sim', 'password_sim')->where('user_id', $user->id)->first();
-      if ($user) {
-        if ($student->username_sim) {
-          return response()->json([
-            'success' => true,
-            'data' => $student
-          ], 200);
-        } else {
-          return response()->json([
-            'success' => true,
-            'data' => [
-              'username_sim' => '072026'.$user->student->nim
-            ]
-          ], 200);
-        }
-      } else {
-        return response()->json([
-          'success' => false,
-          'msg' => 'Data tidak ditemukan'
-        ], 404);
-      }
-    }
-
-    public function updateSim(Request $request)
-    {
-      $user = User::findOrFail($request->input('id'));
-      $user->student->username_sim = $request->input('username_sim');
-      $user->student->password_sim = $request->input('password_sim');
-      $user->student->save();
+      $sim = $userService->showSim($id);
 
       return response()->json([
-        'success' => true,
-        'msg' => 'Data berhasil diupdate'
-      ], 200);
+        'success' => $sim['success'],
+        'data' => $sim['data'],
+        'msg' => $sim['msg'],
+      ], $sim['code']);
     }
 
+    public function updateSim(Request $request, UserService $userService)
+    {
+      $update = $userService->updateSim($request->all());
 
-
-
+      return response()->json([
+        'success' => $update['success'],
+        'data' => $update['data'],
+        'msg' => $update['msg']
+      ], $update['code']);
+    }
 }
