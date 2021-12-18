@@ -123,7 +123,7 @@ $(document).ready(function () {
         "data": 'id',
         "className": "text-center text-nowrap",
         "render": function ( data, type, row, meta ) {
-          return `<button type="button" class="btn btn-sm btn-icon btn-primary student-edit" data-id="${data}"><i class="fas fa-eye"></i></button><button type="button" class="btn btn-sm btn-warning ml-1" data-id="${data}" data-toggle="modal" data-target="#mahasiswaSimModal"><i class="fas fa-key"></i></button>`
+          return `<button type="button" class="btn btn-sm btn-icon btn-primary student-edit" data-id="${data}"><i class="fas fa-eye"></i></button><button type="button" class="btn btn-sm btn-warning ml-1 student-sim" data-id="${data}"><i class="fas fa-key"></i></button>`
         }
       },
     ],
@@ -223,6 +223,10 @@ $(document).ready(function () {
 
   $('#adminModalEdit').on('hidden.bs.modal', function (e) {
     $("#form-admin-edit").trigger("reset");
+  })
+
+  $('#studentModalEdit').on('hidden.bs.modal', function (e) {
+    $("#form-student-edit").trigger("reset");
   })
 
   $('#mahasiswaSimModal').on('hidden.bs.modal', function (e) {

@@ -22,6 +22,7 @@
                       <th>Tahun</th>
                       <th>Jumlah Usulan</th>
                       <th>Status</th>
+                      <th>Pendaftaran</th>
                       <th>Aksi</th>
                     </tr>
                   </thead>
@@ -31,7 +32,8 @@
                         <td>{{ $loop->iteration }}</td>
                         <td>{{ $period->tahun }}</td>
                         <td>{{ $period->proposals_count }}</td>
-                        <td><span class="badge {{ $period->status == "buka" ? "badge-success" : "badge-danger" }}">{{ ucfirst($period->status) }}</span></td>
+                        <td><span class="badge {{ $period->status == "aktif" ? "badge-success" : "badge-danger" }}">{{ ucfirst($period->status) }}</span></td>
+                        <td><span class="badge {{ $period->pendaftaran == "buka" ? "badge-success" : "badge-danger" }}">{{ ucfirst($period->pendaftaran) }}</span></td>
                         <td>
                           <button type="button" class="btn btn-icon btn-sm btn-warning" title="Edit" data-id="{{ $period->id }}"><i class="fas fa-pencil-alt"></i></button>
                         </td>
@@ -96,11 +98,11 @@
               <div class="form-group">
                 <label for="">Status</label>
                 <select class="form-control selectric" name="status" id="status">
-                  <option value="buka">Buka</option>
-                  <option value="tutup">Tutup</option>
+                  <option value="aktif">Aktif</option>
+                  <option value="nonaktif">Nonaktif</option>
                 </select>
               </div>
-              <div class="form-group">
+              <div class="form-group pendaftaran" style="display: none;">
                 <label for="">Pendaftaran</label>
                 <select class="form-control selectric" name="pendaftaran" id="pendaftaran">
                   <option value="buka">Buka</option>
