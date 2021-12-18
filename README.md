@@ -27,9 +27,9 @@ SIM PKM merupakan Sistem Informasi yang dibuat dengan tujuan untuk memudahkan da
 
 ## Tech
 
-- Backend : PHP (Laravel 7)
+- Backend : PHP ([Laravel 7](https://laravel.com/))
 - Frontend: Bootstrap 4
-- Template : [Stisla] (https://getstisla.com/)
+- Template : [Stisla](https://getstisla.com/)
 
 ## License
 
