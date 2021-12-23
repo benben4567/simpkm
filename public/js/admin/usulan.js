@@ -9,19 +9,20 @@ $(function () {
       dom: "ftip",
       ordering: false,
       columnDefs: [
-        { "width": "5%", "targets": 0},
-        { "width": "65%", "targets": 1},
-        { "width": "15%", "targets": 2},
-        { "width": "15%", "targets": 3},
+        { "width": "5%", "targets": 0, "className": "text-center"},
+        { "width": "9%", "targets": 3, "className": "text-center"},
+        { "width": "9%", "targets": 4, "className": "text-center"},
+        { "width": "10%", "targets": 5, "className": "text-center"},
       ]
   })
 
-  $('#tahun').on('change', function() {
-    var tahun = $(this).val();
+  $('#tahun, #skema').on('change', function() {
+    var tahun = $("#tahun").val();
+    var skema = $('#skema').val();
     $.ajax({
       type: "get",
       url: "/admin/usulan",
-      data: {tahun: tahun},
+      data: {tahun: tahun, skema: skema},
       beforeSend: function () {
         $.LoadingOverlay('show');
       },
@@ -61,11 +62,12 @@ $(function () {
       responsive: true,
       ordering: false,
       "columnDefs": [
-        { "className": "text-center", "targets": [0,2,3] },
+        { "className": "text-center", "targets": [0,2,3,4,5] },
         { "width": "5%", "targets": 0},
-        { "width": "65%", "targets": 1},
-        { "width": "15%", "targets": 2},
-        { "width": "15%", "targets": 3},
+        { "width": "10%", "targets": 2},
+        { "width": "9%", "targets": 3},
+        { "width": "9%", "targets": 4},
+        { "width": "10%", "targets": 5},
         {
           "targets": 0,
           "data": null,
@@ -94,13 +96,28 @@ $(function () {
           }
         },
         {
-          "targets": 3,
+          "targets":3,
+          "data": null,
+          "render": function (data, type, row, meta) {
+            return row.nilai1
+          }
+        },
+        {
+          "targets":4,
+          "data": null,
+          "render": function (data, type, row, meta) {
+            return row.nilai2
+          }
+        },
+        {
+          "targets": 5,
           "data": null,
           "render": function ( data, type, row, meta ) {
             return `
               <div class="btn-group">
                 <button type="button" class="btn btn-icon btn-sm btn-primary btn-show" title="Show" data-id="${row.id}"><i class="fas fa-eye"></i></button>
                 <button type="button" class="btn btn-icon btn-sm btn-warning btn-edit" title="Edit" data-id="${row.id}"><i class="fas fa-pencil-alt"></i></button>
+                <button type="button" class="btn btn-icon btn-sm btn-info btn-nilai" title="Nilai" data-id="${row.id}"><i class="fas fa-file-signature"></i></button>
                 <button type="button" class="btn btn-icon btn-sm btn-danger btn-delete" title="Delete" data-id="${row.id}"><i class="fas fa-trash"></i></button>
               </div>`
             }
@@ -144,6 +161,17 @@ $(function () {
     });
   });
 
+  $('#table tbody').on('click', 'button.btn-nilai', function (e) {
+    e.preventDefault()
+    var data = window.table.row( $(this).parents('tr') ).data();
+    var nilai1 = data.nilai1;
+    var nilai2 = data.nilai2;
+    $('input[name="id-proposal"]').val($(this).data('id'));
+    $('input[name="nilai1"]').val(nilai1);
+    $('input[name="nilai2"]').val(nilai2);
+    $('#modalNilai').modal('show');
+  });
+
   $('#form-update').submit(function (e) {
     e.preventDefault();
     $.ajax({
@@ -172,6 +200,52 @@ $(function () {
             Swal.fire(
               'Error!',
               'Semua kolom wajib diisi. Dosen Pembimbing dan Reviewer tidak boleh sama.',
+              'error'
+            )
+
+            $.each(errors, function(key, value) {
+              $("select[name="+ key +"]").addClass("is-invalid")
+              $.each(errors[key], function(ke, val) {
+                $('<li>'+val+"</li>").appendTo($("div[name=msg_"+ key +"]").find('ul'));
+              })
+            })
+            break;
+
+          default:
+            break;
+        }
+      }
+    });
+  });
+
+  $('#form-nilai').submit(function (e) {
+    e.preventDefault();
+    $.ajax({
+      type: "put",
+      url: "/admin/usulan/nilai",
+      data: $(this).serialize(),
+      beforeSend: function() {
+        $.LoadingOverlay('show')
+      },
+      success: function (response) {
+        $.LoadingOverlay('hide')
+        if (response.success) {
+          $('#modalNilai').modal('hide');
+          populateTable(response.data)
+          Swal.fire(
+            'Berhasil!',
+            'Data berhasil disimpan.',
+            'success'
+          )
+        }
+      },
+      error: function(xhr) {
+        $.LoadingOverlay('hide')
+        switch (xhr.status) {
+          case 422:
+            Swal.fire(
+              'Error!',
+              'Semua kolom wajib diisi',
               'error'
             )
 
@@ -285,6 +359,10 @@ $(function () {
     })
   });
 
+  $('#modalNilai').on('hidden.bs.modal', function (e) {
+    $('input[name="nilai1"]').val("");
+    $('input[name="nilai1"]').val("");
+  })
 
 });
 

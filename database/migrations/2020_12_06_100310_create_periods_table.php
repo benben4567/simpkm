@@ -16,8 +16,9 @@ class CreatePeriodsTable extends Migration
         Schema::create('periods', function (Blueprint $table) {
             $table->id();
             $table->year('tahun')->nullable();
-            $table->enum('status', ['buka', 'tutup'])->nullable()->default('buka');
-            $table->enum('pendaftaran', ['buka', 'tutup'])->nullable()->default('buka');
+            $table->enum('status', ['aktif', 'nonaktif'])->nullable()->default('nonaktif');
+            $table->enum('pendaftaran', ['buka', 'tutup'])->nullable()->default('tutup');
+            $table->string('id_folder')->nullable();
             $table->timestamps();
         });
     }

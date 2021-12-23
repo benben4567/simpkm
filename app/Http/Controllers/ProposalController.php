@@ -6,26 +6,21 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use App\Period;
 use App\Proposal;
+use App\Services\AdminProposalService;
 use App\Teacher;
 use Illuminate\Support\Facades\DB;
 
 class ProposalController extends Controller
 {
-  public function index(Request $request)
+  public function index(Request $request, AdminProposalService $adminProposalService)
   {
     if ($request->ajax()) {
-      if ($request->input('tahun')) {
-        $proposals = DB::table('periods')
-                    ->join('proposals', 'periods.id', '=', 'proposals.period_id')
-                    ->select('periods.id as period_id', 'periods.tahun', 'proposals.id', 'proposals.skema', 'proposals.judul', 'proposals.status')
-                    ->where('periods.tahun', '=', $request->input('tahun'))
-                    ->get();
+      $proposals = $adminProposalService->showAll($request->all());
 
-        return response()->json([
-          'success' => true,
-          'data' => $proposals
-        ], 200);
-      }
+      return response()->json([
+        'success' => true,
+        'data' => $proposals
+      ], 200);
     }
 
     $periods = Period::orderBy('tahun', 'DESC')->get();
@@ -35,9 +30,10 @@ class ProposalController extends Controller
     return view('pages.admin.usulan', compact('periods', 'teachers', 'proposals'));
   }
 
-  public function show(Request $request, $id)
+  public function show(Request $request, AdminProposalService $adminProposalService, $id)
   {
-    $proposal = Proposal::with('teachers')->whereId($id)->first();
+    $proposal = $adminProposalService->show($id);
+
     $ketua = $proposal->ketua->first();
     $pembimbing = $proposal->pembimbing->first();
     $reviewer1 = $proposal->reviewer1->first();
@@ -65,7 +61,7 @@ class ProposalController extends Controller
     }
   }
 
-  public function update(Request $request)
+  public function update(Request $request, AdminProposalService $adminProposalService)
   {
     $this->validate($request, [
       'pembimbing' => 'required|different:reviewer_1,reviewer_2',
@@ -73,28 +69,38 @@ class ProposalController extends Controller
       'reviewer_2' => 'required|different:pembimbing,reviewer_1'
     ]);
 
-    $proposal_id = $request->id;
-    $pembimbing = $request->input('pembimbing');
-    $reviewer1 = $request->input('reviewer_1');
-    $reviewer2 = $request->input('reviewer_2');
-    $status = $request->input('status');
-
-    $proposal = Proposal::where('id', $proposal_id);
-    $tahun = $proposal->first()->period->tahun;
-    $update = $proposal->update(['status' => $status]);
+    $update = $adminProposalService->update($request->all());
     if ($update) {
-      $reviewer = $proposal->first()
-                    ->teachers()->sync([
-                      $pembimbing => ['jabatan' => 'Pembimbing'],
-                      $reviewer1 => ['jabatan' => 'Reviewer 1'],
-                      $reviewer2 => ['jabatan' => 'Reviewer 2']
-                    ]);
+      return response()->json([
+        'success' => true,
+        'data' => $update
+      ], 201);
+    } else {
+      return response()->json([
+        'success' => false,
+        'data' => null
+      ], 500);
+    }
+  }
 
+  public function nilai(Request $request)
+  {
+    $this->validate($request, [
+      'id-proposal' => 'required',
+      'nilai1' => 'required|numeric',
+      'nilai2' => 'required|numeric',
+    ]);
+
+    $proposal = Proposal::where('id', $request->input('id-proposal'));
+    $tahun = $proposal->first()->period->tahun;
+    $update = $proposal->update(['nilai1' => $request->input('nilai1'), 'nilai2' => $request->input('nilai2')]);
+
+    if($update) {
       $proposals = DB::table('periods')
-                    ->join('proposals', 'periods.id', '=', 'proposals.period_id')
-                    ->select('periods.id as period_id', 'periods.tahun', 'proposals.id', 'proposals.skema', 'proposals.judul', 'proposals.status')
-                    ->where('periods.tahun', '=', $tahun)
-                    ->get();
+                      ->join('proposals', 'periods.id', '=', 'proposals.period_id')
+                      ->select('periods.id as period_id', 'periods.tahun', 'proposals.id', 'proposals.skema', 'proposals.judul', 'proposals.status', 'proposals.nilai1', 'proposals.nilai2')
+                      ->where('periods.tahun', '=', $tahun)
+                      ->get();
 
       return response()->json([
         'success' => true,
@@ -106,15 +112,13 @@ class ProposalController extends Controller
         'data' => null
       ], 500);
     }
-
-
   }
 
   public function print($tahun)
   {
     $proposals = DB::table('periods')
                     ->join('proposals', 'periods.id', '=', 'proposals.period_id')
-                    ->select('periods.id as period_id', 'periods.tahun', 'proposals.id', 'proposals.skema', 'proposals.judul', 'proposals.status')
+                    ->select('periods.id as period_id', 'periods.tahun', 'proposals.id', 'proposals.skema', 'proposals.judul', 'proposals.status',  'proposals.nilai1', 'proposals.nilai2')
                     ->where('periods.tahun', '=', $tahun)
                     ->get();
 
@@ -126,23 +130,10 @@ class ProposalController extends Controller
     ], 200);
   }
 
-  public function destroy(Request $request)
+  public function destroy(Request $request, AdminProposalService $adminProposalService)
   {
-    $proposal = Proposal::where('id', $request->input('id'))->first();
-
-    // delete file
-    $proposal = Proposal::whereId($request->input('id'))->first();
-    Storage::delete('public/files/'.$proposal->file);
-
-    // delete proposal
-    $proposal = Proposal::destroy($request->input('id'));
-    if ($proposal) {
-      $proposals = DB::table('periods')
-                    ->join('proposals', 'periods.id', '=', 'proposals.period_id')
-                    ->select('periods.id as period_id', 'periods.tahun', 'proposals.id', 'proposals.skema', 'proposals.judul', 'proposals.status')
-                    ->where('periods.tahun', '=', $request->input('tahun'))
-                    ->get();
-
+    $proposals = $adminProposalService->delete($request->all());
+    if ($proposals) {
       return response()->json([
         'success' => true,
         'msg' => 'Usulan berhasil dihapus.',

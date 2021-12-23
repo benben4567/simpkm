@@ -21,7 +21,7 @@
         @endif
         <div class="row">
           <div class="col-lg-12">
-            <div class="alert alert-warning alert-has-icon">
+            <div class="alert alert-info alert-has-icon">
               <div class="alert-icon"><i class="far fa-lightbulb"></i></div>
               <div class="alert-body">
                 <div class="alert-title">Perhatian</div>
@@ -95,7 +95,7 @@
                                 <span class="badge badge-success">Selesai</span>
                               @endif
                             </td>
-                            <td><a class="btn btn-sm btn-danger" data-toggle="tooltip" data-placement="bottom" title="Download" href="{{ asset('storage/files/'.$proposal->file) }}" role="button"><i class="fas fa-file-pdf    "></i></a></td>
+                            <td><a class="btn btn-sm btn-danger" data-toggle="tooltip" data-placement="bottom" title="Download" target="_blank" href="{{ route('proposal.download', ['id' => $proposal->id]) }}" role="button"><i class="fas fa-file-pdf"></i></a></td>
                             <td>
                               <div class="btn-group">
                                 @if($proposal->period->status == 'tutup')
