@@ -12,12 +12,14 @@
         "codedge/laravel-fpdf": "^1.7",
         "fideloper/proxy": "^4.2",
         "fruitcake/laravel-cors": "^1.0",
+        "google/apiclient": "^2.12",
         "guzzlehttp/guzzle": "^6.3",
         "haruncpi/laravel-maintenance": "^1.0",
         "laravel/framework": "^7.0",
         "laravel/tinker": "^2.0",
         "laravel/ui": "2.4",
         "maatwebsite/excel": "^3.1",
+        "nao-pon/flysystem-google-drive": "~1.1",
         "novay/laravel-word-template": "^1.1"
     },
     "require-dev": {
