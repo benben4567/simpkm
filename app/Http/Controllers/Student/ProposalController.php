@@ -11,6 +11,7 @@ use App\Student;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Codedge\Fpdf\Facades\Fpdf;
 
 class ProposalController extends Controller
@@ -75,24 +76,44 @@ class ProposalController extends Controller
 
       // DB Transaction
       DB::transaction(function () use ($request) {
-        // Upload file Update
-        if($request->file('file')) {
-          $fileName = time().'.'.$request->file('file')->extension();
-          $path = $request->file('file')->storeAs(
-            'public/files', $fileName
-          );
-        }
 
-        // Select periode
-        $periode = Period::where('tahun', '=', $request->input('tahun'))->first();
-        // Store Proposal
+        // Upload file
+        if($request->file('file')) {
+          $title = preg_replace( '/[^a-z0-9]+/', '-', strtolower(Str::words($request->input('judul'), 7, '')));
+          $filename = $request->input('skema').'_'.$title.'_'.Str::random(7).'.pdf';
+
+          // get folder id by tahun
+          $periode = Period::where('tahun', '=', $request->input('tahun'))->first();
+          // if exist upload and save to table
+          if ($periode->id_folder) {
+            $file = Storage::cloud()->putFileAs($periode->id_folder, $request->file('file'), $filename);
+            $metadata = Storage::cloud()->getMetadata($file);
+            $id_file = $metadata['path'];
+          } else {
+            // create directory
+            $year = $periode->tahun;
+            $dir = Storage::cloud()->makeDirectory($year);
+            if ($dir) {
+              $contents = collect(Storage::cloud()->listContents('/', false));
+              $dir = $contents->where('type', '=', 'dir')
+                  ->where('filename', '=', $year)
+                  ->first();
+              // get directory id
+              $id_directory = $dir['path'];
+            }
+            // upload file
+            $file = Storage::cloud()->putFileAs($id_directory, $request->file('file'), $filename);
+            $metadata = Storage::cloud()->getMetadata($file);
+            $id_file = $metadata['path'];
+          }
+        }
 
         $proposal = Proposal::create([
           'period_id' => $periode->id,
           'skema' => $request->input('skema'),
           'judul' => $request->input('judul'),
           'status' => 'kompilasi',
-          'file' => $fileName
+          'file' => $id_file
         ]);
 
         // Attach Student
@@ -121,33 +142,46 @@ class ProposalController extends Controller
     {
       $this->validate($request, [
         'id' => 'required',
-        // 'skema' => 'required',
-        // 'dosen' => 'required',
         'judul' => 'required',
-        'file' => 'nullable|mimes:pdf|max:2048'
+        'file' => 'required|mimes:pdf|max:2048'
       ]);
 
       // DB Transaction
       DB::transaction(function () use ($request) {
         // Upload file Update
         if($request->file('file')) {
-          $fileName = time().'.'.$request->file('file')->extension();
-          $path = $request->file('file')->storeAs(
-            'public/files', $fileName
-          );
-        }
-
-        if ($request->file('file')) {
+          // get file id
           $proposal = Proposal::whereId($request->input('id'))->first();
-          Storage::delete('public/files/'.$proposal->file);
-          $proposal->update([
-            'file' => $fileName
-          ]);
+          $id_file = $proposal->file;
+
+          // get directory id
+          $id_directory = Period::where('id', '=', $proposal->period_id)->first()->id_folder;
+
+          // filename
+          $title = preg_replace( '/[^a-z0-9]+/', '-', strtolower(Str::words($request->input('judul'), 7, '')));
+          $filename = $proposal->skema.'_'.$title.'_'.Str::random(7).'.pdf';
+
+          // if exist delete then upload to directory and save id to table
+          $exist = Storage::cloud()->exists($id_file);
+          if ($exist) {
+            // delete old file
+            Storage::cloud()->delete($id_file);
+            // upload new file
+            $file = Storage::cloud()->putFileAs($id_directory, $request->file('file'), $filename);
+            $metadata = Storage::cloud()->getMetadata($file);
+            $id_file = $metadata['path'];
+          } else {
+            // upload new file
+            $file = Storage::cloud()->putFileAs($id_directory, $request->file('file'), $filename);
+            $metadata = Storage::cloud()->getMetadata($file);
+            $id_file = $metadata['path'];
+          }
         }
 
-        // Update Proposal
+        // Update Table Proposal
         $proposal = Proposal::whereId($request->input('id'))->update([
           'judul' => $request->input('judul'),
+          'file' => $id_file
         ]);
       });
 
@@ -239,6 +273,14 @@ class ProposalController extends Controller
       );
 
       $this->exportBerita($data, $skema);
+    }
+
+    public function downloadProposal(Request $request)
+    {
+      $proposal = Proposal::whereId($request->id)->first();
+      $metadata = Storage::cloud()->getMetadata($proposal->file);
+      $download = Storage::cloud()->download($proposal->file, $metadata['name']);
+      return $download;
     }
 
     public function exportBerita($data, $skema)

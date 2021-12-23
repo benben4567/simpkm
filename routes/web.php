@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 /*
 |--------------------------------------------------------------------------
@@ -81,6 +83,7 @@ Route::group(['middleware' => ['student', 'verified'], 'prefix' => 'student'], f
   Route::get('/usulan/member/{id}', ['as' => 'proposal.member', 'uses' => 'Student\ProposalController@member']);
   Route::get('/usulan/download/form', ['as' => 'proposal.download.form', 'uses' => 'Student\ProposalController@download']);
   Route::get('/usulan/download/berita', ['as' => 'proposal.download.berita', 'uses' => 'Student\ProposalController@download2']);
+  Route::get('/usulan/download/proposal', ['as' => 'proposal.download', 'uses' => 'Student\ProposalController@downloadProposal']);
 
   // Panduan
   Route::get('/panduan', ['as' => 'panduan.index', 'uses' => 'HomeController@panduan']);
