@@ -3,13 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Period;
+use App\Services\PeriodService;
 use Illuminate\Http\Request;
 
 class PeriodController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request, PeriodService $periodService)
     {
-      $periods = Period::withCount('proposals')->get();
+      $periods = $periodService->showAll();
 
       if ($request->ajax()) {
         return response()->json([
@@ -22,27 +23,15 @@ class PeriodController extends Controller
       return view('pages.admin.period', compact('periods'));
     }
 
-    public function store(Request $request)
+    public function store(Request $request, PeriodService $periodService)
     {
       $this->validate($request,[
         'tahun' => 'required|unique:periods,tahun'
       ]);
 
-      // cek apakah ada periode yang belum ditutup
-      $count = Period::where('status', '=', 'buka')->count();
-      if ($count == 0) {
-        $period = Period::create([
-          'tahun' => $request->input('tahun'),
-          'status' => 'buka'
-        ]);
-      } else {
-        return response()->json([
-          'success' => false,
-          'data' => null,
-          'msg' => 'Ada periode PKM yang belum ditutup.'
-        ]);
-      }
+      $period = $periodService->store($request->all());
 
+      // jika berhasil disimpan
       if ($period) {
         $periods = Period::withCount('proposals')->get();
 
@@ -60,9 +49,9 @@ class PeriodController extends Controller
       }
     }
 
-    public function show(Request $request)
+    public function show(Request $request, PeriodService $periodService)
     {
-      $period = Period::whereId($request->input('id'))->first();
+      $period = $periodService->show($request->all());
       if ($period) {
         return response()->json([
           'success' => true,
@@ -70,44 +59,18 @@ class PeriodController extends Controller
         ], 200);
       } else {
         return response()->json([
-          'success' => true,
+          'success' => false,
           'data' => null,
-        ], 200);
+        ], 404);
       }
     }
 
-    public function update(Request $request)
+    public function update(Request $request, PeriodService $periodService)
     {
-      if ($request->input('status') == 'buka') {
-        $count_period = Period::count();
-        $count_open = Period::where('status', '=', 'buka')->count();
-        if ($count_period <=1) {
-          $period = Period::whereId($request->input('id'))->update([
-            'status' => $request->input('status'),
-            'pendaftaran' => $request->input('pendaftaran')
-          ]);
-        } else {
-          if ($count_open == 0) {
-            $period = Period::whereId($request->input('id'))->update([
-              'status' => $request->input('status'),
-              'pendaftaran' => $request->input('pendaftaran')
-            ]);
-          } else {
-            return response()->json([
-              'success' => false,
-              'msg' => 'Tidak bisa membuka periode. Ada periode yang belum ditutup.'
-            ]);
-          }
-        }
-      } else {
-        $period = Period::whereId($request->input('id'))->update([
-          'status' => $request->input('status')
-        ]);
-      }
+      $period = $periodService->update($request->all());
 
       if ($period) {
         $periods = Period::withCount('proposals')->get();
-
         return response()->json([
           'success' => true,
           'data' => $periods,

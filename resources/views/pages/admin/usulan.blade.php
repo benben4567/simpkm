@@ -12,13 +12,31 @@
           <div class="card">
             <div class="card-body p-2">
               <div class="mb-2">
-                <div class="form-group">
-                  <select class="form-control selectric" name="tahun" id="tahun">
-                    <option selected disabled>Pilih Tahun</option>
-                    @foreach($periods as $period)
-                      <option value="{{ $period->tahun }}" {{ $loop->first ? 'selected' : '' }}>{{ $period->tahun }}</option>
-                    @endforeach
-                  </select>
+                <div class="row">
+                  <div class="col">
+                    <div class="form-group">
+                      <select class="form-control selectric" name="tahun" id="tahun">
+                        <option selected disabled>Pilih Tahun</option>
+                        @foreach($periods as $period)
+                          <option value="{{ $period->tahun }}" {{ $loop->first ? 'selected' : '' }}>{{ $period->tahun }}</option>
+                        @endforeach
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col">
+                    <div class="form-group">
+                      <select class="form-control selectric" name="skema" id="skema">
+                        <option value="" selected>Semua Skema</option>
+                        <option value="PKM-R">PKM-R</option>
+                        <option value="PKM-PM">PKM-PM</option>
+                        <option value="PKM-K">PKM-K</option>
+                        <option value="PKM-PI">PKM-PI</option>
+                        <option value="PKM-KC">PKM-KC</option>
+                        <option value="PKM-GT">PKM-GT</option>
+                        <option value="PKM-AI">PKM-AI</option>
+                      </select>
+                    </div>
+                  </div>
                 </div>
               </div>
               <div class="mb-3">
@@ -31,13 +49,15 @@
                       <th>#</th>
                       <th>Judul</th>
                       <th>Status Review</th>
+                      <th>Nilai Reviewer 1</th>
+                      <th>Nilai Reviewer 2</th>
                       <th>Aksi</th>
                     </tr>
                   </thead>
                   <tbody>
                     @foreach($proposals as $proposal)
                       <tr>
-                        <td>{{ $loop->iteration }}</td>
+                        <td class="text-center">{{ $loop->iteration }}</td>
                         <td>
                           <span style="word-break: normal">{{ $proposal->judul }}</span></br>
                           <strong>
@@ -53,10 +73,13 @@
                             <span class="badge badge-success">Selesai</span>
                           @endif
                         </td>
+                        <td class="text-center">{{ $proposal->nilai1 }}</td>
+                        <td class="text-center">{{ $proposal->nilai2 }}</td>
                         <td class="text-center">
                           <div class="btn-group">
                             <button type="button" class="btn btn-icon btn-sm btn-primary btn-show" title="Show" data-id="{{ $proposal->id }}"><i class="fas fa-eye"></i></button>
                             <button type="button" class="btn btn-icon btn-sm btn-warning btn-edit" title="Edit" data-id="{{ $proposal->id }}"><i class="fas fa-pencil-alt"></i></button>
+                            <button type="button" class="btn btn-icon btn-sm btn-info btn-nilai" title="Nilai" data-id="{{ $proposal->id }}"><i class="fas fa-file-signature"></i></button>
                             <button type="button" class="btn btn-icon btn-sm btn-danger btn-delete" title="Delete" data-id="{{ $proposal->id }}"><i class="fas fa-trash"></i></button>
                           </div>
                         </td>
@@ -124,6 +147,45 @@
                     <option value="proses">Proses</option>
                     <option value="selesai">Selesai</option>
                   </select>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Simpan</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+          </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Nilai -->
+    <div class="modal fade" id="modalNilai" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Nilai PKM</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <form action="" method="post" id="form-nilai">
+          @csrf
+          @method('put')
+          <input type="text" name="id-proposal" class="d-none">
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-sm-12">
+                <div class="form-group">
+                  <label for="nilai1">Nilai Reviewer 1</label>
+                  <input type="number" class="form-control" name="nilai1" id="nilai1" required>
+                  <div class="invalid-feedback" name="msg_nilai1"><ul></ul></div>
+                </div>
+                <div class="form-group">
+                  <label for="nilai2">Nilai Reviewer 2</label>
+                  <input type="number" class="form-control" name="nilai2" id="nilai2" required>
+                  <div class="invalid-feedback" name="msg_nilai2"><ul></ul></div>
                 </div>
               </div>
             </div>

@@ -10,8 +10,6 @@ $(function () {
       ordering: false,
   })
 
-
-
   $("#create-periode").submit(function (e) {
     e.preventDefault();
     $.ajax({
@@ -119,7 +117,18 @@ $(function () {
           "targets" : 3,
           "data" : null,
           "render": function (data, type, row, meta) {
-            if (row.status == "buka") {
+            if (row.status == "aktif") {
+              return `<span class="badge badge-success">Aktif</span>`;
+            } else {
+              return `<span class="badge badge-danger">Nonaktif</span>`;
+            }
+          }
+        },
+        {
+          "targets" : 4,
+          "data" : null,
+          "render": function (data, type, row, meta) {
+            if (row.pendaftaran == "buka") {
               return `<span class="badge badge-success">Buka</span>`;
             } else {
               return `<span class="badge badge-danger">Tutup</span>`;
@@ -127,7 +136,7 @@ $(function () {
           }
         },
         {
-          "targets": 4,
+          "targets": 5,
           "data": null,
           "render": function ( data, type, row, meta ) {
             return `<button type="button" class="btn btn-icon btn-sm btn-warning" title="Edit" data-id="${row.id}"><i class="fas fa-pencil-alt"></i></button>`
@@ -155,9 +164,15 @@ $(function () {
           console.log(data);
           $("input[name='id']").val(data.id);
           $("input[name='tahun']").val(data.tahun);
-          // $("select[name='status']").val(data.status);
           $("select[name='status']").val(data.status).change().selectric('refresh');
           $("select[name='pendaftaran']").val(data.pendaftaran).change().selectric('refresh');
+
+          if (data.status == 'aktif') {
+            $('.pendaftaran').show();
+          } else {
+            $('.pendaftaran').hide();
+          }
+
           $("#modalUpdate").modal("show");
         }
       }

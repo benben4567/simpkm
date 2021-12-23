@@ -20,7 +20,7 @@ class RecapController extends Controller
 
     $id = $request->input('periode');
     $periode = Period::find($id);
-    $name = "Rekap".$periode->tahun."-".Str::random(5).".xlsx";
+    $name = "Rekap_".$periode->tahun."-".Str::random(5).".xlsx";
     return (new ProposalsExport($id))->download($name);
     // $proposals = Proposal::with(['students' =>function($q) {
     //               $q->wherePivot('jabatan', '=', 'Ketua');

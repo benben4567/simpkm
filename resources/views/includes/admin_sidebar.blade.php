@@ -8,4 +8,5 @@
                 </ul>
               </li>
               <li class="{{ set_active(['user.index', 'user.create', 'user.show']) }}"><a class="nav-link" href="{{ route('user.index') }}"><i class="fas fa-users"></i> <span>Data User</span></a></li>
+              <li class="{{ set_active('major.index') }}"><a class="nav-link" href="{{ route('major.index') }}"><i class="fas fa-university"></i> <span>Data Prodi</span></a></li>
               <li class="{{ set_active('recap.index') }}"><a class="nav-link" href="{{ route('recap.index') }}"><i class="fas fa-clipboard-list"></i> <span>Rekapitulasi</span></a></li>
