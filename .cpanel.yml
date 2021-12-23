@@ -1,5 +1,5 @@
 ---
 deployment:
-tasks:
-- export DEPLOYPATH=/home/itsksoep/simpkm.itsk-soepraoen.ac.id
-- /bin/cp -r * $DEPLOYPATH
+  tasks:
+    - export DEPLOYPATH=/home/itsksoep/simpkm.itsk-soepraoen.ac.id
+    - /bin/cp -r * $DEPLOYPATH
