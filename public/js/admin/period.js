@@ -38,9 +38,17 @@ $(function () {
           )
         }
       },
-      error: function(error) {
+      error: function(xhr) {
         $.LoadingOverlay('hide')
-        console.log(error.responseText)
+        if (xhr.status == 422) {
+          Swal.fire(
+            'Gagal!',
+            'Tahun Pembukaan sudah ada.',
+            'error'
+          )
+        } else {
+          console.log(xhr)
+        }
       }
     });
   });
