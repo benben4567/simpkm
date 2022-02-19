@@ -328,7 +328,7 @@ class ProposalController extends Controller
 
       // delete file
       $proposal = Proposal::whereId($request->input('id'))->first();
-      Storage::delete('public/files/'.$proposal->file);
+      Storage::cloud()->delete($proposal->file);
 
       // delete proposal
       $proposal = Proposal::destroy($request->input('id'));
