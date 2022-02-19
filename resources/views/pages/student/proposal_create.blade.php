@@ -28,7 +28,7 @@
                     <div class="col-md-12 col-lg-6">
                       <div class="form-group">
                         <label for="">Skema PKM</label>
-                        <select class="form-control selectric @error('skema') is-invalid @enderror" name="skema" id="skema">
+                        <select class="form-control @error('skema') is-invalid @enderror" name="skema" id="skema">
                           <option selected disabled>- pilih -</option>
                           <option value="PKM-R" {{ old('skema') == 'PKM-R' ? 'selected' : ''}}>PKM-R</option>
                           <option value="PKM-K" {{ old('skema') == 'PKM-K' ? 'selected' : ''}}>PKM-K</option>
@@ -62,12 +62,17 @@
                     <div class="col-md-12 col-lg-6">
                       <div class="form-group">
                         <label for="dosen">Dosen Pendamping</label>
-                        <select class="form-control selectric" name="dosen" id="dosen">
+                        <select class="form-control @error('dosen') is-invalid @enderror" name="dosen" id="dosen">
                           <option selected disabled>- pilih -</option>
                           @foreach($teachers as $teacher)
                           <option value="{{ $teacher->id }}" {{ old('dosen') == $teacher->id ? 'selected' : ''}}>{{ $teacher->nama }}</option>
                           @endforeach
                         </select>
+                        @error('dosen')
+                          <div class="invalid-feedback">
+                            {{ $message }}
+                          </div>
+                        @enderror
                       </div>
                     </div>
                   </div>
