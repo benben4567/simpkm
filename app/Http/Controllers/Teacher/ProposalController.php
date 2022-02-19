@@ -16,22 +16,28 @@ class ProposalController extends Controller
       $periods = Period::all()->sortByDesc('tahun');
       $now = $periods->first();
 
-      if ($request->input('periode')) {
-        $periode = $request->input('periode');
-        $now = Period::where('id', $periode)->first();
+      if ($now) {
+        if ($request->input('periode')) {
+          $periode = $request->input('periode');
+          $now = Period::where('id', $periode)->first();
 
-        $teacher = Teacher::with(['proposals' => function($q) use ($now) {
-                $q->where('period_id', $now->id);
-                $q->wherePivot('jabatan', '=', 'Pembimbing')->get();
-              }])->whereId(Auth::user()->teacher->id)->first();
+          $teacher = Teacher::with(['proposals' => function($q) use ($now) {
+                  $q->where('period_id', $now->id);
+                  $q->wherePivot('jabatan', '=', 'Pembimbing')->get();
+                }])->whereId(Auth::user()->teacher->id)->first();
 
-        return view('pages.teacher.proposal', compact('teacher', 'periods', 'now', 'periode'));
+          return view('pages.teacher.proposal', compact('teacher', 'periods', 'now', 'periode'));
+        } else {
+          // Only show if jabatan == Pembimbing
+          $teacher = Teacher::with(['proposals' => function($q) use ($now) {
+                      $q->where('period_id', $now->id);
+                      $q->wherePivot('jabatan', '=', 'Pembimbing')->get();
+                    }])->whereId(Auth::user()->teacher->id)->first();
+        }
       } else {
-        // Only show if jabatan == Pembimbing
         $teacher = Teacher::with(['proposals' => function($q) use ($now) {
-                    $q->where('period_id', $now->id);
-                    $q->wherePivot('jabatan', '=', 'Pembimbing')->get();
-                  }])->whereId(Auth::user()->teacher->id)->first();
+          $q->wherePivot('jabatan', '=', 'Pembimbing')->get();
+        }])->whereId(Auth::user()->teacher->id)->first();
       }
 
       return view('pages.teacher.proposal', compact('teacher', 'periods', 'now'));
@@ -72,23 +78,31 @@ class ProposalController extends Controller
       $periods = Period::all()->sortByDesc('tahun');
       $now = $periods->first();
 
-      if ($request->input('periode')) {
-        $periode = $request->input('periode');
-        $now = Period::where('id', $periode)->first();
+      if ($now) {
+        if ($request->input('periode')) {
+          $periode = $request->input('periode');
+          $now = Period::where('id', $periode)->first();
 
-        $teacher = Teacher::with(['proposals' => function($q) use ($now){
-                      $q->where('period_id', $now->id);
-                      $q->wherePivot('jabatan', '!=', 'Pembimbing')->get();
-                  }])->whereId(Auth::user()->teacher->id)->first();
+          $teacher = Teacher::with(['proposals' => function($q) use ($now){
+                        $q->where('period_id', $now->id);
+                        $q->wherePivot('jabatan', '!=', 'Pembimbing')->get();
+                    }])->whereId(Auth::user()->teacher->id)->first();
 
-        return view('pages.teacher.reviewer', compact('teacher', 'periods', 'now', 'periode'));
+          return view('pages.teacher.reviewer', compact('teacher', 'periods', 'now', 'periode'));
+        } else {
+          // Only show if jabatan == Reviewer
+          $teacher = Teacher::with(['proposals' => function($q) use ($now) {
+            $q->where('period_id', $now->id);
+            $q->wherePivot('jabatan', '!=', 'Pembimbing')->get();
+          }])->whereId(Auth::user()->teacher->id)->first();
+        }
       } else {
         // Only show if jabatan == Reviewer
         $teacher = Teacher::with(['proposals' => function($q) use ($now) {
-          $q->where('period_id', $now->id);
           $q->wherePivot('jabatan', '!=', 'Pembimbing')->get();
         }])->whereId(Auth::user()->teacher->id)->first();
       }
+
       return view('pages.teacher.reviewer', compact('teacher', 'periods', 'now'));
     }
 

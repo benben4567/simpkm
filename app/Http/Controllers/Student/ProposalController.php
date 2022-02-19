@@ -94,22 +94,6 @@ class ProposalController extends Controller
             $file = Storage::cloud()->putFileAs($periode->id_folder, $request->file('file'), $filename);
             $metadata = Storage::cloud()->getMetadata($file);
             $id_file = $metadata['path'];
-          } else {
-            // create directory
-            $year = $periode->tahun;
-            $dir = Storage::cloud()->makeDirectory($year);
-            if ($dir) {
-              $contents = collect(Storage::cloud()->listContents('/', false));
-              $dir = $contents->where('type', '=', 'dir')
-                  ->where('filename', '=', $year)
-                  ->first();
-              // get directory id
-              $id_directory = $dir['path'];
-            }
-            // upload file
-            $file = Storage::cloud()->putFileAs($id_directory, $request->file('file'), $filename);
-            $metadata = Storage::cloud()->getMetadata($file);
-            $id_file = $metadata['path'];
           }
         }
 
@@ -328,7 +312,7 @@ class ProposalController extends Controller
 
       // delete file
       $proposal = Proposal::whereId($request->input('id'))->first();
-      Storage::delete('public/files/'.$proposal->file);
+      Storage::cloud()->delete($proposal->file);
 
       // delete proposal
       $proposal = Proposal::destroy($request->input('id'));
