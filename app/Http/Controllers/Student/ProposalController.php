@@ -22,27 +22,32 @@ class ProposalController extends Controller
       $periods = Period::all()->sortByDesc('tahun');
       $now = $periods->first();
 
-      if ($request->input('periode')) {
-        $periode = $request->input('periode');
-        $now = Period::where('id', $periode)->first();
-        $student = Student::with(['proposals' => function($q) use ($now) {
+      if ($now) {
+        if ($request->input('periode')) {
+          $periode = $request->input('periode');
+          $now = Period::where('id', $periode)->first();
+          $student = Student::with(['proposals' => function($q) use ($now) {
+                        $q->where('period_id', $now->id);
+                      }])->whereId(Auth::user()->student->id)->first();
+
+
+          return view('pages.student.proposal', compact('student', 'periods', 'now', 'periode'));
+
+          // return redirect()->back()->withInput()->with([
+          //   'student' => $student,
+          //   'periods' => $periods,
+          //   'now' => $now
+          // ]);
+
+        } else {
+          $student = Student::with(['proposals' => function($q) use ($now) {
                       $q->where('period_id', $now->id);
                     }])->whereId(Auth::user()->student->id)->first();
-
-
-        return view('pages.student.proposal', compact('student', 'periods', 'now', 'periode'));
-
-        // return redirect()->back()->withInput()->with([
-        //   'student' => $student,
-        //   'periods' => $periods,
-        //   'now' => $now
-        // ]);
-
+        }
       } else {
-        $student = Student::with(['proposals' => function($q) use ($now) {
-                    $q->where('period_id', $now->id);
-                  }])->whereId(Auth::user()->student->id)->first();
+        $student = Student::whereId(Auth::user()->student->id)->first();
       }
+
 
       return view('pages.student.proposal', compact('student', 'periods', 'now'));
     }
