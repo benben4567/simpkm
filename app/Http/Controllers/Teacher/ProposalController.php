@@ -217,8 +217,7 @@ class ProposalController extends Controller
         '[EMAIL]' => $proposal->ketua->first()->user->email,
         '[PENDAMPING]' => $proposal->pembimbing->first()->nama,
         '[JUDUL]' => $proposal->judul,
-        '[REVIEWER1]' => $proposal->reviewer1->first()->nama,
-        '[REVIEWER2]' => $proposal->reviewer2->first()->nama
+        '[REVIEWER]' => $proposal->reviewer->first()->nama,
       );
 
       $this->exportForm($data,$skema);
@@ -238,9 +237,8 @@ class ProposalController extends Controller
         '[PENDAMPING]' => $proposal->pembimbing->first()->nama,
         '[JUDUL]' => $proposal->judul,
         '[SKEMA]' => $proposal->skema,
-        '[REVIEWER1]' => $proposal->reviewer1->first()->nama,
-        '[REVIEWER2]' => $proposal->reviewer2->first()->nama,
-        '[NIDNREVIEWER1]' => $proposal->reviewer1->first()->nidn,
+        '[REVIEWER]' => $proposal->reviewer->first()->nama,
+        '[NIDNREVIEWER]' => $proposal->reviewer->first()->nidn,
       );
 
       $this->exportBerita($data, $skema);
