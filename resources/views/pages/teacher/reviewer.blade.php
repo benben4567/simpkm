@@ -39,8 +39,7 @@
                             <th>Judul</th>
                             <th>Jabatan</th>
                             <th>Status Usulan</th>
-                            <th>Proposal</th>
-                            <th>Aksi</th>
+                            <th>Review</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -60,11 +59,10 @@
                                 <span class="badge badge-success">Selesai</span>
                               @endif
                             </td>
-                            <td><a class="btn btn-sm btn-danger" href="{{ asset('/storage/files/'.$proposal->file) }}" role="button"><i class="fas fa-file-pdf"></i></a></td>
                             <td>
                               <div class="btn-group">
-                                <button type="button" data-toggle="tooltip" data-placement="bottom" title="Lihat" class="btn btn-sm btn-primary btn-show" data-proposal="{{ $proposal->id }}"><i class="fas fa-eye"></i></button>
-                                <button type="button" data-toggle="tooltip" data-placement="bottom" title="Download" class="btn btn-sm btn-success btn-download" data-proposal="{{ $proposal->id }}"><i class="fas fa-download"></i></button>
+                                <a href="{{ route('teacher.proposal.review.detail', ['id' => $proposal->id]) }}" role="button" data-toggle="tooltip" data-placement="bottom" title="Review" class="btn btn-sm btn-primary">Review</a>
+                                {{-- <button type="button" data-toggle="tooltip" data-placement="bottom" title="Download" class="btn btn-sm btn-success btn-download" data-proposal="{{ $proposal->id }}"><i class="fas fa-download"></i></button> --}}
                               </div>
                             </td>
                           </tr>

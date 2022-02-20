@@ -2,17 +2,20 @@
 
 namespace App\Http\Controllers\Student;
 
+use App\Helpers\ResponseFormatter;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Period;
 use App\Teacher;
 use App\Proposal;
+use App\Review;
 use App\Student;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Codedge\Fpdf\Facades\Fpdf;
+use Illuminate\Support\Facades\Validator;
 
 class ProposalController extends Controller
 {
@@ -57,9 +60,8 @@ class ProposalController extends Controller
       $proposal = Proposal::findOrFail($id);
       $members = $proposal->students;
       $pembimbing = $proposal->pembimbing->first();
-      $reviewer1 = $proposal->reviewer1->first();
-      $reviewer2 = $proposal->reviewer2->first();
-      return view('pages.student.proposal_show', compact('proposal','members', 'pembimbing', 'reviewer1', 'reviewer2'));
+      $reviewer = $proposal->reviewer->first();
+      return view('pages.student.proposal_show', compact('proposal','members', 'pembimbing', 'reviewer'));
     }
 
     public function create()
@@ -90,18 +92,26 @@ class ProposalController extends Controller
           // get folder id by tahun
           $periode = Period::where('tahun', '=', $request->input('tahun'))->first();
           // if exist upload and save to table
-          if ($periode->id_folder) {
-            $file = Storage::cloud()->putFileAs($periode->id_folder, $request->file('file'), $filename);
+          if ($periode->id_folder_review) {
+            $file = Storage::cloud()->putFileAs($periode->id_folder_review, $request->file('file'), $filename);
             $metadata = Storage::cloud()->getMetadata($file);
             $id_file = $metadata['path'];
           }
         }
 
+        // simpan ke table proposal
         $proposal = Proposal::create([
           'period_id' => $periode->id,
           'skema' => $request->input('skema'),
           'judul' => $request->input('judul'),
           'status' => 'kompilasi',
+        ]);
+
+        // simpan ke table proposal
+        $review = $proposal->reviews()->create([
+          'user_id' => auth()->user()->id,
+          'type' => auth()->user()->role,
+          'description' => 'Usulan Proposal Awal',
           'file' => $id_file
         ]);
 
@@ -129,11 +139,23 @@ class ProposalController extends Controller
 
     public function update(Request $request)
     {
-      $this->validate($request, [
-        'id' => 'required',
-        'judul' => 'required',
-        'file' => 'required|mimes:pdf|max:2048'
-      ]);
+
+      $proposal = Proposal::find($request->input('id'));
+
+      if ($proposal->status == 'kompilasi') {
+        $validator = [
+          'id' => 'required',
+          'judul' => 'required',
+          'file' => 'required|mimes:pdf|max:2048'
+        ];
+      } else {
+        $validator = [
+          'id' => 'required',
+          'judul' => 'required',
+        ];
+      }
+
+      $this->validate($request, $validator);
 
       // DB Transaction
       DB::transaction(function () use ($request) {
@@ -165,13 +187,19 @@ class ProposalController extends Controller
             $metadata = Storage::cloud()->getMetadata($file);
             $id_file = $metadata['path'];
           }
+
+
+          // Update Table Proposal
+          $proposal = Proposal::whereId($request->input('id'))->update([
+            'judul' => $request->input('judul'),
+            'file' => $id_file
+          ]);
+        } else {
+          $proposal = Proposal::whereId($request->input('id'))->update([
+            'judul' => $request->input('judul'),
+          ]);
         }
 
-        // Update Table Proposal
-        $proposal = Proposal::whereId($request->input('id'))->update([
-          'judul' => $request->input('judul'),
-          'file' => $id_file
-        ]);
       });
 
       return redirect()->route('proposal.index')->with('success','Data berhasil diupdate');
@@ -184,10 +212,12 @@ class ProposalController extends Controller
       $members_id = $proposal->students->pluck('id')->toArray();
       $students = Student::whereNotIn('id', $members_id)->get();
       $pembimbing = $proposal->pembimbing->first();
-      $reviewer1 = $proposal->reviewer1->first();
-      $reviewer2 = $proposal->reviewer2->first();
+      $reviewer = $proposal->reviewer->first();
+      $ketua = $proposal->ketua->first();
+
+      return view('pages.student.proposal_member', compact('proposal','members', 'students', 'pembimbing', 'reviewer', 'ketua'));
+
       if ($members->first()->id == Auth::user()->student->id) {
-        return view('pages.student.proposal_member', compact('proposal','members', 'students', 'pembimbing', 'reviewer1', 'reviewer2'));
       } else {
         return abort(404);
       }
@@ -219,6 +249,58 @@ class ProposalController extends Controller
         'success' => true,
         'msg' => 'Anggota telah dihapus'
       ]);
+    }
+
+    public function review($id)
+    {
+      $proposal = Proposal::whereId($id)->with('reviews.user')->first();
+      $periode = $proposal->period->first();
+      $ketua = $proposal->ketua->first();
+      $pembimbing = $proposal->pembimbing->first();
+      $reviewer = $proposal->reviewer->first();
+      $anggota = $proposal->anggota->toArray();
+
+
+
+      return view('pages.student.review', compact('proposal', 'periode', 'ketua', 'pembimbing', 'reviewer', 'anggota'));
+    }
+
+    public function reviewStore(Request $request)
+    {
+      $validator = Validator::make($request->all(), [
+        'id-proposal' => 'required',
+        'id-folder' => 'required',
+        'deskripsi' => 'nullable',
+        'file' => 'required|file|max:5120',
+      ]);
+
+      if ($validator->fails()) {
+        return ResponseFormatter::error(null, $validator->errors(), 422);
+      }
+
+      $proposal = Proposal::find($request->input('id-proposal'));
+
+      // if exist upload and save to table
+      $title = preg_replace( '/[^a-z0-9]+/', '-', strtolower(Str::words($proposal->judul, 7, '')));
+      $filename = $proposal->skema.'_'.$title.'_'.time().'.pdf';
+
+      $file = Storage::cloud()->putFileAs($request->input('id-folder'), $request->file('file'), $filename);
+      $metadata = Storage::cloud()->getMetadata($file);
+      $id_file = $metadata['path'];
+
+      // simpan ke table review
+      $review = $proposal->reviews()->create([
+        'user_id' => auth()->user()->id,
+        'type' => auth()->user()->role,
+        'description' => $request->deskripsi,
+        'file' => $id_file
+      ]);
+
+      if ($review) {
+        return ResponseFormatter::success($review, 'Data Berhasil disimpan', 201);
+      } else {
+        return ResponseFormatter::error(null, 'Data Gagal disimpan', 500);
+      }
     }
 
     public function download(Request $request)
@@ -266,9 +348,9 @@ class ProposalController extends Controller
 
     public function downloadProposal(Request $request)
     {
-      $proposal = Proposal::whereId($request->id)->first();
-      $metadata = Storage::cloud()->getMetadata($proposal->file);
-      $download = Storage::cloud()->download($proposal->file, $metadata['name']);
+      // $proposal = Proposal::whereId($request->id)->first();
+      $metadata = Storage::cloud()->getMetadata($request->file);
+      $download = Storage::cloud()->download($request->file, $metadata['name']);
       return $download;
     }
 
@@ -312,10 +394,14 @@ class ProposalController extends Controller
 
       // delete file
       $proposal = Proposal::whereId($request->input('id'))->first();
-      Storage::cloud()->delete($proposal->file);
+      $file = $proposal->reviews()->first();
+      Storage::cloud()->delete($file->file);
 
+      // delete in pivot table
+      $pivot = DB::table('proposal_student')->where('proposal_id', $request->input('id'))->delete();
       // delete proposal
       $proposal = Proposal::destroy($request->input('id'));
+
       return redirect()->back();
     }
 }

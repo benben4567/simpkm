@@ -49,7 +49,6 @@ $(document).ready(function () {
         $.LoadingOverlay("show")
       },
       success: function (response) {
-        // console.log(response)
         $.LoadingOverlay("hide")
         if (response.success) {
           var data = response.data
@@ -58,8 +57,7 @@ $(document).ready(function () {
           $("#judul").html(data.proposal.judul);
           $("#pembimbing").html(data.pembimbing.nama);
           $("#ketua").html(data.ketua.nama);
-          $("#reviewer1").html(data.reviewer1 ? data.reviewer1.nama : '-');
-          $("#reviewer2").html(data.reviewer2 ? data.reviewer2.nama : '-');
+          $("dd#reviewer").html(data.reviewer ? data.reviewer.nama : '-');
           $.each(anggota, function(key, value) {
             $("#anggota ul").append('<li>'+ value.nama +'</li>');
           })

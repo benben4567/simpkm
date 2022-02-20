@@ -194,12 +194,12 @@ class UserController extends Controller
         }
         // import excel using try catch
         try {
-          Excel::import($import, 'public/excel/'.$fileName);
-        } catch (\Throwable $th) {
+          Excel::import($import, $path);
+        } catch (\Exception $e) {
           return response()->json([
             'success' => false,
             'data' => null,
-            'msg' => $th
+            'msg' => $e->getMessage(),
           ], 500);
         }
 

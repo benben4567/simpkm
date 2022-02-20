@@ -32,25 +32,8 @@ class PeriodController extends Controller
 
       $period = $periodService->store($request->all());
 
-      // buat folder di google drive
-      $year = $request->tahun;
-      $dir = Storage::cloud()->makeDirectory($year);
-      if ($dir) {
-        $contents = collect(Storage::cloud()->listContents('/', false));
-        $dir = $contents->where('type', '=', 'dir')
-            ->where('filename', '=', $year)
-            ->first();
-        // get directory id
-        $id_directory = $dir['path'];
-      }
-
-      // update id_folder
-      $update = Period::where('id', $period->id)->update([
-        'id_folder' => $id_directory
-      ]);
-
       // jika berhasil disimpan
-      if ($update) {
+      if ($period) {
         $periods = Period::withCount('proposals')->get();
 
         return response()->json([

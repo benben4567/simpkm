@@ -54,19 +54,23 @@
                       </div>
                     @enderror
                   </div>
-                  <div class="form-group">
-                    <label for="">Upload File Proposal</label>
-                    <div class="custom-file">
-                      <input type="file" class="custom-file-input @error('file') is-invalid @enderror" accept="application/pdf" name="file" id="customFile">
-                      <label class="custom-file-label" for="customFile"></label>
-                      <small id="fileHelpId" class="form-text text-muted">Format file : PDF</small>
-                      @error('file')
-                        <div class="invalid-feedback">
-                          {{ $message }}
-                        </div>
-                      @enderror
+
+                  @if ($proposal->status == 'kompilasi')
+                    <div class="form-group">
+                      <label for="">Upload File Proposal</label>
+                      <div class="custom-file">
+                        <input type="file" class="custom-file-input @error('file') is-invalid @enderror" accept="application/pdf" name="file" id="customFile">
+                        <label class="custom-file-label" for="customFile"></label>
+                        <small id="fileHelpId" class="form-text text-muted">Format file : PDF</small>
+                        @error('file')
+                          <div class="invalid-feedback">
+                            {{ $message }}
+                          </div>
+                        @enderror
+                      </div>
                     </div>
-                  </div>
+                  @endif
+
                   <div>
                     <button type="submit" class="btn btn-primary">Simpan</button>
                     <a class="btn btn-secondary ml-2" href="{{ route('proposal.index') }}" role="button">Kembali</a>

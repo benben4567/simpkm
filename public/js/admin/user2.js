@@ -253,7 +253,7 @@ $(document).ready(function () {
         $("div.invalid-feedback").find('ul').empty();
       },
       success: function (response) {
-        $('#modalImport').modal("hide")
+        $('#modalImport*').modal("hide")
         $('.custom-file-label').html("Choose file");
         $.LoadingOverlay("hide")
         if (response.success) {

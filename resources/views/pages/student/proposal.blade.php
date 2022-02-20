@@ -79,17 +79,17 @@
                             <th>Judul</th>
                             <th>Jabatan</th>
                             <th>Status Usulan</th>
-                            <th>Proposal</th>
+                            <th>Anggota</th>
+                            <th>Review</th>
                             <th>Aksi</th>
-                            <th>Hapus</th>
                           </tr>
                         </thead>
                         <tbody>
                           @foreach($student->proposals as $proposal)
                           <tr class="text-center">
                             <td class="text-left">
-                              <strong>{{ $proposal->skema }}</strong></br>
-                              <span>{{ $proposal->judul }}</span>
+                              <strong>{{ $proposal->judul }}</strong></br>
+                              <span>{{ $proposal->skema }}</span>
                             </td>
                             <td>{{ $proposal->pivot->jabatan }}</td>
                             <td>
@@ -101,39 +101,31 @@
                                 <span class="badge badge-success">Selesai</span>
                               @endif
                             </td>
-                            <td><a class="btn btn-sm btn-danger" data-toggle="tooltip" data-placement="bottom" title="Download" target="_blank" href="{{ route('proposal.download', ['id' => $proposal->id]) }}" role="button"><i class="fas fa-file-pdf"></i></a></td>
                             <td>
-                              <div class="btn-group">
                                 @if($proposal->period->status == 'tutup')
-                                  @if($proposal->pivot->jabatan == "Ketua")
-                                    <button class="btn btn-sm btn-secondary" type="button" data-toggle="tooltip" data-placement="bottom" title="Edit"><i class="fas fa-pencil-alt"></i></a>
-                                    <button class="btn btn-sm btn-secondary" type="button" data-toggle="tooltip" data-placement="bottom" title="Anggota"><i class="fas fa-users"></i></a>
-                                  @endif
-                                  <button class="btn btn-sm btn-secondary" type="button" data-toggle="tooltip" data-placement="bottom" title="Download"><i class="fas fa-download"></i></button>
+                                  <button class="btn btn-sm btn-secondary" type="button" data-toggle="tooltip" data-placement="bottom" title="Anggota"><i class="fas fa-users"></i></a>
                                 @else
-                                  @if($proposal->pivot->jabatan == "Ketua")
-                                    <a class="btn btn-sm btn-warning" data-toggle="tooltip" data-placement="bottom" title="Edit" href="{{ route('proposal.edit', ["id" => $proposal->id]) }}" role="button"><i class="fas fa-pencil-alt"></i></a>
-                                    <a class="btn btn-sm btn-primary mx-1" data-toggle="tooltip" data-placement="bottom" title="Anggota" href="{{ route('proposal.member', ["id" => $proposal->id]) }}" role="button"><i class="fas fa-users"></i></a>
-                                  @endif
-                                  <button type="button" class="btn btn-sm {{ $proposal->status == 'kompilasi' ? 'btn-secondary' : 'btn-success'}} btn-download" data-toggle="tooltip" data-placement="bottom" title="Download" data-proposal="{{ $proposal->id }}" {{ $proposal->status == 'kompilasi' ? 'disabled' : ''}}><i class="fas fa-download"></i></button>
+                                  <a class="btn btn-sm btn-primary mx-1" data-toggle="tooltip" data-placement="bottom" title="Anggota" href="{{ route('proposal.member', ["id" => $proposal->id]) }}" role="button"><i class="fas fa-users"></i></a>
                                 @endif
-                              </div>
+                            </td>
+                            <td>
+                              <a class="btn btn-sm btn-primary mx-1" data-toggle="tooltip" data-placement="bottom" title="Review" href="{{ route('proposal.review', ["id" => $proposal->id]) }}" role="button"><i class="fas fa-user-edit"></i></a>
                             </td>
                             <td>
                               @if($proposal->pivot->jabatan == "Ketua")
                                 @if($proposal->period->status == 'tutup' || $proposal->status != 'kompilasi')
-                                  <button type="button" class="btn btn-sm btn-secondary" data-toggle="tooltip" data-placement="bottom" title="Hapus"><i class="fas fa-times"></i></button>
+                                  <button class="btn btn-sm btn-secondary mx-1" type="button" data-toggle="tooltip" data-placement="bottom" title="Edit"><i class="fas fa-pencil-alt"></i></a>
+                                  <button class="btn btn-sm btn-secondary mx-1" type="button" data-toggle="tooltip" data-placement="bottom" title="Hapus"><i class="fas fa-trash-alt"></i></button>
                                 @else
+                                  <a class="btn btn-sm btn-warning" data-toggle="tooltip" data-placement="bottom" title="Edit" href="{{ route('proposal.edit', ["id" => $proposal->id]) }}" role="button"><i class="fas fa-pencil-alt"></i></a>
                                   <form action="{{ route('proposal.delete') }}" class="form-delete" method="post">
                                     @csrf
                                     @method('delete')
                                     <input type="hidden" name="id" value="{{ $proposal->id }}">
-                                    <button type="button" class="btn btn-sm btn-danger btn-delete" data-toggle="tooltip" data-placement="bottom" title="Hapus"><i class="fas fa-times"></i></button>
+                                    <button type="button" class="btn btn-sm btn-danger btn-delete" data-toggle="tooltip" data-placement="bottom" title="Hapus"><i class="fas fa-trash-alt"></i></button>
                                   </form>
                                   {{-- <a class="btn btn-sm btn-danger btn-delete" data-toggle="tooltip" data-placement="bottom" data-id="{{ $proposal->id }}" title="Hapus" href="#" role="button"><i class="fas fa-times"></i></a> --}}
                                 @endif
-                              @else
-                                <button type="button" class="btn btn-sm btn-secondary" data-toggle="tooltip" data-placement="bottom" title="Hapus"><i class="fas fa-times"></i></button>
                               @endif
                             </td>
                           </tr>
