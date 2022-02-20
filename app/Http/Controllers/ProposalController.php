@@ -25,8 +25,14 @@ class ProposalController extends Controller
 
     $periods = Period::orderBy('tahun', 'DESC')->get();
     $teachers = Teacher::orderBy('nama', 'ASC')->get();
-    $now = $periods->first()->id;
-    $proposals = Proposal::where('period_id', $now)->get();
+
+    if ($periods) {
+      $now = $periods->first()->id;
+      $proposals = Proposal::where('period_id', $now)->get();
+    } else {
+      $proposals = Proposal::all();
+    }
+
     return view('pages.admin.usulan', compact('periods', 'teachers', 'proposals'));
   }
 
