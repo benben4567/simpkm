@@ -37,8 +37,8 @@
                 @if ($proposal->reviews->last()->acc == 1)
                   <a type="button" class="btn btn-danger" href="{{ route('teacher.proposal.download', ['file' => $proposal->file]) }}"><i class="fas fa-file-pdf"></i> Proposal ACC</a>
                   @if ($reviewer->user_id == auth()->user()->id)
-                    <button type="button" class="btn btn-info"><i class="fas fa-file-word"></i> Form Penilaian</button>
-                    <button type="button" class="btn btn-info"><i class="fas fa-file-word"></i> Berita Acara</button>
+                    <button type="button" class="btn btn-info btn-form"><i class="fas fa-file-word"></i> Form Penilaian</button>
+                    <button type="button" class="btn btn-info btn-berita"><i class="fas fa-file-word"></i> Berita Acara</button>
                   @endif
                 @else
                   @if ($reviewer->user_id == auth()->user()->id)
@@ -186,6 +186,16 @@
         </div>
       </div>
     </div>
+
+    <form action="{{ route('teacher.proposal.download.berita') }}" id="form-berita" method="get" class="d-none">
+      @csrf
+      <input type="text" name="id" value="{{ $proposal->id }}">
+    </form>
+
+    <form action="{{ route('teacher.proposal.download.form') }}" id="form-penilaian" method="get" class="d-none">
+      @csrf
+      <input type="text" name="id" value="{{ $proposal->id }}">
+    </form>
   </div>
 @endsection
 
