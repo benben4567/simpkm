@@ -33,8 +33,7 @@ class AdminProposalService
   {
     $proposal_id = $data['id'];
     $pembimbing = $data['pembimbing'];
-    $reviewer1 = $data['reviewer_1'];
-    $reviewer2 = $data['reviewer_2'];
+    $reviewer = $data['reviewer'];
     $status = $data['status'];
 
     $proposal = Proposal::where('id', $proposal_id);
@@ -45,13 +44,12 @@ class AdminProposalService
       $reviewer = $proposal->first()
                     ->teachers()->sync([
                       $pembimbing => ['jabatan' => 'Pembimbing'],
-                      $reviewer1 => ['jabatan' => 'Reviewer 1'],
-                      $reviewer2 => ['jabatan' => 'Reviewer 2']
+                      $reviewer => ['jabatan' => 'Reviewer']
                     ]);
 
       $proposals = DB::table('periods')
                     ->join('proposals', 'periods.id', '=', 'proposals.period_id')
-                    ->select('periods.id as period_id', 'periods.tahun', 'proposals.id', 'proposals.skema', 'proposals.judul', 'proposals.status',  'proposals.nilai1', 'proposals.nilai2')
+                    ->select('periods.id as period_id', 'periods.tahun', 'proposals.id', 'proposals.skema', 'proposals.judul', 'proposals.status',  'proposals.nilai')
                     ->where('periods.tahun', '=', $tahun)
                     ->get();
     } else {
@@ -65,12 +63,12 @@ class AdminProposalService
   {
     $proposal = Proposal::where('id', $data['id-proposal']);
     $tahun = $proposal->first()->period->tahun;
-    $update = $proposal->update(['nilai1' => $data['nilai1'], 'nilai2' => $data['nilai2']]);
+    $update = $proposal->update(['nilai' => $data['nilai']]);
 
     if($update) {
       $proposals = DB::table('periods')
                       ->join('proposals', 'periods.id', '=', 'proposals.period_id')
-                      ->select('periods.id as period_id', 'periods.tahun', 'proposals.id', 'proposals.skema', 'proposals.judul', 'proposals.status', 'proposals.nilai1', 'proposals.nilai2')
+                      ->select('periods.id as period_id', 'periods.tahun', 'proposals.id', 'proposals.skema', 'proposals.judul', 'proposals.status', 'proposals.nilai')
                       ->where('periods.tahun', '=', $tahun)
                       ->get();
     } else {
@@ -86,14 +84,16 @@ class AdminProposalService
 
     // delete file
     $proposal = Proposal::whereId($data['id'])->first();
-    Storage::delete('public/files/'.$proposal->file);
+    Storage::cloud()->delete($proposal->file);
 
+    // delete in pivot table
+    $pivot = DB::table('proposal_student')->where('proposal_id', $data['id'])->delete();
     // delete proposal
     $proposal = Proposal::destroy($data['id']);
     if ($proposal) {
       $proposals = DB::table('periods')
                     ->join('proposals', 'periods.id', '=', 'proposals.period_id')
-                    ->select('periods.id as period_id', 'periods.tahun', 'proposals.id', 'proposals.skema', 'proposals.judul', 'proposals.status',  'proposals.nilai1', 'proposals.nilai2')
+                    ->select('periods.id as period_id', 'periods.tahun', 'proposals.id', 'proposals.skema', 'proposals.judul', 'proposals.status',  'proposals.nilai')
                     ->where('periods.tahun', '=', $data['tahun'])
                     ->get();
       return $proposals;

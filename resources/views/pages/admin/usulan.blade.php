@@ -49,8 +49,7 @@
                       <th>#</th>
                       <th>Judul</th>
                       <th>Status Review</th>
-                      <th>Nilai Reviewer 1</th>
-                      <th>Nilai Reviewer 2</th>
+                      <th>Nilai</th>
                       <th>Aksi</th>
                     </tr>
                   </thead>
@@ -73,11 +72,10 @@
                             <span class="badge badge-success">Selesai</span>
                           @endif
                         </td>
-                        <td class="text-center">{{ $proposal->nilai1 }}</td>
-                        <td class="text-center">{{ $proposal->nilai2 }}</td>
+                        <td class="text-center">{{ $proposal->nilai }}</td>
                         <td class="text-center">
                           <div class="btn-group">
-                            <button type="button" class="btn btn-icon btn-sm btn-primary btn-show" title="Show" data-id="{{ $proposal->id }}"><i class="fas fa-eye"></i></button>
+                            <a href="{{ route('usulan.review', ['id' => $proposal->id ]) }}" role="button" class="btn btn-icon btn-sm btn-primary btn-show" title="Show"><i class="fas fa-eye"></i></a>
                             <button type="button" class="btn btn-icon btn-sm btn-warning btn-edit" title="Edit" data-id="{{ $proposal->id }}"><i class="fas fa-pencil-alt"></i></button>
                             <button type="button" class="btn btn-icon btn-sm btn-info btn-nilai" title="Nilai" data-id="{{ $proposal->id }}"><i class="fas fa-file-signature"></i></button>
                             <button type="button" class="btn btn-icon btn-sm btn-danger btn-delete" title="Delete" data-id="{{ $proposal->id }}"><i class="fas fa-trash"></i></button>
@@ -121,24 +119,14 @@
                   </select>
                 </div>
                 <div class="form-group">
-                  <label for="">Reviewer 1</label>
-                  <select class="form-control selectric" name="reviewer_1">
+                  <label for="">Reviewer</label>
+                  <select class="form-control selectric" name="reviewer">
                     <option selected disabled>- pilih -</option>
                     @foreach($teachers as $teacher)
                       <option value="{{ $teacher->id }}">{{ $teacher->nama }}</option>
                     @endforeach
                   </select>
-                  <div class="invalid-feedback" name="msg_reviewer_1"><ul></ul></div>
-                </div>
-                <div class="form-group">
-                  <label for="">Reviewer 2</label>
-                  <select class="form-control selectric" name="reviewer_2">
-                    <option selected disabled>- pilih -</option>
-                    @foreach($teachers as $teacher)
-                      <option value="{{ $teacher->id }}">{{ $teacher->nama }}</option>
-                    @endforeach
-                  </select>
-                  <div class="invalid-feedback" name="msg_reviewer_2"><ul></ul></div>
+                  <div class="invalid-feedback" name="msg_reviewer"><ul></ul></div>
                 </div>
                 <div class="form-group">
                   <label for="">Status</label>
@@ -178,14 +166,9 @@
             <div class="row">
               <div class="col-sm-12">
                 <div class="form-group">
-                  <label for="nilai1">Nilai Reviewer 1</label>
-                  <input type="number" class="form-control" name="nilai1" id="nilai1" required>
-                  <div class="invalid-feedback" name="msg_nilai1"><ul></ul></div>
-                </div>
-                <div class="form-group">
-                  <label for="nilai2">Nilai Reviewer 2</label>
-                  <input type="number" class="form-control" name="nilai2" id="nilai2" required>
-                  <div class="invalid-feedback" name="msg_nilai2"><ul></ul></div>
+                  <label for="nilai">Nilai</label>
+                  <input type="number" class="form-control" name="nilai" id="nilai" required>
+                  <div class="invalid-feedback" name="msg_nilai"><ul></ul></div>
                 </div>
               </div>
             </div>
@@ -230,11 +213,8 @@
                     <ul class="pl-3"></ul>
                   </dd>
 
-                  <dt class="col-sm-3">Reviewer 1</dt>
-                  <dd class="col-sm-9" id="reviewer1"></dd>
-
-                  <dt class="col-sm-3">Reviewer 2</dt>
-                  <dd class="col-sm-9" id="reviewer2"></dd>
+                  <dt class="col-sm-3">Reviewer</dt>
+                  <dd class="col-sm-9" id="reviewer"></dd>
                 </dl>
               </div>
             </div>

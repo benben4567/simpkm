@@ -13,32 +13,22 @@
                 <h4 class="header-title">Usulan PKM</h4>
               </div>
               <div class="card-body">
-                <div class="row">
-                  <div class="col-sm-12 col-md-6">
-                    <dl class="row">
-                      <dt class="col-sm-3">Judul</dt>
-                      <dd class="col-sm-9">{{ $proposal->judul }}</dd>
+                <dl class="row">
+                  <dt class="col-sm-3">Judul</dt>
+                  <dd class="col-sm-9">: {{ $proposal->judul }}</dd>
 
-                      <dt class="col-sm-3">Skema</dt>
-                      <dd class="col-sm-9">{{ $proposal->skema }}</dd>
+                  <dt class="col-sm-3">Skema</dt>
+                  <dd class="col-sm-9">: {{ $proposal->skema }}</dd>
 
-                      <dt class="col-sm-3">Tanggal Usulan</dt>
-                      <dd class="col-sm-9">{{ $proposal->created_at->isoFormat('D MMMM Y')}}</dd>
-                    </dl>
-                  </div>
-                  <div class="col-sm-12 col-md-6">
-                    <dl class="row">
-                      <dt class="col-sm-3">Pembimbing</dt>
-                      <dd class="col-sm-9">{{ $pembimbing->nama }}</dd>
+                  <dt class="col-sm-3">Tanggal Usulan</dt>
+                  <dd class="col-sm-9">: {{ $proposal->created_at->isoFormat('D MMMM Y')}}</dd>
 
-                      <dt class="col-sm-3">Reviewer 1</dt>
-                      <dd class="col-sm-9">{{ $reviewer1->nama ?? '-' }}</dd>
+                  <dt class="col-sm-3">Pembimbing</dt>
+                  <dd class="col-sm-9">: {{ $pembimbing->nama }}</dd>
 
-                      <dt class="col-sm-3">Reviewer 2</dt>
-                      <dd class="col-sm-9">{{ $reviewer2->nama ?? '-' }}</dd>
-                    </dl>
-                  </div>
-                </div>
+                  <dt class="col-sm-3">Reviewer</dt>
+                  <dd class="col-sm-9">: {{ $reviewer->nama ?? '-' }}</dd>
+                </dl>
               </div>
             </div>
           </div>

@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
 /*
@@ -34,6 +35,7 @@ Route::group(['middleware' => ['admin'], 'prefix' => 'admin'], function () {
 
   // Proposal
   Route::get('/usulan', ['as' => 'usulan.index', 'uses' => 'ProposalController@index']);
+  Route::get('/usulan/review/{id}', ['as' => 'usulan.review', 'uses' => 'ProposalController@review']);
   Route::get('/usulan/show/{id}', ['as' => 'usulan.show', 'uses' => 'ProposalController@show']);
   Route::put('/usulan/update', ['as' => 'usulan.update', 'uses' => 'ProposalController@update']);
   Route::put('/usulan/nilai', ['as' => 'usulan.nilai', 'uses' => 'ProposalController@nilai']);
@@ -72,6 +74,8 @@ Route::group(['middleware' => ['student', 'verified'], 'prefix' => 'student'], f
 
   // Proposal
   Route::get('/usulan', ['as' => 'proposal.index', 'uses' => 'Student\ProposalController@index']);
+  Route::get('/usulan/review/{id}', ['as' => 'proposal.review', 'uses' => 'Student\ProposalController@review']);
+  Route::post('/usulan/review', ['as' => 'proposal.review.store', 'uses' => 'Student\ProposalController@reviewStore']);
   Route::get('/usulan/create', ['as' => 'proposal.create', 'uses' => 'Student\ProposalController@create']);
   Route::delete('/usulan/delete', ['as' => 'proposal.delete', 'uses' => 'Student\ProposalController@destroy']);
   Route::get('/usulan/edit/{id}', ['as' => 'proposal.edit', 'uses' => 'Student\ProposalController@edit']);
@@ -98,10 +102,15 @@ Route::group(['middleware' => ['teacher'], 'prefix' => 'teacher', 'as' => 'teach
   // Proposal
   Route::get('/usulan', ['as' => 'proposal.index', 'uses' => 'Teacher\ProposalController@index']);
   Route::get('/review', ['as' => 'proposal.review', 'uses' => 'Teacher\ProposalController@review']);
+  Route::post('/review', ['as' => 'proposal.review.store', 'uses' => 'Teacher\ProposalController@reviewerStore']);
+  Route::post('/review-acc', ['as' => 'proposal.review.acc', 'uses' => 'Teacher\ProposalController@reviewerAcc']);
+  Route::get('/review/show/{id}', ['as' => 'proposal.review.detail', 'uses' => 'Teacher\ProposalController@reviewer']);
   Route::post('/print', ['as' => 'proposal.print', 'uses' => 'Teacher\ProposalController@print']);
   Route::get('/usulan/show/{id}', ['as' => 'proposal.show', 'uses' => 'Teacher\ProposalController@show']);
   Route::get('/usulan/download/form', ['as' => 'proposal.download.form', 'uses' => 'Teacher\ProposalController@download']);
   Route::get('/usulan/download/berita', ['as' => 'proposal.download.berita', 'uses' => 'Teacher\ProposalController@download2']);
+  Route::get('/usulan/download/proposal', ['as' => 'proposal.download', 'uses' => 'Teacher\ProposalController@downloadProposal']);
+
 
   Route::get('/panduan', ['as' => 'panduan.index', 'uses' => 'HomeController@panduan']);
 });

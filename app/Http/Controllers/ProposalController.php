@@ -36,8 +36,7 @@ class ProposalController extends Controller
 
     $ketua = $proposal->ketua->first();
     $pembimbing = $proposal->pembimbing->first();
-    $reviewer1 = $proposal->reviewer1->first();
-    $reviewer2 = $proposal->reviewer2->first();
+    $reviewer = $proposal->reviewer->first();
     $anggota = $proposal->anggota->toArray();
     if ($request->ajax()) {
       if ($proposal) {
@@ -47,8 +46,7 @@ class ProposalController extends Controller
             'proposal' => $proposal,
             'ketua' => $ketua,
             'pembimbing' => $pembimbing,
-            'reviewer1' => $reviewer1,
-            'reviewer2' => $reviewer2,
+            'reviewer' => $reviewer,
             'anggota' => $anggota
         ],
         ]);
@@ -64,9 +62,8 @@ class ProposalController extends Controller
   public function update(Request $request, AdminProposalService $adminProposalService)
   {
     $this->validate($request, [
-      'pembimbing' => 'required|different:reviewer_1,reviewer_2',
-      'reviewer_1' => 'required|different:pembimbing,reviewer_2',
-      'reviewer_2' => 'required|different:pembimbing,reviewer_1'
+      'pembimbing' => 'required|different:reviewer',
+      'reviewer' => 'required|different:pembimbing',
     ]);
 
     $update = $adminProposalService->update($request->all());
@@ -83,12 +80,20 @@ class ProposalController extends Controller
     }
   }
 
+  public function review($id)
+  {
+
+    $myDate2 = '2022-02-19 09:37:13';
+    $myDate = '2022-02-19 12:37:13';
+
+    return view('pages.admin.review', compact('myDate', 'myDate2'));
+  }
+
   public function nilai(Request $request)
   {
     $this->validate($request, [
       'id-proposal' => 'required',
-      'nilai1' => 'required|numeric',
-      'nilai2' => 'required|numeric',
+      'nilai' => 'required|numeric',
     ]);
 
     $proposal = Proposal::where('id', $request->input('id-proposal'));
