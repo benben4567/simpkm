@@ -9,7 +9,7 @@ $(document).ready(function () {
     dom: "Bftip",
     ordering: false,
     columnDefs: [
-      { "width": "20%", "target" : 1},
+      { "width": "15%", "targets" : [1, 2]},
     ],
     buttons: [
       {
@@ -57,8 +57,7 @@ $(document).ready(function () {
           $("#judul").html(data.proposal.judul);
           $("#pembimbing").html(data.pembimbing.nama);
           $("#ketua").html(data.ketua.nama);
-          $("#reviewer1").html(data.reviewer1 ? data.reviewer1.nama : '-');
-          $("#reviewer2").html(data.reviewer2 ? data.reviewer2.nama : '-');
+          $("dd#reviewer").html(data.reviewer ? data.reviewer.nama : '-');
           $.each(anggota, function(key, value) {
             $("#anggota ul").append('<li>'+ value.nama +'</li>');
           })
