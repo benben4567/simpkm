@@ -106,5 +106,14 @@ $(function () {
 
   });
 
+  $('.btn-berita').on('click', function (e) {
+    e.preventDefault();
+    $("#form-berita").submit();
+  });
+
+  $('.btn-form').on('click', function (e) {
+    e.preventDefault();
+    $("#form-penilaian").submit();
+  });
 
 });
