@@ -26,7 +26,7 @@ class ProposalController extends Controller
     $periods = Period::orderBy('tahun', 'DESC')->get();
     $teachers = Teacher::orderBy('nama', 'ASC')->get();
 
-    if ($periods) {
+    if (count($periods)) {
       $now = $periods->first()->id;
       $proposals = Proposal::where('period_id', $now)->get();
     } else {
