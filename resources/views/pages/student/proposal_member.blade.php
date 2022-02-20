@@ -33,11 +33,8 @@
                           <dt class="col-sm-3">Pembimbing</dt>
                           <dd class="col-sm-9">{{ $pembimbing->nama ?? '-'}}</dd>
 
-                          <dt class="col-sm-3">Reviewer 1</dt>
-                          <dd class="col-sm-9">{{ $reviewer1->nama ?? '-' }}</dd>
-
-                          <dt class="col-sm-3">Reviewer 2</dt>
-                          <dd class="col-sm-9">{{ $reviewer2->nama ?? '-' }}</dd>
+                          <dt class="col-sm-3">Reviewer</dt>
+                          <dd class="col-sm-9">{{ $reviewer->nama ?? '-' }}</dd>
                         </dl>
                       </div>
                     </div>
@@ -52,9 +49,11 @@
             <div class="card">
               <div class="card-header">
                 <h4 class="card-title">Anggota Pengusul</h4>
-                <div class="card-header-action">
-                  <button type="button" class="btn btn-primary btn-icon" data-toggle="modal" data-target="#modalTambah"><i class="fas fa-plus"></i> Anggota</button>
-                </div>
+                @if ($ketua->user_id == auth()->user()->id)
+                  <div class="card-header-action">
+                    <button type="button" class="btn btn-primary btn-icon" data-toggle="modal" data-target="#modalTambah"><i class="fas fa-plus"></i> Anggota</button>
+                  </div>
+                @endif
               </div>
               <div class="card-body">
                 <div class="row">
@@ -69,6 +68,7 @@
                         <div class="user-details">
                           <div class="user-name">{{ $member->nama }}</div>
                           <div class="text-job text-muted">{{$member->pivot->jabatan}}</div>
+                          @if ($ketua->user_id == auth()->user()->id)
                           <div class="user-cta">
                             @if($member->pivot->jabatan == 'Ketua')
                             <button type="button" class="btn btn-icon btn-secondary" disabled><i class="fa fa-trash" aria-hidden="true"></i> Hapus</button>
@@ -76,6 +76,7 @@
                             <button type="button" class="btn btn-icon btn-danger btn-remove" data-proposal="{{ $proposal->id }}" data-student="{{ $member->id }}"><i class="fa fa-trash" aria-hidden="true"></i> Hapus</button>
                             @endif
                           </div>
+                          @endif
                         </div>
                       </div>
                     </div>

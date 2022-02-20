@@ -11,8 +11,7 @@ $(function () {
       columnDefs: [
         { "width": "5%", "targets": 0, "className": "text-center"},
         { "width": "9%", "targets": 3, "className": "text-center"},
-        { "width": "9%", "targets": 4, "className": "text-center"},
-        { "width": "10%", "targets": 5, "className": "text-center"},
+        { "width": "10%", "targets": 4, "className": "text-center"},
       ]
   })
 
@@ -62,12 +61,11 @@ $(function () {
       responsive: true,
       ordering: false,
       "columnDefs": [
-        { "className": "text-center", "targets": [0,2,3,4,5] },
+        { "className": "text-center", "targets": [0,2,3,4] },
         { "width": "5%", "targets": 0},
         { "width": "10%", "targets": 2},
         { "width": "9%", "targets": 3},
-        { "width": "9%", "targets": 4},
-        { "width": "10%", "targets": 5},
+        { "width": "10%", "targets": 4},
         {
           "targets": 0,
           "data": null,
@@ -99,23 +97,20 @@ $(function () {
           "targets":3,
           "data": null,
           "render": function (data, type, row, meta) {
-            return row.nilai1
+            if (row.nilai) {
+              return row.nilai
+            } else {
+              return '0'
+            }
           }
         },
         {
-          "targets":4,
-          "data": null,
-          "render": function (data, type, row, meta) {
-            return row.nilai2
-          }
-        },
-        {
-          "targets": 5,
+          "targets": 4,
           "data": null,
           "render": function ( data, type, row, meta ) {
             return `
               <div class="btn-group">
-                <button type="button" class="btn btn-icon btn-sm btn-primary btn-show" title="Show" data-id="${row.id}"><i class="fas fa-eye"></i></button>
+                <a href="/admin/usulan/review/${row.id}" role="button" class="btn btn-icon btn-sm btn-primary" title="Show"><i class="fas fa-eye"></i></a>
                 <button type="button" class="btn btn-icon btn-sm btn-warning btn-edit" title="Edit" data-id="${row.id}"><i class="fas fa-pencil-alt"></i></button>
                 <button type="button" class="btn btn-icon btn-sm btn-info btn-nilai" title="Nilai" data-id="${row.id}"><i class="fas fa-file-signature"></i></button>
                 <button type="button" class="btn btn-icon btn-sm btn-danger btn-delete" title="Delete" data-id="${row.id}"><i class="fas fa-trash"></i></button>
@@ -142,15 +137,11 @@ $(function () {
           var data = response.data;
           var proposal = data.proposal;
           var pembimbing = data.pembimbing;
-          var reviewer1 = data.reviewer1;
-          var reviewer2 = data.reviewer2;
+          var reviewer = data.reviewer;
           $('#id-proposal').val(proposal.id);
           $("select[name='pembimbing']").val(pembimbing.id).selectric('refresh');
-          if (reviewer1) {
-            $("select[name='reviewer_1']").val(reviewer1.id).selectric('refresh');
-          }
-          if (reviewer2) {
-            $("select[name='reviewer_2']").val(reviewer2.id).selectric('refresh');
+          if (reviewer) {
+            $("select[name='reviewer']").val(reviewer.id).selectric('refresh');
           }
           $("select[name='status']").val(proposal.status).selectric('refresh');
 
@@ -163,12 +154,10 @@ $(function () {
 
   $('#table tbody').on('click', 'button.btn-nilai', function (e) {
     e.preventDefault()
-    var data = window.table.row( $(this).parents('tr') ).data();
-    var nilai1 = data.nilai1;
-    var nilai2 = data.nilai2;
+    var data = table.row( $(this).parents('tr') ).data();
+    var nilai = data.nilai;
     $('input[name="id-proposal"]').val($(this).data('id'));
-    $('input[name="nilai1"]').val(nilai1);
-    $('input[name="nilai2"]').val(nilai2);
+    $('input[name="nilai"]').val(nilai);
     $('#modalNilai').modal('show');
   });
 
@@ -276,17 +265,16 @@ $(function () {
         $.LoadingOverlay("show")
       },
       success: function (response) {
-        console.log(response)
+        console.log(response.data.proposal.skema)
         $.LoadingOverlay("hide")
         if (response.success) {
           var data = response.data
           var anggota = data.anggota
-          $("#skema").html(data.proposal.skema);
+          $("dd#skema").html(data.proposal.skema);
           $("#judul").html(data.proposal.judul);
           $("#pembimbing").html(data.pembimbing.nama);
           $("#ketua").html(data.ketua.nama);
-          $("#reviewer1").html(data.reviewer1 ? data.reviewer1.nama : '-');
-          $("#reviewer2").html(data.reviewer2 ? data.reviewer2.nama : '-');
+          $("#reviewer").html(data.reviewer ? data.reviewer.nama : '-');
           if (anggota.length > 0) {
             $.each(anggota, function(key, value) {
               $("#anggota ul").append('<li>'+ value.nama +'</li>');
@@ -360,8 +348,7 @@ $(function () {
   });
 
   $('#modalNilai').on('hidden.bs.modal', function (e) {
-    $('input[name="nilai1"]').val("");
-    $('input[name="nilai1"]').val("");
+    $('input[name="nilai"]').val("");
   })
 
 });

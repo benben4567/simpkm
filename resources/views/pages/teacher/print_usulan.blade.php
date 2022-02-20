@@ -42,13 +42,7 @@
                   <td>{{ $proposal->skema }}</td>
                   <td>{{ $proposal->judul }}</td>
                   <td>{{ $proposal->ketua[0]['nama'] }}</td>
-                  <td>
-                    <ul>
-                      @foreach ($proposal->reviewer as $reviewer)
-                        <li>{{ $reviewer['nama']}}</li>
-                      @endforeach
-                    </ul>
-                  </td>
+                  <td>{{ $proposal->reviewer[0]['nama'] }}</td>
                 </tr>
               @endforeach
           </tbody>

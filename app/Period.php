@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Period extends Model
 {
-    protected $fillable = ['tahun', 'status'];
+    protected $fillable = ['tahun', 'status', 'id_folder', 'id_folder_review'];
 
     public function proposals()
     {

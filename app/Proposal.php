@@ -40,17 +40,12 @@ class Proposal extends Model
 
     public function reviewer()
     {
-      return $this->belongsToMany(Teacher::class)->wherePivot('jabatan', '!=', 'Pembimbing');
+      return $this->belongsToMany(Teacher::class)->wherePivot('jabatan', 'reviewer');
     }
 
-    public function reviewer1()
+    public function reviews()
     {
-      return $this->belongsToMany(Teacher::class)->wherePivot('jabatan', 'Reviewer 1');
-    }
-
-    public function reviewer2()
-    {
-      return $this->belongsToMany(Teacher::class)->wherePivot('jabatan', 'Reviewer 2');
+      return $this->hasMany(Review::class);
     }
 
     public function scopeLolos($query)

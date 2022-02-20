@@ -9,7 +9,8 @@ $(document).ready(function () {
     dom: "tip",
     ordering: false,
     columnDefs: [
-      { "width": "50%", "target" : 0},
+      { "width": "11%", "targets" : [1, 2, 3, 4]},
+      { "width": "18%", "targets" : 5},
     ]
   })
 
