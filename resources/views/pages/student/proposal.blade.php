@@ -109,7 +109,11 @@
                                 @endif
                             </td>
                             <td>
-                              <a class="btn btn-sm btn-primary mx-1" data-toggle="tooltip" data-placement="bottom" title="Review" href="{{ route('proposal.review', ["id" => $proposal->id]) }}" role="button"><i class="fas fa-user-edit"></i></a>
+                              @if ($proposal->status == 'kompilasi')
+                                <a class="btn btn-sm btn-secondary mx-1" data-toggle="tooltip" data-placement="bottom" title="Review" href="#" role="button" disabled><i class="fas fa-user-edit"></i></a>
+                              @else
+                                <a class="btn btn-sm btn-primary mx-1" data-toggle="tooltip" data-placement="bottom" title="Review" href="{{ route('proposal.review', ["id" => $proposal->id]) }}" role="button"><i class="fas fa-user-edit"></i></a>
+                              @endif
                             </td>
                             <td>
                               @if($proposal->pivot->jabatan == "Ketua")
