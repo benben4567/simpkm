@@ -193,7 +193,7 @@ class ProposalController extends Controller
       // simpan ke table proposal
       $acc = $proposal->update([
         'file' => $id_file,
-        'proses' => 'selesai'
+        'status' => 'selesai'
       ]);
 
       if ($review) {
