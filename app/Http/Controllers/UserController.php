@@ -179,29 +179,29 @@ class UserController extends Controller
         'file' => 'required|mimes:xls,xlsx|max:2048',
       ]);
 
-        // upload
-        if($request->file('file')) {
-          $fileName = time().'.'.$request->file('file')->extension();
-          $path = $request->file('file')->storeAs(
-            'public/excel', $request->input('role').'_import'.$fileName
-          );
-        }
+      // upload
+      if($request->file('file')) {
+        $fileName = time().'.'.$request->file('file')->extension();
+        $path = $request->file('file')->storeAs(
+          'public/excel', $request->input('role').'_import'.$fileName
+        );
+      }
 
-        if ($request->input('role') == 'student') {
-          $import = new StudentImport;
-        } else {
-          $import = new TeacherImport;
-        }
-        // import excel using try catch
-        try {
-          Excel::import($import, $path);
-        } catch (\Exception $e) {
-          return response()->json([
-            'success' => false,
-            'data' => null,
-            'msg' => $e->getMessage(),
-          ], 500);
-        }
+      if ($request->input('role') == 'student') {
+        $import = new StudentImport;
+      } else {
+        $import = new TeacherImport;
+      }
+      // import excel using try catch
+      try {
+        Excel::import($import, $path);
+      } catch (\Exception $e) {
+        return response()->json([
+          'success' => false,
+          'data' => null,
+          'msg' => $e->getMessage(),
+        ], 500);
+      }
 
       if ($request->input('role') == 'student') {
         $users = User::whereRole('student')->with('student')->get();
