@@ -26,6 +26,7 @@ class TeacherImport implements ToCollection, WithMultipleSheets, WithHeadingRow
           $user = User::create([
             'name' => $row['nama'],
             'email' => $row['email'],
+            'email_verified_at' => now(),
             'password' => Hash::make($row['nidn']),
             'role' => 'teacher',
           ]);
