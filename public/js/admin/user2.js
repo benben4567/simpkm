@@ -297,6 +297,64 @@ $(document).ready(function () {
     });
   });
 
+  $("#form-import-teacher").submit(function (e) {
+    e.preventDefault();
+    var formData = new FormData($("#form-import-teacher")[0]);
+    $.ajax({
+      url: "/admin/user/import",
+      type: "POST",
+      data : formData,
+      processData: false,
+      contentType: false,
+      beforeSend: function() {
+        $.LoadingOverlay("show")
+        $("*").removeClass('is-invalid')
+        $("div.invalid-feedback").find('ul').empty();
+      },
+      success: function (response) {
+        $('#modalImportTeacher').modal("hide")
+        $('.custom-file-label').html("Choose file");
+        $.LoadingOverlay("hide")
+        if (response.success) {
+          table3.ajax.reload();
+          Swal.fire(
+            "Berhasil!",
+            response.msg,
+            'success'
+          )
+        }
+      },
+      error: function(xhr) {
+        $.LoadingOverlay('hide')
+        switch (xhr.status) {
+          case 422:
+            let errors = xhr.responseJSON.errors
+            Swal.fire(
+              'Error!',
+              xhr.responseJSON.message,
+              'error'
+            )
+            $.each(errors, function(key, value) {
+              $("input[name="+ key +"]").addClass("is-invalid")
+              $.each(errors[key], function(ke, val) {
+                $('<li>'+val+"</li>").appendTo($("div[name=msg_"+ key +"]").find('ul'));
+              })
+            })
+            break;
+          case 500:
+            Swal.fire(
+              'Error!',
+              'Terjadi kesalahan, periksa kembali data anda',
+              'error'
+            )
+            break;
+          default:
+            break;
+        }
+      }
+    });
+  });
+
   $("#form-admin").submit(function (e) {
     e.preventDefault();
     $.ajax({
