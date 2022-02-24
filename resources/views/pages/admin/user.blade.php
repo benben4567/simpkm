@@ -450,7 +450,7 @@
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
-          <form action="{{ route('user.import') }}" method="post" autocomplete="off" id="form-import">
+          <form action="{{ route('user.import') }}" method="post" autocomplete="off" id="form-import-teacher">
             @csrf
             <div class="modal-body">
                 @csrf
