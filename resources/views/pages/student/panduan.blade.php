@@ -38,13 +38,10 @@
                         <a class="nav-link" id="status-tab4" data-toggle="tab" href="#status" role="tab" aria-controls="status" aria-selected="false">4. Status Usulan</a>
                       </li>
                       <li class="nav-item">
-                        <a class="nav-link" id="cetak-tab4" data-toggle="tab" href="#cetak" role="tab" aria-controls="cetak" aria-selected="false">5. Cetak</a>
+                        <a class="nav-link" id="review-tab4" data-toggle="tab" href="#review" role="tab" aria-controls="review" aria-selected="false">5. Review</a>
                       </li>
                       <li class="nav-item">
-                        <a class="nav-link" id="review-tab4" data-toggle="tab" href="#review" role="tab" aria-controls="review" aria-selected="false">6. Review</a>
-                      </li>
-                      <li class="nav-item">
-                        <a class="nav-link" id="selesai-tab4" data-toggle="tab" href="#selesai" role="tab" aria-controls="selesai" aria-selected="false">7. Selesai</a>
+                        <a class="nav-link" id="selesai-tab4" data-toggle="tab" href="#selesai" role="tab" aria-controls="selesai" aria-selected="false">6. Selesai</a>
                       </li>
                     </ul>
                   </div>
@@ -76,97 +73,86 @@
                       <div class="tab-pane fade" id="anggota" role="tabpanel" aria-labelledby="anggota">
                         <h5>Anggota Kelompok</h5>
                         <p class="text-justify">
-                          Sudah selesai membuat usulan PKM ? Selanjutnya adalah menambahkan anggota kedalam usulan PKM yang sudah kamu buat barusan. Oh iya, fitur ini hanya bisa diakses oleh Ketua Kelompok ya.
+                          Sudah selesai membuat usulan PKM ? Selanjutnya adalah menambahkan anggota kedalam usulan PKM yang sudah kamu buat barusan. Oh iya, fitur ini hanya bisa diakses oleh Ketua Kelompok.
                         </p>
                         <p class="text-justify">
-                          Pada halaman <a href="{{ route('proposal.create') }}">Usulan PKM</a> kalian akan melihat sebuah tabel dimana tabel tersebut akan menampilkan PKM yang pernah kalian kerjakan/usulkan. Kemudian lihat pada kolom <strong>aksi</strong>, didalam kolom tersebut terdapat beberapa tombol diantaranya:
+                          Pada halaman <a href="{{ route('proposal.create') }}">Usulan PKM</a> kalian akan melihat sebuah tabel dimana tabel tersebut akan menampilkan PKM yang pernah kalian kerjakan/usulkan. Kemudian terdapat beberapa tombol diantaranya:
                           <dl class="row">
                             <dt class="col-sm-2 text-right"><button type="button" class="btn btn-warning btn-sm btn-icon"><i class="fas fa-pencil-alt"></i></button></dt>
                             <dd class="col-sm-10">Tombol ini berfungsi untuk mengubah data usulan PKM (hanya bisa diakses oleh Ketua)</dd>
 
                             <dt class="col-sm-2 text-right"><button type="button" class="btn btn-primary btn-sm btn-icon"><i class="fas fa-users"></i></button></dt>
-                            <dd class="col-sm-10">Tombol ini berfungsi untuk menambahkan anggota atau mahasiswa kedalam Kelompok PKM (hanya bisa diakses oleh Ketua)</dd>
-
-                            <dt class="col-sm-2 text-right"><button type="button" class="btn btn-success btn-sm btn-icon"><i class="fas fa-download"></i></button></dt>
-                            <dd class="col-sm-10">Tombol ini untuk mendownload Berita Acara dan Form Penilaian (bisa diakses oleh Ketua maupun Anggota)</dd>
+                            <dd class="col-sm-10">Tombol ini berfungsi untuk menambahkan anggota kedalam Kelompok PKM (hanya bisa diakses oleh Ketua)</dd>
                           </dl>
                         </p>
                         <p class="text-justify">
-                          Dari ketiga tombol diatas klik tombol untuk menambahkan anggota, nanti akan muncul halaman baru dimana kamu sudah menjadi Ketua nya. Untuk menambah anggota, klik tombol <button type="button" class="btn btn-primary btn-sm btn-icon"><i class="fas fa-plus"></i> Anggota</button> nanti akan muncul <i>pop-up</i> tabel yang berisikan nama mahasiswa. Kamu bisa menggunakan fitur <i>search</i> dengan mengetikkan NIM atau Nama dari anggota mu, untuk memilih nya cukup klik tombol <button type="button" class="btn btn-primary btn-sm btn-icon"><i class="fas fa-plus-square"></i></button> Jika didalam tabel tidak ada nama yang kamu inginkan, pastikan lagi temanmu sudah mendaftar dan mengisi data diri di SIM PKM ini ya.
+                          Klik tombol tambah anggota, kemudian akan muncul halaman baru dimana kamu sudah menjadi Ketua nya. Untuk menambah anggota, klik tombol <button type="button" class="btn btn-primary btn-sm btn-icon"><i class="fas fa-plus"></i> Anggota</button> nanti akan muncul <i>pop-up</i> tabel yang berisikan nama mahasiswa. Kamu bisa menggunakan fitur <i>search</i> dengan mengetikkan NIM atau Nama dari anggota mu, untuk memilih nya cukup klik tombol <button type="button" class="btn btn-primary btn-sm btn-icon"><i class="fas fa-plus-square"></i></button> Jika didalam tabel tidak ada nama yang kamu inginkan, pastikan lagi temanmu sudah mendaftar dan mengisi data diri di SIM PKM ini ya.
                         </p>
                         <p class="text-justify">
-                          Jika kamu ingin menghapus temanmu dari anggota kelompok, cukup klik tombol <button type="button" class="btn btn-danger btn-sm btn-icon"><i class="fas fa-trash"></i> Hapus</button> yang ada dibawah nama nya.
+                          Jika kamu ingin menghapus temanmu dari daftar anggota kelompok, cukup klik tombol <button type="button" class="btn btn-danger btn-sm btn-icon"><i class="fas fa-trash"></i> Hapus</button> yang ada dibawah nama nya.
                         </p>
                       </div>
                       <div class="tab-pane fade" id="status" role="tabpanel" aria-labelledby="status">
                         <h5>Status Usulan</h5>
                         <p class="text-justify">
-                          Selain tombol di kolom aksi, juga terdapat kolom status. Tiap-tiap usulan PKM mempunyai status masing-masing, ada 3 status diantaranya:
+                          Selain itu juga terdapat kolom status. Tiap-tiap usulan PKM mempunyai status masing-masing, ada 3 status diantaranya:
                           <dl class="row">
                             <dt class="col-sm-2 text-center"><span class="badge badge-primary">Kompilasi</span></dt>
                             <dd class="col-sm-10">Pada tahap ini usulan PKM kalian masih dalam proses kompilasi dan belum mendapat <i>Dosen Reviewer</i>, jadi tetap cek secara berkala ya.</dd>
 
                             <dt class="col-sm-2 text-center"><span class="badge badge-warning">Proses</span></dt>
-                            <dd class="col-sm-10">Pada tahap ini usulan PKM kalian sudah mendapat <i>Dosen Reviewer</i> dan kalian sudah bisa mendownload <strong>Berita Acara</strong> & <strong>Form Penilaian</strong> kemudian mencetaknya.</dd>
+                            <dd class="col-sm-10">Pada tahap ini usulan PKM kalian sudah mendapat <i>Dosen Reviewer</i> dan proposal kalian sedang di review oleh Reviewer. Untuk melihatnya kalian bisa membuka menu Review pada masing2 usulan PKM. Kemudian kalian juga bisa melakukan revisi ketika proposal hasil review sudah diupload ulang oleh Dosen Reviewer.</dd>
 
                             <dt class="col-sm-2 text-center"><span class="badge badge-success">Selesai</span></dt>
-                            <dd class="col-sm-10">Jika status usulan kalian sudah berubah seperti ini, maka proposal kalian sudah selesai di review dan kalian bisa mengambilnya di Kemahasiswaan untuk kalian revisi nantinya.</dd>
+                            <dd class="col-sm-10">Jika status usulan kalian sudah berubah seperti ini, maka proposal kalian sudah selesai di review dan kalian bisa mencetaknya. Kemudian kumpulkan ke Kemahasiswaan agar kalian bisa mendapat akun SIMBELMAWA untuk upload Proposal PKM yg sudah ACC</dd>
                           </dl>
-                        </p>
-                      </div>
-                      <div class="tab-pane fade" id="cetak" role="tabpanel" aria-labelledby="cetak">
-                        <h5>Cetak Berita Acara dan Form Penilaian</h5>
-                        <p class="text-justify">
-                          Setelah status berubah menjadi <span class="badge badge-warning">Proses</span> kalian bisa mendownload kemudian mencetak Berita Acara dan Form Penilaian usulan PKM. Untuk tombol cetak sudah dijelaskan pada langkah ke 3 ya. Jangan lupa kalian juga harus mencetak proposal PKM yang akan direview sebanyak dua rangkap, masing-masing untuk Dosen Reviewer 1 dan Dosen Reviewer 2.
-                          Untuk proses review dijelaskan pada langkah selanjutnya.
                         </p>
                       </div>
                       <div class="tab-pane fade" id="review" role="tabpanel" aria-labelledby="review">
                         <h5>Review</h5>
-                        <p class="text-justify">
-                          Sebelum diserahkan ke Dosen Reviewer berkas berikut harus sudah kalian persiapkan dulu, diantaranya :
-                          <ul>
-                            <li>Proposal PKM (2 Rangkap)</li>
-                            <li>Berita Acara</li>
-                            <li>Form Penilaian</li>
-                          </ul>
+                        <p class="font-weight-bold">
+                          Poin Penting :
                         </p>
-                        <p class="text-justify">
-                          Setelah lengkap, kalian bisa mendatangi Dosen Reviewer yang sudah tertera (di Berita Acara atau Form Penilaian) dan memberikan berkas dengan susunan seperti berikut :
-                          <dl class="row">
-                            <dt class="col-sm-3">Dosen Reviewer 1</dt>
-                            <dd class="col-sm-9">
-                              <ul>
-                                <li>Proposal PKM</li>
-                                <li>Form Penilaian Reviewer 1</li>
-                                <li>Berita Acara</li>
-                              </ul>
-                            </dd>
+                        <dl class="row">
+                          <dt class="col-sm-3">Review</dt>
+                          <dd class="col-sm-9">
+                            Kegiatan ini dilakukan oleh Dosen Reviewer untuk memeriksa hasil pekerjaan Kelompok Pengusul PKM
+                          </dd>
 
-                            <dt class="col-sm-3">Dosen Reviewer 2</dt>
-                            <dd class="col-sm-9">
-                              <ul>
-                                <li>Proposal PKM</li>
-                                <li>Form Penilaian Reviewer 2</li>
-                              </ul>
-                            </dd>
-                          </dl>
-                        </p>
+                          <dt class="col-sm-3">
+                            Revisi
+                          </dt>
+                          <dd class="col-sm-9">
+                            Kegiatan ini dilakukan oleh Kelompok Pengusul untuk memperbaiki proposal yang telah di review/periksa oleh dosen reviewer
+                          </dd>
+                        </dl>
+
                         <p class="text-justify">
-                          Sebelum menyerahkan ke Dosen Reviewer cek kembali kelengkapan berkas yang akan diberikan, jangan sampai tertukar ya Form Penilaian untuk Reviewer 1 dan Reviewer 2. <br>
-                          Untuk Form Penilaian tidak perlu kalian gandakan, karena dalam satu dokumen sudah terdapat dua lembar Form Penilaian (halaman 1 dan halaman 2).
+                          Untuk mahasiswa yang akan melakukan revisi caranya sebagai berikut :
+                          <ol>
+                            <li>Klik tombol Review sesuai judul Usulan PKM (ada di tabel Usulan PKM)</li>
+                            <li>Kemudian akan muncul <i>timeline</i> Riwayat Review Proposal, proposal yang pertama kali kalian upload akan otomatis muncul pada halaman ini dan akan langsung di Review.</li>
+                            <li><strong>Cek Secara Berkala.</strong> Selalu cek secara berkala review PKM kalian, karena Dosen Reviewer sewaktu-waktu dapat meng-upload kembali hasil review PKM kalian.</li>
+                            <li>Jika Dosen Reviewer sudah meng-upload kembali, kalian dapat mendownload nya dan melihat apa saja yang perlu di revisi di dalam proposal tersebut. Kemudian lakukanlah revisi sesuai petunjuk Dosen Reviewer.</li>
+                            <li>JIka sudah melakukan revisi, kalian dapat meng-upload kembali di halaman ini dengan klik tombol <strong>Hasil Revisi</strong>. Kemudian muncul pop-up untuk memilih file hasil revisi dan mengisi keterangan yang perlu disampaikan (opsional). Kemudian klik SIMPAN.</li>
+                            <li>Kemudian tunggu dan ulangi lagi langkah ke 3 sampai proposal kalian di ACC oleh dosen reviewer.</li>
+                            <li>Jika sudah ACC, kalian bisa mendownload file tersebut dengan klik tombol <strong>Proposal ACC</strong> dan mencetaknya.</li>
+                            <li>Selesai</li>
+                          </ol>
+                        </p>
+
+                        <strong>Catatan :</strong>
+                        <p class="text-justify">
+                          Menu Revisi diatas hanya bisa diakses oleh mahasiswa yang menjadi KETUA didalam Proposal PKM tersebut.
                         </p>
                       </div>
                       <div class="tab-pane fade" id="selesai" role="tabpanel" aria-labelledby="selesai">
                         <h5>Selesai</h5>
                         <p class="text-justify">
-                          Berkas sudah diserahkan ke Reviewer, sekarang tinggal cek secara berkala status usulan kalian di SIM PKM ini ya. Jika status sudah berubah menjadi <span class="badge badge-success">Selesai</span> maka kalian bisa mengambil Proposal PKM kalian di Kemahasiswaan (bukan ke Dosen Reviewer) untuk kalian revisi. Usahakan segera mungkin kalian ambil setelah status berubah agar bisa segera kalian revisi.
-                        </p>
-                        <p class="text-justify">
-                          Setelah revisi kalian selesai, kalian bisa melanjutkan ke tahap Upload proposal ke SIM Belmawa milik Kemendikbud. Untuk username dan password akan diberikan melalui SIM PKM ini, kalian bisa buka menu <a href="{{ route('profile.index') }}">Data Diri</a> kemudian lihat di bagian kanan bawah.
-                        </p>
-                        <p class="text-justify">
-                          Jika ada kendala atau permasalahan dalam penggunaan SIM PKM ini silahkan hubungi Pak Ben di Kemahasiswaan.
+                          Jika kalian sudah mencetak Proposal ACC, tahap selanjutnya adalah mengumpulkan proposal tersebut ke Bidang Kemahasiswan. Setelah itu kalian akan mendapatkan Username dan Password yang nantinya digunakan untuk login ke Web SIMBELMAWA KEMDIKBUD (untuk meng-upload Proposal ACC PKM kalian).
+                          <br/>
+                          <br/>
+                          Untuk tata cara upload Proposal PKM di Web SIMBELMAWA akan dibuatkan panduan khusus (terpisah dari panduan ini).
                         </p>
                       </div>
                     </div>
