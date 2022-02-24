@@ -73,7 +73,7 @@ function first_name($string)
 {
   $names = explode(" ", ucwords($string));
   if (count($names) > 1) {
-    if (in_array($names[0], array("Muhammad", "Muchammad", "Mochammad", "Mohammad", "M", "M."))) {
+    if (in_array($names[0], array("Muhammad", "Muchammad", "Mochammad", "Mohammad", "M", "M.", "Dr.", "dr.", "Ns.", "Ners"))) {
       return ucfirst($names[1]);
     } else {
       return ucfirst($names[0]);
