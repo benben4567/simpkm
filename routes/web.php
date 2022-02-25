@@ -35,12 +35,19 @@ Route::group(['middleware' => ['admin'], 'prefix' => 'admin'], function () {
 
   // Proposal
   Route::get('/usulan', ['as' => 'usulan.index', 'uses' => 'ProposalController@index']);
+
   Route::get('/usulan/review/{id}', ['as' => 'usulan.review', 'uses' => 'ProposalController@review']);
+  Route::post('/usulan/review', ['as' => 'usulan.review.store', 'uses' => 'ProposalController@reviewStore']);
+  Route::post('/usulan/review-acc', ['as' => 'usulan.review.acc', 'uses' => 'ProposalController@reviewAcc']);
+
   Route::get('/usulan/show/{id}', ['as' => 'usulan.show', 'uses' => 'ProposalController@show']);
   Route::put('/usulan/update', ['as' => 'usulan.update', 'uses' => 'ProposalController@update']);
   Route::put('/usulan/nilai', ['as' => 'usulan.nilai', 'uses' => 'ProposalController@nilai']);
   Route::get('/usulan/print/{tahun}', ['as' => 'usulan.print', 'uses' => 'ProposalController@print']);
   Route::delete('/usulan', ['as' => 'usulan.delete', 'uses' => 'ProposalController@destroy']);
+  Route::get('/usulan/download', ['as' => 'usulan.download', 'uses' => 'ProposalController@download']);
+  Route::get('/usulan/download/form', ['as' => 'usulan.download.form', 'uses' => 'ProposalController@downloadForm']);
+  Route::get('/usulan/download/berita', ['as' => 'usulan.download.berita', 'uses' => 'ProposalController@downloadBerita']);
 
   // User
   Route::get('/user', ['as' => 'user.index', 'uses' => 'UserController@index']);
