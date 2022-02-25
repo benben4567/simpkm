@@ -31,7 +31,7 @@
                 </dd>
 
                 <dt class="col-sm-3">Reviewer</dt>
-                <dd class="col-sm-9">: {{ $reviewer->nama }}</dd>
+                <dd class="col-sm-9">: {{ $reviewer->nama ?? "" }}</dd>
               </dl>
 
               @if ($proposal->reviews->last()->acc == 1)
