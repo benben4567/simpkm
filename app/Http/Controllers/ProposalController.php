@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\ResponseFormatter;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use App\Period;
@@ -9,6 +10,8 @@ use App\Proposal;
 use App\Services\AdminProposalService;
 use App\Teacher;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 
 class ProposalController extends Controller
 {
@@ -89,10 +92,97 @@ class ProposalController extends Controller
   public function review($id)
   {
 
-    $myDate2 = '2022-02-19 09:37:13';
-    $myDate = '2022-02-19 12:37:13';
+    $proposal = Proposal::whereId($id)->with('reviews.user')->first();
+    $periode = $proposal->period->first();
+    $ketua = $proposal->ketua->first();
+    $pembimbing = $proposal->pembimbing->first();
+    $reviewer = $proposal->reviewer->first();
+    $anggota = $proposal->anggota->toArray();
 
-    return view('pages.admin.review', compact('myDate', 'myDate2'));
+    return view('pages.admin.review', compact('proposal', 'periode', 'ketua', 'pembimbing', 'reviewer', 'anggota'));
+  }
+
+  public function reviewStore(Request $request)
+  {
+    $validator = Validator::make($request->all(), [
+      'id-proposal' => 'required',
+      'id-folder' => 'required',
+      'deskripsi' => 'required',
+      'file' => 'required|file|max:2048',
+    ]);
+
+    if ($validator->fails()) {
+      return ResponseFormatter::error(null, $validator->errors(), 422);
+    }
+
+    $proposal = Proposal::find($request->input('id-proposal'));
+
+    // if exist upload and save to table
+    $title = preg_replace( '/[^a-z0-9]+/', '-', strtolower(Str::words($proposal->judul, 7, '')));
+    $filename = $proposal->skema.'_'.$title.'_'.time().'.pdf';
+
+    $file = Storage::cloud()->putFileAs($request->input('id-folder'), $request->file('file'), $filename);
+    $metadata = Storage::cloud()->getMetadata($file);
+    $id_file = $metadata['path'];
+
+    // simpan ke table proposal
+    $review = $proposal->reviews()->create([
+      'user_id' => auth()->user()->id,
+      'type' => auth()->user()->role,
+      'description' => $request->deskripsi,
+      'file' => $id_file
+    ]);
+
+    if ($review) {
+      return ResponseFormatter::success($review, 'Data Berhasil disimpan', 201);
+    } else {
+      return ResponseFormatter::error(null, 'Data Gagal disimpan', 500);
+    }
+  }
+
+  public function reviewAcc(Request $request)
+  {
+    $validator = Validator::make($request->all(), [
+      'id-proposal' => 'required',
+      'id-folder' => 'required',
+      'deskripsi' => 'nullable',
+      'file' => 'required|file|max:5120',
+    ]);
+
+    if ($validator->fails()) {
+      return ResponseFormatter::error(null, $validator->errors(), 422);
+    }
+
+    $proposal = Proposal::find($request->input('id-proposal'));
+
+    // if exist upload and save to table
+    $title = preg_replace( '/[^a-z0-9]+/', '-', strtolower(Str::words($proposal->judul, 7, '')));
+    $filename = $proposal->skema.'_'.$title.'_'.time().'.pdf';
+
+    $file = Storage::cloud()->putFileAs($request->input('id-folder'), $request->file('file'), $filename);
+    $metadata = Storage::cloud()->getMetadata($file);
+    $id_file = $metadata['path'];
+
+    // simpan ke table review
+    $review = $proposal->reviews()->create([
+      'user_id' => auth()->user()->id,
+      'type' => auth()->user()->role,
+      'description' => $request->deskripsi,
+      'file' => $id_file,
+      'acc' => 1
+    ]);
+
+    // simpan ke table proposal
+    $acc = $proposal->update([
+      'file' => $id_file,
+      'status' => 'selesai'
+    ]);
+
+    if ($review) {
+      return ResponseFormatter::success($review, 'Data Berhasil disimpan', 201);
+    } else {
+      return ResponseFormatter::error(null, 'Data Gagal disimpan', 500);
+    }
   }
 
   public function nilai(Request $request)
@@ -154,4 +244,78 @@ class ProposalController extends Controller
 
   }
 
+  public function download(Request $request)
+  {
+    // $proposal = Proposal::whereId($request->id)->first();
+    $metadata = Storage::cloud()->getMetadata($request->file);
+    $download = Storage::cloud()->download($request->file, $metadata['name']);
+    return $download;
+  }
+
+  public function downloadForm(Request $request)
+  {
+    $id = $request->id;
+
+    $proposal = Proposal::whereId($id)->first();
+    $skema = $proposal->skema;
+
+    $data = array(
+      '[KETUA]' => $proposal->ketua->first()->nama,
+      '[NIM]' => $proposal->ketua->first()->nim,
+      '[PRODI]' => $proposal->ketua->first()->major->full_name,
+      '[EMAIL]' => $proposal->ketua->first()->user->email,
+      '[PENDAMPING]' => $proposal->pembimbing->first()->nama,
+      '[JUDUL]' => $proposal->judul,
+      '[REVIEWER]' => $proposal->reviewer->first()->nama,
+    );
+
+    $this->exportForm($data,$skema);
+  }
+
+  public function downloadBerita(Request $request)
+  {
+    $id = $request->id;
+    $proposal = Proposal::whereId($id)->first();
+    $periode = $proposal->period->tahun;
+    $skema = $proposal->skema;
+
+    $data = array(
+      '[PEMBUKAAN]' => $proposal->period->tahun,
+      '[PENDANAAN]' => $periode + 1,
+      '[KETUA]' => $proposal->ketua->first()->nama,
+      '[PENDAMPING]' => $proposal->pembimbing->first()->nama,
+      '[JUDUL]' => $proposal->judul,
+      '[SKEMA]' => $proposal->skema,
+      '[REVIEWER]' => $proposal->reviewer->first()->nama,
+      '[NIDNREVIEWER]' => $proposal->reviewer->first()->nidn,
+    );
+
+    $this->exportBerita($data, $skema);
+  }
+
+  public function exportBerita($data, $skema)
+  {
+    if ($skema == 'PKM-GFK') {
+      $file = asset('template/BA-GFK.rtf');
+    } elseif ($skema == 'PKM-AI' || $skema == 'PKM-GT') {
+      $file = asset('template/BA-GT-AI.rtf');
+    } else {
+      $file = asset('template/BA-5Bidang.rtf');
+    }
+
+    $rand = uniqid();
+    $nama_file = 'BA_'.$rand.'.doc';
+
+    return \WordTemplate::export($file, $data, $nama_file);
+  }
+
+  public function exportForm($data,$skema)
+  {
+    $file = asset('template/'.$skema.'.rtf');
+
+    $rand = uniqid();
+    $nama_file = 'FORM_'.$skema.'_'.$rand.'.doc';
+
+    return \WordTemplate::export($file, $data, $nama_file);
+  }
 }
