@@ -26,10 +26,8 @@ class ProposalsExport implements FromQuery, WithHeadings, WithMapping
             'Ketua',
             'Prodi',
             'Pembimbing',
-            'Reviewer 1',
-            'Reviewer 2',
-            'Nilai 1',
-            'Nilai 2',
+            'Reviewer',
+            'Nilai',
         ];
     }
 
@@ -45,10 +43,8 @@ class ProposalsExport implements FromQuery, WithHeadings, WithMapping
             $proposal->students->first()->nama,
             $proposal->students->first()->major['degree']." ".$proposal->students->first()->major['name'],
             $proposal->pembimbing->first()->nama,
-            $proposal->reviewer1->first()->nama,
-            $proposal->reviewer2->first()->nama,
-            $proposal->nilai1,
-            $proposal->nilai2,
+            $proposal->reviewer->first()->nama,
+            $proposal->nilai,
         ];
     }
 
@@ -59,10 +55,8 @@ class ProposalsExport implements FromQuery, WithHeadings, WithMapping
         $q->wherePivot('jabatan', '=', 'Ketua');
       }, "pembimbing" => function($q) {
         $q->wherePivot('jabatan', '=', 'Pembimbing');
-      }, "reviewer1" => function($q) {
-        $q->wherePivot('jabatan', '=', 'Reviewer 1');
-      }, "reviewer2" => function($q) {
-        $q->wherePivot('jabatan', '=', 'Reviewer 2');
+      }, "reviewer" => function($q) {
+        $q->wherePivot('jabatan', '=', 'Reviewer');
       }])
       ->where('period_id', $this->year);
       return $proposal;
