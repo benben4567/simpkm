@@ -20,7 +20,7 @@ use Illuminate\Support\Facades\Storage;
 Route::view('/', 'landing');
 Route::view('/panduan', 'panduan')->name('panduan');
 
-Auth::routes(['verify' => false]);
+Auth::routes();
 
 Route::get('/home', 'HomeController@index')->middleware('verified')->name('home');
 
@@ -73,7 +73,7 @@ Route::group(['middleware' => ['admin'], 'prefix' => 'admin'], function () {
   Route::get('/chart', ['as' => 'chart.index', 'uses' => 'HomeController@chart']);
 });
 
-Route::group(['middleware' => ['student', 'verified'], 'prefix' => 'student'], function () {
+Route::group(['middleware' => ['student'], 'prefix' => 'student'], function () {
   // Profile
   Route::get('/profile', ['as' => 'profile.index', 'uses' => 'Student\ProfileController@index']);
   Route::put('/profile', ['as' => 'profile.update', 'uses' => 'Student\ProfileController@update']);
