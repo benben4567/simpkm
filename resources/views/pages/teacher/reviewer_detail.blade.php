@@ -43,7 +43,7 @@
                 @else
                   @if ($reviewer->user_id == auth()->user()->id)
                     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalReview"><i class="fas fa-upload"></i> Hasil Review</button>
-                    <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modalAcc"><i class="fas fa-clipboard-check"></i> Acc Proposal</button>
+                    {{-- <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modalAcc"><i class="fas fa-clipboard-check"></i> Acc Proposal</button> --}}
                   @endif
                 @endif
               </div>
