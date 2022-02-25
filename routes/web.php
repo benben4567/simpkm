@@ -20,7 +20,7 @@ use Illuminate\Support\Facades\Storage;
 Route::view('/', 'landing');
 Route::view('/panduan', 'panduan')->name('panduan');
 
-Auth::routes(['verify' => true]);
+Auth::routes(['verify' => false]);
 
 Route::get('/home', 'HomeController@index')->middleware('verified')->name('home');
 
