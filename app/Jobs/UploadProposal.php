@@ -42,7 +42,8 @@ class UploadProposal implements ShouldQueue
     public function handle()
     {
         // get local file
-        $path = public_path('storage\\temp_proposal\\'.$this->filename_temp);
+        $path = public_path('storage/temp_proposal/'.$this->filename_temp);
+        // $path = public_path('storage\\temp_proposal\\'.$this->filename_temp);
         $fileData = File::get($path);
 
         // $upload = Storage::cloud()->putFileAs($this->id_folder_review, $fileData, $this->filename);
