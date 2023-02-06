@@ -142,7 +142,7 @@
 @endpush
 
 @push('page-js')
-  <script src="{{ asset('js/mahasiswa/profile2.js') }}"></script>
+  <script src="{{ asset('js/mahasiswa/profile.js') }}"></script>
 @endpush
 
 @push('css')
