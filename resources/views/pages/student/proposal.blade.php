@@ -18,6 +18,18 @@
             </div>
           </div>
         </div>
+        @elseif (session('error'))
+        <div class="row">
+          <div class="col-12">
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                <span class="sr-only">Close</span>
+              </button>
+              <strong>Gagal!</strong> Usulan PKM gagal disimpan, silahkan ulangi kembali.
+            </div>
+          </div>
+        </div>
         @endif
         <div class="row">
           <div class="col-lg-12">
@@ -26,11 +38,11 @@
               <div class="alert-body">
                 <div class="alert-title">Perhatian</div>
                 @if ($now)
-                  @if($now->pendaftaran == 'tutup')
-                    @if($now->tahun <= date("Y"))
-                      <strong>Usulan Proposal Tahun {{ $now->tahun }} sudah ditutup.</strong> Peserta tidak dapat membuat usulan baru ataupun menghapus usulan yang telah dibuat.
+                  @if($now['pendaftaran'] == 'tutup')
+                    @if($now['tahun'] <= date("Y"))
+                      <strong>Usulan Proposal Tahun {{ $now['tahun'] }} sudah ditutup.</strong> Peserta tidak dapat membuat usulan baru ataupun menghapus usulan yang telah dibuat.
                     @else
-                      <strong>Usulan Proposal Tahun {{ $now->tahun }} belum dibuka.</strong>
+                      <strong>Usulan Proposal Tahun {{ $now['tahun'] }} belum dibuka.</strong>
                     @endif
                   @else
                     Pengusulan PKM <strong>hanya</strong> dilakukan oleh Ketua Kelompok masing-masing PKM. Anggota kelompok cukup sampai melengkapi <strong>Data Diri</strong> saja. Silahkan baca <a class="btn btn-primary btn-sm" href="{{ route('panduan.index') }}" role="button">Panduan SIM</a> pada menu disamping untuk informasi lebih lanjut.
@@ -61,8 +73,8 @@
                   <div class="col-md-2">
                     <div class="form-group">
                       @if ($now)
-                        @if($now->pendaftaran == 'buka')
-                          <a class="form-control btn btn-lg btn-primary btn-usulan" href="{{ route('proposal.create') }}" role="button"><i class="fas fa-plus"></i> Usulan Baru</a>
+                        @if($now['pendaftaran'] == 'buka')
+                          <a class="form-control btn btn-lg btn-primary btn-usulan" href="{{ route('proposal.create', ['periode' => $now['hash']]) }}" role="button"><i class="fas fa-plus"></i> Usulan Baru</a>
                         @else
                           <a class="form-control btn btn-lg btn-secondary" href="#" role="button"><i class="fas fa-plus"></i> Usulan Baru</a>
                         @endif

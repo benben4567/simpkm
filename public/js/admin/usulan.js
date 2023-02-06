@@ -152,9 +152,9 @@ $(function () {
     });
   });
 
-  $('#table tbody').on('click', 'button.btn-nilai', function (e) {
+  $('#table tbody').on('click', '.btn-nilai', function (e) {
     e.preventDefault()
-    var data = table.row( $(this).parents('tr') ).data();
+    var data = $("#table").DataTable().row($(this).parents('tr') ).data();
     var nilai = data.nilai;
     $('input[name="id-proposal"]').val($(this).data('id'));
     $('input[name="nilai"]').val(nilai);

@@ -13,7 +13,7 @@ class AdminProposalService
     $skema = $data['skema'];
     $proposals = DB::table('periods')
                 ->join('proposals', 'periods.id', '=', 'proposals.period_id')
-                ->select('periods.id as period_id', 'periods.tahun', 'proposals.id', 'proposals.skema', 'proposals.judul', 'proposals.status', 'proposals.nilai1', 'proposals.nilai2')
+                ->select('periods.id as period_id', 'periods.tahun', 'proposals.id', 'proposals.skema', 'proposals.judul', 'proposals.status', 'proposals.nilai')
                 ->where('periods.tahun', '=', $data['tahun'])
                 ->when($skema, function($q) use ($skema) {
                   return $q->where('skema', '=', $skema);

@@ -44,7 +44,7 @@
                 <div class="row">
                   <div class="col-lg-6">
                     <div class="form-group">
-                      <label for="">Tempat</label>
+                      <label for="">Tempat Lahir</label>
                       <input type="text" class="form-control" name="tempat" value="{{ old('tempat', $student->tempat_lahir) }}" id="tempat">
                     </div>
                   </div>
@@ -58,7 +58,7 @@
                 <div class="row">
                   <div class="col-lg-6">
                     <div class="form-group">
-                      <label for="jk">JK</label>
+                      <label for="jk">Jenis Kelamin</label>
                       <select class="form-control selectric" name="jk" id="jk">
                         <option selected disabled>- pilih -</option>
                         <option value="laki" {{ old('jk', $student->jk) == 'laki' ? 'selected' : '' }}>Laki</option>
@@ -69,7 +69,7 @@
                   <div class="col-lg-6">
                     <div class="form-group">
                       <label for="no_hp">No. HP</label>
-                      <input type="text" class="form-control" name="no_hp" value="{{ old('no_hp', $student->no_hp) }}" id="no_hp">
+                      <input type="text" class="form-control" name="no_hp" data-mask="0000-0000-00000" value="{{ old('no_hp', $student->no_hp) }}" id="no_hp">
                     </div>
                   </div>
                 </div>
@@ -138,6 +138,7 @@
 @push('lib-js')
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js" integrity="sha512-T/tUfKSV1bihCnd+MxKD0Hm1uBBroVYBOYSk1knyvQ9VyZJpc/ALb4P0r6ubwVPSGB2GvjeoMAJJImBG12TiaQ==" crossorigin="anonymous"></script>
   <script src="{{ asset('vendor/selectric/public/jquery.selectric.min.js') }}"></script>
+  <script src="{{ asset('vendor/jquery-mask/jquery.mask.min.js') }}"></script>
 @endpush
 
 @push('page-js')

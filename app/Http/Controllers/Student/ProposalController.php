@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Student;
 
 use App\Helpers\ResponseFormatter;
 use App\Http\Controllers\Controller;
+use App\Jobs\UploadProposal;
 use Illuminate\Http\Request;
 use App\Period;
 use App\Teacher;
@@ -16,6 +17,9 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Codedge\Fpdf\Facades\Fpdf;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Log;
 
 class ProposalController extends Controller
 {
@@ -23,28 +27,25 @@ class ProposalController extends Controller
     public function index(Request $request)
     {
       $periods = Period::all()->sortByDesc('tahun');
-      $now = $periods->first();
-
+      $now = collect($periods->first());
+      $now->put('hash', Crypt::encryptString($now['id']));
+      
       if ($now) {
         if ($request->input('periode')) {
           $periode = $request->input('periode');
+          
           $now = Period::where('id', $periode)->first();
+          $now = collect($now);
+          $now->put('hash', Crypt::encryptString($now['id']));
+          
           $student = Student::with(['proposals' => function($q) use ($now) {
-                        $q->where('period_id', $now->id);
+                        $q->where('period_id', $now['id']);
                       }])->whereId(Auth::user()->student->id)->first();
 
-
           return view('pages.student.proposal', compact('student', 'periods', 'now', 'periode'));
-
-          // return redirect()->back()->withInput()->with([
-          //   'student' => $student,
-          //   'periods' => $periods,
-          //   'now' => $now
-          // ]);
-
         } else {
           $student = Student::with(['proposals' => function($q) use ($now) {
-                      $q->where('period_id', $now->id);
+                      $q->where('period_id', $now['id']);
                     }])->whereId(Auth::user()->student->id)->first();
         }
       } else {
@@ -64,9 +65,11 @@ class ProposalController extends Controller
       return view('pages.student.proposal_show', compact('proposal','members', 'pembimbing', 'reviewer'));
     }
 
-    public function create()
+    public function create(Request $request)
     {
-      $periode = Period::all()->sortByDesc('tahun')->first();
+      $id_periode = Crypt::decryptString($request->input('periode'));
+      
+      $periode = Period::where('id', $id_periode)->first();
       $teachers = Teacher::all();
       return view('pages.student.proposal_create', compact('periode','teachers'));
     }
@@ -80,48 +83,57 @@ class ProposalController extends Controller
         'judul' => 'required',
         'file' => 'required|mimes:pdf|max:2048'
       ]);
-
-      // DB Transaction
-      DB::transaction(function () use ($request) {
-
-        // Upload file
-        if($request->file('file')) {
-          $title = preg_replace( '/[^a-z0-9]+/', '-', strtolower(Str::words($request->input('judul'), 7, '')));
-          $filename = $request->input('skema').'_'.$title.'_'.Str::random(7).'.pdf';
-
-          // get folder id by tahun
-          $periode = Period::where('tahun', '=', $request->input('tahun'))->first();
-          // if exist upload and save to table
-          if ($periode->id_folder_review) {
-            $file = Storage::cloud()->putFileAs($periode->id_folder_review, $request->file('file'), $filename);
-            $metadata = Storage::cloud()->getMetadata($file);
-            $id_file = $metadata['path'];
+      
+      try {
+        // DB Transaction
+        DB::transaction(function () use ($request) {
+  
+          // Upload file
+          if($request->file('file')) {
+            $title = preg_replace( '/[^a-z0-9]+/', '-', strtolower(Str::words($request->input('judul'), 7, '')));
+            $filename = $request->input('skema').'_'.$title.'_'.Str::random(7).'.pdf';
+  
+            // get folder id by tahun
+            $periode = Period::where('tahun', '=', $request->input('tahun'))->first();
+            // if exist upload to local 
+            if ($periode->id_folder_review) {
+              $filename_temp = Str::random(7).'.pdf';
+              $file = Storage::putFileAs('public/temp_proposal', $request->file('file'), $filename_temp);
+            }
           }
-        }
-
-        // simpan ke table proposal
-        $proposal = Proposal::create([
-          'period_id' => $periode->id,
-          'skema' => $request->input('skema'),
-          'judul' => $request->input('judul'),
-          'status' => 'kompilasi',
-        ]);
-
-        // simpan ke table proposal
-        $review = $proposal->reviews()->create([
-          'user_id' => auth()->user()->id,
-          'type' => auth()->user()->role,
-          'description' => 'Usulan Proposal Awal',
-          'file' => $id_file
-        ]);
-
-        // Attach Student
-        $proposal->students()->attach(Auth::user()->student->id, ['jabatan' => 'Ketua']);
-        // Attach Teacher
-        $proposal->teachers()->attach($request->input('dosen'), ['jabatan' => 'Pembimbing']);
-      });
-
-      return redirect()->route('proposal.index')->with('success', 'Data berhasil disimpan');
+  
+          // simpan ke table proposal
+          $proposal = Proposal::create([
+            'period_id' => $periode->id,
+            'skema' => $request->input('skema'),
+            'judul' => $request->input('judul'),
+            'status' => 'kompilasi',
+          ]);
+  
+          // simpan ke table proposal
+          $review = $proposal->reviews()->create([
+            'user_id' => auth()->user()->id,
+            'type' => auth()->user()->role,
+            'description' => 'Usulan Proposal Awal',
+          ]);
+          
+          // upload file
+          if ($periode->id_folder_review) {
+            UploadProposal::dispatch($filename_temp, $filename, $periode->id_folder_review, $review->id);
+          }
+  
+          // Attach Student
+          $proposal->students()->attach(Auth::user()->student->id, ['jabatan' => 'Ketua']);
+          // Attach Teacher
+          $proposal->teachers()->attach($request->input('dosen'), ['jabatan' => 'Pembimbing']);
+        });
+        
+        return redirect()->route('proposal.index')->with('success', 'Data berhasil disimpan');
+        
+      } catch (\Exception $e) {
+        Log::error($e->getMessage());
+        return redirect()->route('proposal.index')->with('error', 'Data gagal disimpan');
+      }
     }
 
     public function edit($id)

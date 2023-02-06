@@ -15,12 +15,12 @@ class Proposal extends Model
 
     public function students()
     {
-      return $this->belongsToMany(Student::class)->withPivot('jabatan');
+      return $this->belongsToMany(Student::class)->withPivot('jabatan')->withTimestamps();
     }
 
     public function teachers()
     {
-      return $this->belongsToMany(Teacher::class)->withPivot('jabatan');
+      return $this->belongsToMany(Teacher::class)->withPivot('jabatan')->withTimestamps();
     }
 
     public function pembimbing()

@@ -68,10 +68,15 @@ $(document).ready(function () {
   // update profile
   $("#form-student").submit(function (e) {
     e.preventDefault();
+    var values = $(this).serializeArray();
+    values.find(function(input) { 
+        return input.name == 'no_hp';
+    }).value = $('input[name="no_hp"]').cleanVal();;
+    
     $.ajax({
       type: "put",
       url: "profile",
-      data: $(this).serialize(),
+      data: values,
       dataType: "JSON",
       beforeSend: function() {
         $.LoadingOverlay("show")

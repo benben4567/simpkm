@@ -194,12 +194,12 @@ class ProposalController extends Controller
 
     $proposal = Proposal::where('id', $request->input('id-proposal'));
     $tahun = $proposal->first()->period->tahun;
-    $update = $proposal->update(['nilai1' => $request->input('nilai1'), 'nilai2' => $request->input('nilai2')]);
+    $update = $proposal->update(['nilai' => $request->input('nilai')]);
 
     if($update) {
       $proposals = DB::table('periods')
                       ->join('proposals', 'periods.id', '=', 'proposals.period_id')
-                      ->select('periods.id as period_id', 'periods.tahun', 'proposals.id', 'proposals.skema', 'proposals.judul', 'proposals.status', 'proposals.nilai1', 'proposals.nilai2')
+                      ->select('periods.id as period_id', 'periods.tahun', 'proposals.id', 'proposals.skema', 'proposals.judul', 'proposals.status', 'proposals.nilai')
                       ->where('periods.tahun', '=', $tahun)
                       ->get();
 
