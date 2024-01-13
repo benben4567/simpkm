@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Proposal;
+use App\Models\Proposal;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
@@ -12,13 +12,13 @@ class AdminProposalService
   {
     $skema = $data['skema'];
     $proposals = DB::table('periods')
-                ->join('proposals', 'periods.id', '=', 'proposals.period_id')
-                ->select('periods.id as period_id', 'periods.tahun', 'proposals.id', 'proposals.skema', 'proposals.judul', 'proposals.status', 'proposals.nilai')
-                ->where('periods.tahun', '=', $data['tahun'])
-                ->when($skema, function($q) use ($skema) {
-                  return $q->where('skema', '=', $skema);
-                })
-                ->get();
+      ->join('proposals', 'periods.id', '=', 'proposals.period_id')
+      ->select('periods.id as period_id', 'periods.tahun', 'proposals.id', 'proposals.skema', 'proposals.judul', 'proposals.status', 'proposals.nilai')
+      ->where('periods.tahun', '=', $data['tahun'])
+      ->when($skema, function ($q) use ($skema) {
+        return $q->where('skema', '=', $skema);
+      })
+      ->get();
 
     return $proposals;
   }
@@ -42,16 +42,16 @@ class AdminProposalService
 
     if ($update) {
       $reviewer = $proposal->first()
-                    ->teachers()->sync([
-                      $pembimbing => ['jabatan' => 'Pembimbing'],
-                      $reviewer => ['jabatan' => 'Reviewer']
-                    ]);
+        ->teachers()->sync([
+            $pembimbing => ['jabatan' => 'Pembimbing'],
+            $reviewer => ['jabatan' => 'Reviewer']
+          ]);
 
       $proposals = DB::table('periods')
-                    ->join('proposals', 'periods.id', '=', 'proposals.period_id')
-                    ->select('periods.id as period_id', 'periods.tahun', 'proposals.id', 'proposals.skema', 'proposals.judul', 'proposals.status',  'proposals.nilai')
-                    ->where('periods.tahun', '=', $tahun)
-                    ->get();
+        ->join('proposals', 'periods.id', '=', 'proposals.period_id')
+        ->select('periods.id as period_id', 'periods.tahun', 'proposals.id', 'proposals.skema', 'proposals.judul', 'proposals.status', 'proposals.nilai')
+        ->where('periods.tahun', '=', $tahun)
+        ->get();
     } else {
       return false;
     }
@@ -65,12 +65,12 @@ class AdminProposalService
     $tahun = $proposal->first()->period->tahun;
     $update = $proposal->update(['nilai' => $data['nilai']]);
 
-    if($update) {
+    if ($update) {
       $proposals = DB::table('periods')
-                      ->join('proposals', 'periods.id', '=', 'proposals.period_id')
-                      ->select('periods.id as period_id', 'periods.tahun', 'proposals.id', 'proposals.skema', 'proposals.judul', 'proposals.status', 'proposals.nilai')
-                      ->where('periods.tahun', '=', $tahun)
-                      ->get();
+        ->join('proposals', 'periods.id', '=', 'proposals.period_id')
+        ->select('periods.id as period_id', 'periods.tahun', 'proposals.id', 'proposals.skema', 'proposals.judul', 'proposals.status', 'proposals.nilai')
+        ->where('periods.tahun', '=', $tahun)
+        ->get();
     } else {
       return false;
     }
@@ -92,10 +92,10 @@ class AdminProposalService
     $proposal = Proposal::destroy($data['id']);
     if ($proposal) {
       $proposals = DB::table('periods')
-                    ->join('proposals', 'periods.id', '=', 'proposals.period_id')
-                    ->select('periods.id as period_id', 'periods.tahun', 'proposals.id', 'proposals.skema', 'proposals.judul', 'proposals.status',  'proposals.nilai')
-                    ->where('periods.tahun', '=', $data['tahun'])
-                    ->get();
+        ->join('proposals', 'periods.id', '=', 'proposals.period_id')
+        ->select('periods.id as period_id', 'periods.tahun', 'proposals.id', 'proposals.skema', 'proposals.judul', 'proposals.status', 'proposals.nilai')
+        ->where('periods.tahun', '=', $data['tahun'])
+        ->get();
       return $proposals;
     } else {
       return false;

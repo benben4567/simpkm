@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\User;
+use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
@@ -117,96 +117,96 @@ class UserService
   {
     $user = User::whereId($data['id'])->first();
 
-      if ($data['password']) {
-        $data['password'] = Hash::make($data['password']);
-        $user->update($data);
-      } else {
-        if ($user->role == 'admin') {
-          $admin = User::where('role', 'admin')->where('status', 'aktif')->count();
-          if ($admin < 2 && $data['status'] == "nonaktif") {
-            $res = [
-              'success' => false,
-              'data' => null,
-              'msg' => 'Minimal 1 admin harus aktif.',
-              'code' => 422
-            ];
-            return $res;
-          } else {
-            unset($data['password']);
-            $user->update($data);
-          }
+    if ($data['password']) {
+      $data['password'] = Hash::make($data['password']);
+      $user->update($data);
+    } else {
+      if ($user->role == 'admin') {
+        $admin = User::where('role', 'admin')->where('status', 'aktif')->count();
+        if ($admin < 2 && $data['status'] == "nonaktif") {
+          $res = [
+            'success' => false,
+            'data' => null,
+            'msg' => 'Minimal 1 admin harus aktif.',
+            'code' => 422
+          ];
+          return $res;
         } else {
           unset($data['password']);
           $user->update($data);
         }
-      }
-
-      // update table teacher
-      switch ($role) {
-        case 'teacher':
-          $data = [
-            'major_id' => $data['major'],
-            'nama' => $data['name'],
-            'tempat_lahir' => $data['tempat'],
-            'tgl_lahir' => $data['tgl'],
-            'no_hp' => $data['no_hp'],
-            'jk' => $data['jk']
-          ];
-          $user->teacher()->update($data);
-          break;
-        case 'student':
-          $data = [
-            'major_id' => $data['major'],
-            'nim' => $data['nim'],
-            'nama' => $data['name'],
-            'tempat_lahir' => $data['tempat'],
-            'tgl_lahir' => $data['tgl'],
-            'no_hp' => $data['no_hp'],
-            'jk' => $data['jk']
-          ];
-          $user->student()->update($data);
-          break;
-        default:
-          break;
-      }
-
-      // Send back response
-      if ($user) {
-        if ($role == 'student') {
-          $user = DB::table('users')
-                    ->join('students', 'users.id', '=', 'students.user_id')
-                    ->select('users.*', 'students.nama', 'students.nim')
-                    ->get();
-        } elseif ($role == 'teacher') {
-          $user = DB::table('users')
-                  ->join('teachers', 'users.id', '=', 'teachers.user_id')
-                  ->join('majors', 'majors.id', '=', 'teachers.major_id')
-                  ->select('users.*', 'teachers.nama', 'teachers.nidn', 'majors.*')
-                  ->get();
-        } else {
-          $user = User::whereRole($role)->get();
-        }
-
-        $res = [
-          'success' => true,
-          'data' => $user,
-          'msg' => 'Data berhasil disimpan',
-          'code' => 201
-        ];
-
-        return $res;
-
       } else {
-
-        $res = [
-          'success' => false,
-          'data' => null,
-          'msg' => 'Data gagal disimpan',
-          'code' => 500
-        ];
-        return $res;
-
+        unset($data['password']);
+        $user->update($data);
       }
+    }
+
+    // update table teacher
+    switch ($role) {
+      case 'teacher':
+        $data = [
+          'major_id' => $data['major'],
+          'nama' => $data['name'],
+          'tempat_lahir' => $data['tempat'],
+          'tgl_lahir' => $data['tgl'],
+          'no_hp' => $data['no_hp'],
+          'jk' => $data['jk']
+        ];
+        $user->teacher()->update($data);
+        break;
+      case 'student':
+        $data = [
+          'major_id' => $data['major'],
+          'nim' => $data['nim'],
+          'nama' => $data['name'],
+          'tempat_lahir' => $data['tempat'],
+          'tgl_lahir' => $data['tgl'],
+          'no_hp' => $data['no_hp'],
+          'jk' => $data['jk']
+        ];
+        $user->student()->update($data);
+        break;
+      default:
+        break;
+    }
+
+    // Send back response
+    if ($user) {
+      if ($role == 'student') {
+        $user = DB::table('users')
+          ->join('students', 'users.id', '=', 'students.user_id')
+          ->select('users.*', 'students.nama', 'students.nim')
+          ->get();
+      } elseif ($role == 'teacher') {
+        $user = DB::table('users')
+          ->join('teachers', 'users.id', '=', 'teachers.user_id')
+          ->join('majors', 'majors.id', '=', 'teachers.major_id')
+          ->select('users.*', 'teachers.nama', 'teachers.nidn', 'majors.*')
+          ->get();
+      } else {
+        $user = User::whereRole($role)->get();
+      }
+
+      $res = [
+        'success' => true,
+        'data' => $user,
+        'msg' => 'Data berhasil disimpan',
+        'code' => 201
+      ];
+
+      return $res;
+
+    } else {
+
+      $res = [
+        'success' => false,
+        'data' => null,
+        'msg' => 'Data gagal disimpan',
+        'code' => 500
+      ];
+      return $res;
+
+    }
   }
 
   public function showSim($id)
@@ -226,7 +226,7 @@ class UserService
         return [
           'success' => true,
           'data' => [
-            'username_sim' => '072026'.$user->student->nim
+            'username_sim' => '072026' . $user->student->nim
           ],
           'msg' => 'Data belum dibuat',
           'code' => 200

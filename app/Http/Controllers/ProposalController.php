@@ -5,10 +5,10 @@ namespace App\Http\Controllers;
 use App\Helpers\ResponseFormatter;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use App\Period;
-use App\Proposal;
+use App\Models\Period;
+use App\Models\Proposal;
 use App\Services\AdminProposalService;
-use App\Teacher;
+use App\Models\Teacher;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
@@ -57,7 +57,7 @@ class ProposalController extends Controller
             'pembimbing' => $pembimbing,
             'reviewer' => $reviewer,
             'anggota' => $anggota
-        ],
+          ],
         ]);
       } else {
         return response()->json([
@@ -118,8 +118,8 @@ class ProposalController extends Controller
     $proposal = Proposal::find($request->input('id-proposal'));
 
     // if exist upload and save to table
-    $title = preg_replace( '/[^a-z0-9]+/', '-', strtolower(Str::words($proposal->judul, 7, '')));
-    $filename = $proposal->skema.'_'.$title.'_'.time().'.pdf';
+    $title = preg_replace('/[^a-z0-9]+/', '-', strtolower(Str::words($proposal->judul, 7, '')));
+    $filename = $proposal->skema . '_' . $title . '_' . time() . '.pdf';
 
     $file = Storage::cloud()->putFileAs($request->input('id-folder'), $request->file('file'), $filename);
     $metadata = Storage::cloud()->getMetadata($file);
@@ -156,8 +156,8 @@ class ProposalController extends Controller
     $proposal = Proposal::find($request->input('id-proposal'));
 
     // if exist upload and save to table
-    $title = preg_replace( '/[^a-z0-9]+/', '-', strtolower(Str::words($proposal->judul, 7, '')));
-    $filename = $proposal->skema.'_'.$title.'_'.time().'.pdf';
+    $title = preg_replace('/[^a-z0-9]+/', '-', strtolower(Str::words($proposal->judul, 7, '')));
+    $filename = $proposal->skema . '_' . $title . '_' . time() . '.pdf';
 
     $file = Storage::cloud()->putFileAs($request->input('id-folder'), $request->file('file'), $filename);
     $metadata = Storage::cloud()->getMetadata($file);
@@ -196,12 +196,12 @@ class ProposalController extends Controller
     $tahun = $proposal->first()->period->tahun;
     $update = $proposal->update(['nilai' => $request->input('nilai')]);
 
-    if($update) {
+    if ($update) {
       $proposals = DB::table('periods')
-                      ->join('proposals', 'periods.id', '=', 'proposals.period_id')
-                      ->select('periods.id as period_id', 'periods.tahun', 'proposals.id', 'proposals.skema', 'proposals.judul', 'proposals.status', 'proposals.nilai')
-                      ->where('periods.tahun', '=', $tahun)
-                      ->get();
+        ->join('proposals', 'periods.id', '=', 'proposals.period_id')
+        ->select('periods.id as period_id', 'periods.tahun', 'proposals.id', 'proposals.skema', 'proposals.judul', 'proposals.status', 'proposals.nilai')
+        ->where('periods.tahun', '=', $tahun)
+        ->get();
 
       return response()->json([
         'success' => true,
@@ -218,10 +218,10 @@ class ProposalController extends Controller
   public function print($tahun)
   {
     $proposals = DB::table('periods')
-                    ->join('proposals', 'periods.id', '=', 'proposals.period_id')
-                    ->select('periods.id as period_id', 'periods.tahun', 'proposals.id', 'proposals.skema', 'proposals.judul', 'proposals.status',  'proposals.nilai1', 'proposals.nilai2')
-                    ->where('periods.tahun', '=', $tahun)
-                    ->get();
+      ->join('proposals', 'periods.id', '=', 'proposals.period_id')
+      ->select('periods.id as period_id', 'periods.tahun', 'proposals.id', 'proposals.skema', 'proposals.judul', 'proposals.status', 'proposals.nilai1', 'proposals.nilai2')
+      ->where('periods.tahun', '=', $tahun)
+      ->get();
 
     // $proposals = Periods
 
@@ -269,7 +269,7 @@ class ProposalController extends Controller
       '[REVIEWER]' => $proposal->reviewer->first()->nama,
     );
 
-    $this->exportForm($data,$skema);
+    $this->exportForm($data, $skema);
   }
 
   public function downloadBerita(Request $request)
@@ -304,17 +304,17 @@ class ProposalController extends Controller
     }
 
     $rand = uniqid();
-    $nama_file = 'BA_'.$rand.'.doc';
+    $nama_file = 'BA_' . $rand . '.doc';
 
     return \WordTemplate::export($file, $data, $nama_file);
   }
 
-  public function exportForm($data,$skema)
+  public function exportForm($data, $skema)
   {
-    $file = asset('template/'.$skema.'.rtf');
+    $file = asset('template/' . $skema . '.rtf');
 
     $rand = uniqid();
-    $nama_file = 'FORM_'.$skema.'_'.$rand.'.doc';
+    $nama_file = 'FORM_' . $skema . '_' . $rand . '.doc';
 
     return \WordTemplate::export($file, $data, $nama_file);
   }

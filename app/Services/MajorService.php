@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Major;
+use App\Models\Major;
 
 class MajorService
 {

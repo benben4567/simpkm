@@ -6,11 +6,11 @@ use App\Helpers\ResponseFormatter;
 use App\Http\Controllers\Controller;
 use App\Jobs\UploadProposal;
 use Illuminate\Http\Request;
-use App\Period;
-use App\Teacher;
-use App\Proposal;
-use App\Review;
-use App\Student;
+use App\Models\Period;
+use App\Models\Teacher;
+use App\Models\Proposal;
+use App\Models\Review;
+use App\Models\Student;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -24,396 +24,400 @@ use Illuminate\Support\Facades\Log;
 class ProposalController extends Controller
 {
 
-    public function index(Request $request)
-    {
-      $periods = Period::all()->sortByDesc('tahun');
-      $now = collect($periods->first());
-      $now->put('hash', Crypt::encryptString($now['id']));
-      
-      if ($now) {
-        if ($request->input('periode')) {
-          $periode = $request->input('periode');
-          
-          $now = Period::where('id', $periode)->first();
-          $now = collect($now);
-          $now->put('hash', Crypt::encryptString($now['id']));
-          
-          $student = Student::with(['proposals' => function($q) use ($now) {
-                        $q->where('period_id', $now['id']);
-                      }])->whereId(Auth::user()->student->id)->first();
+  public function index(Request $request)
+  {
+    $periods = Period::all()->sortByDesc('tahun');
+    $now = collect($periods->first());
+    $now->put('hash', Crypt::encryptString($now['id']));
 
-          return view('pages.student.proposal', compact('student', 'periods', 'now', 'periode'));
-        } else {
-          $student = Student::with(['proposals' => function($q) use ($now) {
-                      $q->where('period_id', $now['id']);
-                    }])->whereId(Auth::user()->student->id)->first();
-        }
-      } else {
-        $student = Student::whereId(Auth::user()->student->id)->first();
-      }
+    if ($now) {
+      if ($request->input('periode')) {
+        $periode = $request->input('periode');
 
+        $now = Period::where('id', $periode)->first();
+        $now = collect($now);
+        $now->put('hash', Crypt::encryptString($now['id']));
 
-      return view('pages.student.proposal', compact('student', 'periods', 'now'));
-    }
-
-    public function show($id)
-    {
-      $proposal = Proposal::findOrFail($id);
-      $members = $proposal->students;
-      $pembimbing = $proposal->pembimbing->first();
-      $reviewer = $proposal->reviewer->first();
-      return view('pages.student.proposal_show', compact('proposal','members', 'pembimbing', 'reviewer'));
-    }
-
-    public function create(Request $request)
-    {
-      $id_periode = Crypt::decryptString($request->input('periode'));
-      
-      $periode = Period::where('id', $id_periode)->first();
-      $teachers = Teacher::all();
-      return view('pages.student.proposal_create', compact('periode','teachers'));
-    }
-
-    public function store(Request $request)
-    {
-      $this->validate($request, [
-        'tahun' => 'required',
-        'skema' => 'required',
-        'dosen' => 'required',
-        'judul' => 'required',
-        'file' => 'required|mimes:pdf|max:2048'
-      ]);
-      
-      try {
-        // DB Transaction
-        DB::transaction(function () use ($request) {
-  
-          // Upload file
-          if($request->file('file')) {
-            $title = preg_replace( '/[^a-z0-9]+/', '-', strtolower(Str::words($request->input('judul'), 7, '')));
-            $filename = $request->input('skema').'_'.$title.'_'.Str::random(7).'.pdf';
-  
-            // get folder id by tahun
-            $periode = Period::where('tahun', '=', $request->input('tahun'))->first();
-            // if exist upload to local 
-            if ($periode->id_folder_review) {
-              $filename_temp = Str::random(7).'.pdf';
-              $file = Storage::putFileAs('public/temp_proposal', $request->file('file'), $filename_temp);
-            }
+        $student = Student::with([
+          'proposals' => function ($q) use ($now) {
+            $q->where('period_id', $now['id']);
           }
-  
-          // simpan ke table proposal
-          $proposal = Proposal::create([
-            'period_id' => $periode->id,
-            'skema' => $request->input('skema'),
-            'judul' => $request->input('judul'),
-            'status' => 'kompilasi',
-          ]);
-  
-          // simpan ke table proposal
-          $review = $proposal->reviews()->create([
-            'user_id' => auth()->user()->id,
-            'type' => auth()->user()->role,
-            'description' => 'Usulan Proposal Awal',
-          ]);
-          
-          // upload file
-          if ($periode->id_folder_review) {
-            UploadProposal::dispatch($filename_temp, $filename, $periode->id_folder_review, $review->id);
+        ])->whereId(Auth::user()->student->id)->first();
+
+        return view('pages.student.proposal', compact('student', 'periods', 'now', 'periode'));
+      } else {
+        $student = Student::with([
+          'proposals' => function ($q) use ($now) {
+            $q->where('period_id', $now['id']);
           }
-  
-          // Attach Student
-          $proposal->students()->attach(Auth::user()->student->id, ['jabatan' => 'Ketua']);
-          // Attach Teacher
-          $proposal->teachers()->attach($request->input('dosen'), ['jabatan' => 'Pembimbing']);
-        });
-        
-        return redirect()->route('proposal.index')->with('success', 'Data berhasil disimpan');
-        
-      } catch (\Exception $e) {
-        Log::error($e->getMessage());
-        return redirect()->route('proposal.index')->with('error', 'Data gagal disimpan');
+        ])->whereId(Auth::user()->student->id)->first();
       }
+    } else {
+      $student = Student::whereId(Auth::user()->student->id)->first();
     }
 
-    public function edit($id)
-    {
-      $proposal = Proposal::findOrFail($id);
-      $student = $proposal->students->first();
-      $pembimbing = $proposal->teachers->first();
-      $teachers = Teacher::all();
-      if ($student->id == Auth::user()->student->id) {
-        return view('pages.student.proposal_edit', compact('proposal', 'pembimbing', 'teachers'));
-      } else {
-        return abort(404);
-      }
-    }
 
-    public function update(Request $request)
-    {
+    return view('pages.student.proposal', compact('student', 'periods', 'now'));
+  }
 
-      $proposal = Proposal::find($request->input('id'));
+  public function show($id)
+  {
+    $proposal = Proposal::findOrFail($id);
+    $members = $proposal->students;
+    $pembimbing = $proposal->pembimbing->first();
+    $reviewer = $proposal->reviewer->first();
+    return view('pages.student.proposal_show', compact('proposal', 'members', 'pembimbing', 'reviewer'));
+  }
 
-      if ($proposal->status == 'kompilasi') {
-        $validator = [
-          'id' => 'required',
-          'judul' => 'required',
-          'file' => 'required|mimes:pdf|max:2048'
-        ];
-      } else {
-        $validator = [
-          'id' => 'required',
-          'judul' => 'required',
-        ];
-      }
+  public function create(Request $request)
+  {
+    $id_periode = Crypt::decryptString($request->input('periode'));
 
-      $this->validate($request, $validator);
+    $periode = Period::where('id', $id_periode)->first();
+    $teachers = Teacher::all();
+    return view('pages.student.proposal_create', compact('periode', 'teachers'));
+  }
 
+  public function store(Request $request)
+  {
+    $this->validate($request, [
+      'tahun' => 'required',
+      'skema' => 'required',
+      'dosen' => 'required',
+      'judul' => 'required',
+      'file' => 'required|mimes:pdf|max:2048'
+    ]);
+
+    try {
       // DB Transaction
       DB::transaction(function () use ($request) {
-        // Upload file Update
-        if($request->file('file')) {
-          // get file id
-          $proposal = Proposal::whereId($request->input('id'))->first();
-          $id_file = $proposal->file;
 
-          // get directory id
-          $id_directory = Period::where('id', '=', $proposal->period_id)->first()->id_folder;
+        // Upload file
+        if ($request->file('file')) {
+          $title = preg_replace('/[^a-z0-9]+/', '-', strtolower(Str::words($request->input('judul'), 7, '')));
+          $filename = $request->input('skema') . '_' . $title . '_' . Str::random(7) . '.pdf';
 
-          // filename
-          $title = preg_replace( '/[^a-z0-9]+/', '-', strtolower(Str::words($request->input('judul'), 7, '')));
-          $filename = $proposal->skema.'_'.$title.'_'.Str::random(7).'.pdf';
-
-          // if exist delete then upload to directory and save id to table
-          $exist = Storage::cloud()->exists($id_file);
-          if ($exist) {
-            // delete old file
-            Storage::cloud()->delete($id_file);
-            // upload new file
-            $file = Storage::cloud()->putFileAs($id_directory, $request->file('file'), $filename);
-            $metadata = Storage::cloud()->getMetadata($file);
-            $id_file = $metadata['path'];
-          } else {
-            // upload new file
-            $file = Storage::cloud()->putFileAs($id_directory, $request->file('file'), $filename);
-            $metadata = Storage::cloud()->getMetadata($file);
-            $id_file = $metadata['path'];
+          // get folder id by tahun
+          $periode = Period::where('tahun', '=', $request->input('tahun'))->first();
+          // if exist upload to local
+          if ($periode->id_folder_review) {
+            $filename_temp = Str::random(7) . '.pdf';
+            $file = Storage::putFileAs('public/temp_proposal', $request->file('file'), $filename_temp);
           }
-
-
-          // Update Table Proposal
-          $proposal = Proposal::whereId($request->input('id'))->update([
-            'judul' => $request->input('judul'),
-            'file' => $id_file
-          ]);
-        } else {
-          $proposal = Proposal::whereId($request->input('id'))->update([
-            'judul' => $request->input('judul'),
-          ]);
         }
 
+        // simpan ke table proposal
+        $proposal = Proposal::create([
+          'period_id' => $periode->id,
+          'skema' => $request->input('skema'),
+          'judul' => $request->input('judul'),
+          'status' => 'kompilasi',
+        ]);
+
+        // simpan ke table proposal
+        $review = $proposal->reviews()->create([
+          'user_id' => auth()->user()->id,
+          'type' => auth()->user()->role,
+          'description' => 'Usulan Proposal Awal',
+        ]);
+
+        // upload file
+        if ($periode->id_folder_review) {
+          UploadProposal::dispatch($filename_temp, $filename, $periode->id_folder_review, $review->id);
+        }
+
+        // Attach Student
+        $proposal->students()->attach(Auth::user()->student->id, ['jabatan' => 'Ketua']);
+        // Attach Teacher
+        $proposal->teachers()->attach($request->input('dosen'), ['jabatan' => 'Pembimbing']);
       });
 
-      return redirect()->route('proposal.index')->with('success','Data berhasil diupdate');
+      return redirect()->route('proposal.index')->with('success', 'Data berhasil disimpan');
+
+    } catch (\Exception $e) {
+      Log::error($e->getMessage());
+      return redirect()->route('proposal.index')->with('error', 'Data gagal disimpan');
+    }
+  }
+
+  public function edit($id)
+  {
+    $proposal = Proposal::findOrFail($id);
+    $student = $proposal->students->first();
+    $pembimbing = $proposal->teachers->first();
+    $teachers = Teacher::all();
+    if ($student->id == Auth::user()->student->id) {
+      return view('pages.student.proposal_edit', compact('proposal', 'pembimbing', 'teachers'));
+    } else {
+      return abort(404);
+    }
+  }
+
+  public function update(Request $request)
+  {
+
+    $proposal = Proposal::find($request->input('id'));
+
+    if ($proposal->status == 'kompilasi') {
+      $validator = [
+        'id' => 'required',
+        'judul' => 'required',
+        'file' => 'required|mimes:pdf|max:2048'
+      ];
+    } else {
+      $validator = [
+        'id' => 'required',
+        'judul' => 'required',
+      ];
     }
 
-    public function member($id)
-    {
-      $proposal = Proposal::findOrFail($id);
-      $members = $proposal->students;
-      $members_id = $proposal->students->pluck('id')->toArray();
-      $students = Student::whereNotIn('id', $members_id)->get();
-      $pembimbing = $proposal->pembimbing->first();
-      $reviewer = $proposal->reviewer->first();
-      $ketua = $proposal->ketua->first();
+    $this->validate($request, $validator);
 
-      return view('pages.student.proposal_member', compact('proposal','members', 'students', 'pembimbing', 'reviewer', 'ketua'));
+    // DB Transaction
+    DB::transaction(function () use ($request) {
+      // Upload file Update
+      if ($request->file('file')) {
+        // get file id
+        $proposal = Proposal::whereId($request->input('id'))->first();
+        $id_file = $proposal->file;
 
-      if ($members->first()->id == Auth::user()->student->id) {
+        // get directory id
+        $id_directory = Period::where('id', '=', $proposal->period_id)->first()->id_folder;
+
+        // filename
+        $title = preg_replace('/[^a-z0-9]+/', '-', strtolower(Str::words($request->input('judul'), 7, '')));
+        $filename = $proposal->skema . '_' . $title . '_' . Str::random(7) . '.pdf';
+
+        // if exist delete then upload to directory and save id to table
+        $exist = Storage::cloud()->exists($id_file);
+        if ($exist) {
+          // delete old file
+          Storage::cloud()->delete($id_file);
+          // upload new file
+          $file = Storage::cloud()->putFileAs($id_directory, $request->file('file'), $filename);
+          $metadata = Storage::cloud()->getMetadata($file);
+          $id_file = $metadata['path'];
+        } else {
+          // upload new file
+          $file = Storage::cloud()->putFileAs($id_directory, $request->file('file'), $filename);
+          $metadata = Storage::cloud()->getMetadata($file);
+          $id_file = $metadata['path'];
+        }
+
+
+        // Update Table Proposal
+        $proposal = Proposal::whereId($request->input('id'))->update([
+          'judul' => $request->input('judul'),
+          'file' => $id_file
+        ]);
       } else {
-        return abort(404);
+        $proposal = Proposal::whereId($request->input('id'))->update([
+          'judul' => $request->input('judul'),
+        ]);
       }
+
+    });
+
+    return redirect()->route('proposal.index')->with('success', 'Data berhasil diupdate');
+  }
+
+  public function member($id)
+  {
+    $proposal = Proposal::findOrFail($id);
+    $members = $proposal->students;
+    $members_id = $proposal->students->pluck('id')->toArray();
+    $students = Student::whereNotIn('id', $members_id)->get();
+    $pembimbing = $proposal->pembimbing->first();
+    $reviewer = $proposal->reviewer->first();
+    $ketua = $proposal->ketua->first();
+
+    return view('pages.student.proposal_member', compact('proposal', 'members', 'students', 'pembimbing', 'reviewer', 'ketua'));
+
+    if ($members->first()->id == Auth::user()->student->id) {
+    } else {
+      return abort(404);
+    }
+  }
+
+  public function memberAdd(Request $request)
+  {
+    $proposal_id = $request->input('proposal');
+    $student_id = $request->input('student');
+
+    $proposal = Proposal::find($proposal_id);
+    $proposal->students()->attach($student_id, ['jabatan' => 'Anggota']);
+
+    return response()->json([
+      'success' => true,
+      'msg' => 'Anggota telah ditambahkan'
+    ]);
+  }
+
+  public function memberRemove(Request $request)
+  {
+    $proposal_id = $request->input('proposal');
+    $student_id = $request->input('student');
+
+    $proposal = Proposal::find($proposal_id);
+    $proposal->students()->detach($student_id);
+
+    return response()->json([
+      'success' => true,
+      'msg' => 'Anggota telah dihapus'
+    ]);
+  }
+
+  public function review($id)
+  {
+    $proposal = Proposal::whereId($id)->with('reviews.user')->first();
+    $periode = $proposal->period->first();
+    $ketua = $proposal->ketua->first();
+    $pembimbing = $proposal->pembimbing->first();
+    $reviewer = $proposal->reviewer->first();
+    $anggota = $proposal->anggota->toArray();
+
+
+
+    return view('pages.student.review', compact('proposal', 'periode', 'ketua', 'pembimbing', 'reviewer', 'anggota'));
+  }
+
+  public function reviewStore(Request $request)
+  {
+    $validator = Validator::make($request->all(), [
+      'id-proposal' => 'required',
+      'id-folder' => 'required',
+      'deskripsi' => 'nullable',
+      'file' => 'required|file|max:5120',
+    ]);
+
+    if ($validator->fails()) {
+      return ResponseFormatter::error(null, $validator->errors(), 422);
     }
 
-    public function memberAdd(Request $request)
-    {
-      $proposal_id = $request->input('proposal');
-      $student_id = $request->input('student');
+    $proposal = Proposal::find($request->input('id-proposal'));
 
-      $proposal = Proposal::find($proposal_id);
-      $proposal->students()->attach($student_id, ['jabatan' => 'Anggota']);
+    // if exist upload and save to table
+    $title = preg_replace('/[^a-z0-9]+/', '-', strtolower(Str::words($proposal->judul, 7, '')));
+    $filename = $proposal->skema . '_' . $title . '_' . time() . '.pdf';
 
+    $file = Storage::cloud()->putFileAs($request->input('id-folder'), $request->file('file'), $filename);
+    $metadata = Storage::cloud()->getMetadata($file);
+    $id_file = $metadata['path'];
+
+    // simpan ke table review
+    $review = $proposal->reviews()->create([
+      'user_id' => auth()->user()->id,
+      'type' => auth()->user()->role,
+      'description' => $request->deskripsi,
+      'file' => $id_file
+    ]);
+
+    if ($review) {
+      return ResponseFormatter::success($review, 'Data Berhasil disimpan', 201);
+    } else {
+      return ResponseFormatter::error(null, 'Data Gagal disimpan', 500);
+    }
+  }
+
+  public function download(Request $request)
+  {
+    $id = $request->id;
+
+    $proposal = Proposal::whereId($id)->first();
+    $skema = $proposal->skema;
+
+    $data = array(
+      '[KETUA]' => $proposal->ketua->first()->nama,
+      '[NIM]' => $proposal->ketua->first()->nim,
+      '[PRODI]' => $proposal->ketua->first()->major->full_name,
+      '[EMAIL]' => $proposal->ketua->first()->user->email,
+      '[PENDAMPING]' => $proposal->pembimbing->first()->nama,
+      '[JUDUL]' => $proposal->judul,
+      '[REVIEWER1]' => $proposal->reviewer1->first()->nama,
+      '[REVIEWER2]' => $proposal->reviewer2->first()->nama
+    );
+
+    $this->exportForm($data, $skema);
+  }
+
+  public function download2(Request $request)
+  {
+    $id = $request->id;
+    $proposal = Proposal::whereId($id)->first();
+    $periode = $proposal->period->tahun;
+    $skema = $proposal->skema;
+
+    $data = array(
+      '[PEMBUKAAN]' => $proposal->period->tahun,
+      '[PENDANAAN]' => $periode + 1,
+      '[KETUA]' => $proposal->ketua->first()->nama,
+      '[PENDAMPING]' => $proposal->pembimbing->first()->nama,
+      '[JUDUL]' => $proposal->judul,
+      '[SKEMA]' => $proposal->skema,
+      '[REVIEWER1]' => $proposal->reviewer1->first()->nama,
+      '[REVIEWER2]' => $proposal->reviewer2->first()->nama,
+      '[NIDNREVIEWER1]' => $proposal->reviewer1->first()->nidn,
+    );
+
+    $this->exportBerita($data, $skema);
+  }
+
+  public function downloadProposal(Request $request)
+  {
+    // $proposal = Proposal::whereId($request->id)->first();
+    $metadata = Storage::cloud()->getMetadata($request->file);
+    $download = Storage::cloud()->download($request->file, $metadata['name']);
+    return $download;
+  }
+
+  public function exportBerita($data, $skema)
+  {
+    if ($skema == 'PKM-GFK') {
+      $file = asset('template/BA-GFK.rtf');
+    } elseif ($skema == 'PKM-AI' || $skema == 'PKM-GT') {
+      $file = asset('template/BA-GT-AI.rtf');
+    } else {
+      $file = asset('template/BA-5Bidang.rtf');
+    }
+
+    $rand = uniqid();
+    $nama_file = 'BA_' . $skema . '_' . $rand . '.doc';
+
+    return \WordTemplate::export($file, $data, $nama_file);
+  }
+
+  public function exportForm($data, $skema)
+  {
+    $file = asset('template/' . $skema . '.rtf');
+
+    $rand = uniqid();
+    $nama_file = 'FORM_' . $skema . '_' . $rand . '.doc';
+
+    return \WordTemplate::export($file, $data, $nama_file);
+  }
+
+  public function destroy(Request $request)
+  {
+    $proposal = Proposal::where('id', $request->input('id'))->first();
+    $status = $proposal->period->status;
+    // cek apakah periode terkait ditutup atau dibuka.
+    if ($status == 'tutup') {
       return response()->json([
-        'success' => true,
-        'msg' => 'Anggota telah ditambahkan'
-      ]);
+        'success' => false,
+        'msg' => 'Usulan tidak dapat dihapus karena periode sudah ditutup.'
+      ], 200);
     }
 
-    public function memberRemove(Request $request)
-    {
-      $proposal_id = $request->input('proposal');
-      $student_id = $request->input('student');
+    // delete file
+    $proposal = Proposal::whereId($request->input('id'))->first();
+    $file = $proposal->reviews()->first();
+    Storage::cloud()->delete($file->file);
 
-      $proposal = Proposal::find($proposal_id);
-      $proposal->students()->detach($student_id);
+    // delete in pivot table
+    $pivot = DB::table('proposal_student')->where('proposal_id', $request->input('id'))->delete();
+    // delete proposal
+    $proposal = Proposal::destroy($request->input('id'));
 
-      return response()->json([
-        'success' => true,
-        'msg' => 'Anggota telah dihapus'
-      ]);
-    }
-
-    public function review($id)
-    {
-      $proposal = Proposal::whereId($id)->with('reviews.user')->first();
-      $periode = $proposal->period->first();
-      $ketua = $proposal->ketua->first();
-      $pembimbing = $proposal->pembimbing->first();
-      $reviewer = $proposal->reviewer->first();
-      $anggota = $proposal->anggota->toArray();
-
-
-
-      return view('pages.student.review', compact('proposal', 'periode', 'ketua', 'pembimbing', 'reviewer', 'anggota'));
-    }
-
-    public function reviewStore(Request $request)
-    {
-      $validator = Validator::make($request->all(), [
-        'id-proposal' => 'required',
-        'id-folder' => 'required',
-        'deskripsi' => 'nullable',
-        'file' => 'required|file|max:5120',
-      ]);
-
-      if ($validator->fails()) {
-        return ResponseFormatter::error(null, $validator->errors(), 422);
-      }
-
-      $proposal = Proposal::find($request->input('id-proposal'));
-
-      // if exist upload and save to table
-      $title = preg_replace( '/[^a-z0-9]+/', '-', strtolower(Str::words($proposal->judul, 7, '')));
-      $filename = $proposal->skema.'_'.$title.'_'.time().'.pdf';
-
-      $file = Storage::cloud()->putFileAs($request->input('id-folder'), $request->file('file'), $filename);
-      $metadata = Storage::cloud()->getMetadata($file);
-      $id_file = $metadata['path'];
-
-      // simpan ke table review
-      $review = $proposal->reviews()->create([
-        'user_id' => auth()->user()->id,
-        'type' => auth()->user()->role,
-        'description' => $request->deskripsi,
-        'file' => $id_file
-      ]);
-
-      if ($review) {
-        return ResponseFormatter::success($review, 'Data Berhasil disimpan', 201);
-      } else {
-        return ResponseFormatter::error(null, 'Data Gagal disimpan', 500);
-      }
-    }
-
-    public function download(Request $request)
-    {
-      $id = $request->id;
-
-      $proposal = Proposal::whereId($id)->first();
-      $skema = $proposal->skema;
-
-      $data = array(
-        '[KETUA]' => $proposal->ketua->first()->nama,
-        '[NIM]' => $proposal->ketua->first()->nim,
-        '[PRODI]' => $proposal->ketua->first()->major->full_name,
-        '[EMAIL]' => $proposal->ketua->first()->user->email,
-        '[PENDAMPING]' => $proposal->pembimbing->first()->nama,
-        '[JUDUL]' => $proposal->judul,
-        '[REVIEWER1]' => $proposal->reviewer1->first()->nama,
-        '[REVIEWER2]' => $proposal->reviewer2->first()->nama
-      );
-
-      $this->exportForm($data,$skema);
-    }
-
-    public function download2(Request $request)
-    {
-      $id = $request->id;
-      $proposal = Proposal::whereId($id)->first();
-      $periode = $proposal->period->tahun;
-      $skema = $proposal->skema;
-
-      $data = array(
-        '[PEMBUKAAN]' => $proposal->period->tahun,
-        '[PENDANAAN]' => $periode + 1,
-        '[KETUA]' => $proposal->ketua->first()->nama,
-        '[PENDAMPING]' => $proposal->pembimbing->first()->nama,
-        '[JUDUL]' => $proposal->judul,
-        '[SKEMA]' => $proposal->skema,
-        '[REVIEWER1]' => $proposal->reviewer1->first()->nama,
-        '[REVIEWER2]' => $proposal->reviewer2->first()->nama,
-        '[NIDNREVIEWER1]' => $proposal->reviewer1->first()->nidn,
-      );
-
-      $this->exportBerita($data, $skema);
-    }
-
-    public function downloadProposal(Request $request)
-    {
-      // $proposal = Proposal::whereId($request->id)->first();
-      $metadata = Storage::cloud()->getMetadata($request->file);
-      $download = Storage::cloud()->download($request->file, $metadata['name']);
-      return $download;
-    }
-
-    public function exportBerita($data, $skema)
-    {
-      if ($skema == 'PKM-GFK') {
-        $file = asset('template/BA-GFK.rtf');
-      } elseif ($skema == 'PKM-AI' || $skema == 'PKM-GT') {
-        $file = asset('template/BA-GT-AI.rtf');
-      } else {
-        $file = asset('template/BA-5Bidang.rtf');
-      }
-
-      $rand = uniqid();
-      $nama_file = 'BA_'.$skema.'_'.$rand.'.doc';
-
-      return \WordTemplate::export($file, $data, $nama_file);
-    }
-
-    public function exportForm($data,$skema)
-    {
-      $file = asset('template/'.$skema.'.rtf');
-
-      $rand = uniqid();
-      $nama_file = 'FORM_'.$skema.'_'.$rand.'.doc';
-
-      return \WordTemplate::export($file, $data, $nama_file);
-    }
-
-    public function destroy(Request $request)
-    {
-      $proposal = Proposal::where('id', $request->input('id'))->first();
-      $status = $proposal->period->status;
-      // cek apakah periode terkait ditutup atau dibuka.
-      if ($status == 'tutup') {
-        return response()->json([
-            'success' => false,
-            'msg' => 'Usulan tidak dapat dihapus karena periode sudah ditutup.'
-          ], 200);
-      }
-
-      // delete file
-      $proposal = Proposal::whereId($request->input('id'))->first();
-      $file = $proposal->reviews()->first();
-      Storage::cloud()->delete($file->file);
-
-      // delete in pivot table
-      $pivot = DB::table('proposal_student')->where('proposal_id', $request->input('id'))->delete();
-      // delete proposal
-      $proposal = Proposal::destroy($request->input('id'));
-
-      return redirect()->back();
-    }
+    return redirect()->back();
+  }
 }

@@ -2,7 +2,7 @@
 
 namespace App\Jobs;
 
-use App\Review;
+use App\Models\Review;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -20,7 +20,7 @@ class UploadProposal implements ShouldQueue
     protected $filename;
     protected $id_folder_review;
     protected $review_id;
-    
+
     /**
      * Create a new job instance.
      *
@@ -42,13 +42,13 @@ class UploadProposal implements ShouldQueue
     public function handle()
     {
         // get local file
-        $path = public_path('storage/temp_proposal/'.$this->filename_temp);
+        $path = public_path('storage/temp_proposal/' . $this->filename_temp);
         // $path = public_path('storage\\temp_proposal\\'.$this->filename_temp);
         $fileData = File::get($path);
 
         // $upload = Storage::cloud()->putFileAs($this->id_folder_review, $fileData, $this->filename);
-        $upload = Storage::cloud()->put($this->id_folder_review."/".$this->filename, $fileData);
-        
+        $upload = Storage::cloud()->put($this->id_folder_review . "/" . $this->filename, $fileData);
+
         // get metadata
         $contents = collect(Storage::cloud()->listContents($this->id_folder_review, false));
         $file = $contents
@@ -56,14 +56,14 @@ class UploadProposal implements ShouldQueue
             ->where('filename', '=', pathinfo($this->filename, PATHINFO_FILENAME))
             ->where('extension', '=', pathinfo($this->filename, PATHINFO_EXTENSION))
             ->first(); // there can be duplicate file names!
-            
+
         if ($file) {
             $id_file = $file['path'];
             // simpan ke table review
             $review = Review::where('id', $this->review_id)->update([
-              'file' => $id_file,
-            ]); 
+                'file' => $id_file,
+            ]);
         }
     }
-        
+
 }

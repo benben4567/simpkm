@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Period;
+use App\Models\Period;
 use Illuminate\Support\Facades\Storage;
 
 class PeriodService
@@ -22,26 +22,26 @@ class PeriodService
     if ($dir) {
       $contents = collect(Storage::cloud()->listContents('/', false));
       $dir = $contents->where('type', '=', 'dir')
-          ->where('filename', '=', $year)
-          ->first();
+        ->where('filename', '=', $year)
+        ->first();
       // get directory id
       $id_directory = $dir['path'];
     }
 
-    $dir2 = Storage::cloud()->makeDirectory('review_'.$year);
+    $dir2 = Storage::cloud()->makeDirectory('review_' . $year);
     if ($dir) {
       $contents = collect(Storage::cloud()->listContents('/', false));
       $dir = $contents->where('type', '=', 'dir')
-          ->where('filename', '=', 'review_'.$year)
-          ->first();
+        ->where('filename', '=', 'review_' . $year)
+        ->first();
       // get directory id
       $id_directory_review = $dir['path'];
     }
 
     $period = Period::create([
-        'tahun' => $data['tahun'],
-        'id_folder' => $id_directory,
-        'id_folder_review' => $id_directory_review
+      'tahun' => $data['tahun'],
+      'id_folder' => $id_directory,
+      'id_folder_review' => $id_directory_review
     ]);
 
     return $period;

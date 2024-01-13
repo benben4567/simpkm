@@ -1,13 +1,13 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
-class Teacher extends Model
+class Student extends Model
 {
-    protected $fillable = ['major_id', 'nama', 'jk', 'nidn', 'tempat_lahir', 'tgl_lahir', 'email', 'no_hp'];
+    protected $fillable = ['major_id', 'nim', 'nama', 'tempat_lahir', 'tgl_lahir', 'no_hp', 'jk', 'username_sim', 'password_sim'];
 
     public function user()
     {
