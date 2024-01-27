@@ -6,7 +6,7 @@
 
 <li class="menu-header">Monitoring</li>
 <li class="#"><a class="nav-link" href="#"><i class="fas fa-clipboard-list"></i> <span>Log Activity</span></a></li>
-<li class="#"><a class="nav-link" href="#"><i class="fas fa-bug"></i> <span>Log Error</span></a></li>
+<li class="{{ set_active('monitoring.log-error') }}"><a class="nav-link" href="{{ route('monitoring.log-error') }}"><i class="fas fa-bug"></i> <span>Log Error</span></a></li>
 <li class="#"><a class="nav-link" href="#"><i class="fas fa-sort-numeric-up-alt"></i> <span>Queue</span></a></li>
 
 <li class="menu-header">Manajemen</li>
@@ -19,4 +19,4 @@
   </ul>
 </li>
 <li class="{{ set_active('major.index') }}"><a class="nav-link" href="{{ route('major.index') }}"><i class="fas fa-university"></i> <span>Data Prodi</span></a></li>
-<li class="#"><a class="nav-link" href="#"><i class="fas fa-layer-group"></i> <span>Skema</span></a></li>
+<li class="{{ set_active('refskema.index') }}"><a class="nav-link" href="{{ route('refskema.index') }}"><i class="fas fa-layer-group"></i> <span>Skema</span></a></li>

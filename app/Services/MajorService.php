@@ -39,5 +39,14 @@ class MajorService
 
     return $major;
   }
+  
+  public function toggle($id)
+  {
+    $major = Major::find($id);
+    $major->is_aktif = !$major->is_aktif;
+    $major->save();
+
+    return $major;
+  }
 }
 

@@ -15,9 +15,10 @@ class CreateMajorsTable extends Migration
     {
         Schema::create('majors', function (Blueprint $table) {
             $table->id();
-            $table->string('degree')->nullable();
-            $table->string('name')->nullable();
-            $table->string('kode_pddikti')->nullable();
+            $table->string('jenjang')->nullable();
+            $table->string('nama')->nullable();
+            $table->string('kode_prodi')->nullable();
+            $table->boolean('is_aktif')->default(true);
             $table->timestamps();
         });
     }
