@@ -2,11 +2,14 @@
 
 namespace App\Models;
 
+use App\Traits\Uuids;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 class Teacher extends Model
 {
+    use Uuids;
+    
     protected $fillable = ['major_id', 'nama', 'jk', 'nidn', 'tempat_lahir', 'tgl_lahir', 'email', 'no_hp'];
 
     public function user()

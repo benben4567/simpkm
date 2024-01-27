@@ -14,8 +14,8 @@ class CreateProposalStudentTable extends Migration
     public function up()
     {
         Schema::create('proposal_student', function (Blueprint $table) {
-            $table->foreignId('student_id')->constrained()->onDelete('cascade');
-            $table->foreignId('proposal_id')->constrained()->onDelete('cascade');
+            $table->foreignUuid('student_id')->constrained()->onDelete('cascade');
+            $table->foreignUuid('proposal_id')->constrained()->onDelete('cascade');
             $table->string('jabatan')->nullable();
             $table->timestamps();
         });

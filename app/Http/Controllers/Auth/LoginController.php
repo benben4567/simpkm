@@ -39,11 +39,6 @@ class LoginController extends Controller
         $this->middleware('guest')->except('logout');
     }
 
-    /**
-     * Show the application's login form.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function showLoginForm()
     {
         return view('auth.login2');
@@ -52,9 +47,14 @@ class LoginController extends Controller
     protected function credentials(Request $request)
     {
         return [
-            'email' => request()->email,
+            'username' => request()->username,
             'password' => request()->password,
             'status' => 'aktif'
         ];
+    }
+    
+    public function username()
+    {
+        return 'username';
     }
 }

@@ -7,7 +7,7 @@
   <!-- CSRF Token -->
   <meta name="csrf-token" content="{{ csrf_token() }}">
 
-  <title>Login &mdash; SIM PKM</title>
+  <title>Login | {{ config('app.name') }}</title>
 
   <!-- General CSS Files -->
   <link rel="stylesheet" href="{{ asset('vendor/bootstrap/css/bootstrap.min.css') }}">
@@ -28,15 +28,15 @@
         <div class="col-lg-4 col-md-6 col-12 order-lg-1 min-vh-100 order-2 bg-white">
           <div class="p-4 m-3">
             <img src="{{ asset('vendor/stisla/img/logo-itsk.png')}}" alt="logo" width="100" class="mb-3 mt-2">
-            <h4 class="text-dark font-weight-normal">Welcome to <span class="font-weight-bold">SIM PKM</span></h4>
-            <p class="text-muted">Silahkan login untuk memulai, atau register jika belum punya akun.</p>
+            <h4 class="text-dark font-weight-normal">Selamat Datang di <span class="font-weight-bold">SIM PKM</span></h4>
+            <p class="text-muted">Silahkan login untuk memulai, atau daftar jika belum memiliki akun.</p>
             <form method="POST" action="{{ route('login') }}" novalidate="">
               @csrf
 
               <div class="form-group">
-                <label for="email">Email</label>
-                <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" tabindex="1" required autofocus autocomplete="email">
-                @error('email')
+                <label for="username">Username</label>
+                <input id="username" type="text" class="form-control @error('username') is-invalid @enderror" name="username" value="{{ old('username') }}" tabindex="1" required autofocus autocomplete="username">
+                @error('username')
                     <span class="invalid-feedback" role="alert">
                         <strong>{{ $message }}</strong>
                     </span>

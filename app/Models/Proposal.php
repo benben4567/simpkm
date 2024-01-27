@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
+use App\Traits\Uuids;
 use Illuminate\Database\Eloquent\Model;
 
 class Proposal extends Model
 {
+    use Uuids;
     protected $fillable = ['period_id', 'skema', 'judul', 'status', 'file'];
 
     public function period()

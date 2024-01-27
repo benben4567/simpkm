@@ -17,6 +17,7 @@ class CreateMajorsTable extends Migration
             $table->id();
             $table->string('degree')->nullable();
             $table->string('name')->nullable();
+            $table->string('kode_pddikti')->nullable();
             $table->timestamps();
         });
     }

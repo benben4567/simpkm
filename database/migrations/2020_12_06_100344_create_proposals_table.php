@@ -14,7 +14,7 @@ class CreateProposalsTable extends Migration
     public function up()
     {
         Schema::create('proposals', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->foreignId('period_id')->constrained()->onDelete('cascade');
             $table->string('skema')->nullable();
             $table->text('judul')->nullable();
