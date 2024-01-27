@@ -22,7 +22,8 @@
         "maatwebsite/excel": "^3.1",
         "nao-pon/flysystem-google-drive": "~1.1",
         "novay/laravel-word-template": "^1.1",
-        "opcodesio/log-viewer": "^3.1"
+        "opcodesio/log-viewer": "^3.1",
+        "wulfheart/pretty_routes": "^0.3.0"
     },
     "require-dev": {
         "facade/ignition": "^2.3.6",
