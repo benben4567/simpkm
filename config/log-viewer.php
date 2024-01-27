@@ -31,7 +31,7 @@ return [
     |
     */
 
-    'route_path' => '/monitoring/log-error',
+    'route_path' => 'admin/monitoring/log-error',
 
     /*
     |--------------------------------------------------------------------------
@@ -44,7 +44,7 @@ return [
     |
     */
 
-    'back_to_system_url' => config('app.url', null),
+    'back_to_system_url' => "/home",
 
     'back_to_system_label' => "Kembali ke Dashboard", // Displayed by default: "Back to {{ app.name }}"
 
