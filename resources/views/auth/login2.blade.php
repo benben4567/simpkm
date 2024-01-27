@@ -81,7 +81,7 @@
             </form>
 
             <div class="text-center mt-3 text-small">
-              Copyright &copy; ITSK RS dr. Soepraoen 2020. Made with 💙 by Stisla
+              Copyright &copy; {{ date('Y')}}. UPTI ITSK RS dr. Soepraoen
             </div>
           </div>
         </div>

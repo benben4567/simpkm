@@ -1,68 +1,106 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
-      <!-- Required meta tags -->
-      <meta charset="utf-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<html lang="en">
 
-      <!-- Bootstrap CSS -->
-      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-      <!-- Icon Favicon -->
-      <link rel="shorcut icon" href="favicon.ico" type="image/x-icon">
+    <title>{{ config('app.name') }}</title>
+    <meta content="Sistem Informasi Manajemen PKM - ITSK RS dr. Soepraoen" name="description">
+    <meta content="SIM, PKM, ITSK, Soepraoen" name="keywords">
 
-      <!-- My CSS -->
-      <link rel="stylesheet" href="{{ asset('css/landing.css') }}">
+    <!-- Favicons -->
+    <link href="{{ asset('img/favicon.ico') }}" rel="icon">
+    <link href="{{ asset('img/logo.png') }}" rel="apple-touch-icon">
 
-      <title>SIM PKM</title>
-    </head>
-    <body>
-      <!-- Navbar -->
-      <div class="container my-5">
-          <nav class="navbar navbar-expand-lg navbar-light bg-light custom-nav bg-transparent">
-              <a class="navbar-brand" href="#">
-                  <img src="{{ asset('img/logo.png') }}" alt="Logo Navbar">
-                  <Span>SIM PKM</Span>
-              </a>
-              <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
-                  aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                  <span class="navbar-toggler-icon"></span>
-              </button>
-              <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-                  <ul class="navbar-nav">
-                      <li class="nav-item align-self-center">
-                          <a class="nav-link" href="{{ route('panduan') }}">Panduan</a>
-                      </li>
-                      @auth
-                        <li class="nav-item align-self-center">
-                            <a class="nav-link" href="{{ route('home') }}">Dashboard</a>
-                        </li>
-                      @else
-                        <li class="nav-item align-self-center">
-                            <a class="nav-link" href="{{ route('login') }}">Masuk</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link btn btn-primary Sign-up-button" href="{{ route('register') }}">Daftar</a>
-                        </li>
-                      @endauth
-                  </ul>
-              </div>
-          </nav>
-      </div>
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i"
+        rel="stylesheet">
 
-      <!-- hero Section -->
-      <div class="container">
-          <div class="row custom-section">
-              <div class="col-12 col-lg-4">
-                  <h3>Sistem Informasi Program Kreatifitas Mahasiswa</h3>
-                  <p>Di website Sistem Informasi PKM ini kamu dapat mengusulkan dan mengelola Program Kreatifitas Mahasiswa yang pernah kamu ikuti selama berkuliah di Institut Teknologi, Sains, dan Kesehatan RS dr. Soepraoen</p>
-                  <a href="{{ route('login') }}" class="button-getStarted mr-2">Masuk</a>
-              </div>
-          </div>
-      </div>
+    <!-- Vendor CSS Files -->
+    <link href="{{ asset('vendor/aos/aos.css') }}" rel="stylesheet">
+    <link href="{{ asset('vendor/bootstrap5/css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
+    <link href="{{ asset('vendor/boxicons/css/boxicons.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('vendor/glightbox/css/glightbox.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('vendor/swiper/swiper-bundle.min.css') }}" rel="stylesheet">
 
-      <!-- Option 1: jQuery and Bootstrap Bundle (includes Popper) -->
-      <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-      <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
-    </body>
+    <!-- Template Main CSS File -->
+    <link href="{{ asset('css/landing.css') }}" rel="stylesheet">
+
+    <!-- =======================================================
+  * Template Name: Scaffold
+  * Updated: Jan 09 2024 with Bootstrap v5.3.2
+  * Template URL: https://bootstrapmade.com/scaffold-bootstrap-metro-style-template/
+  * Author: BootstrapMade.com
+  * License: https://bootstrapmade.com/license/
+  ======================================================== -->
+</head>
+
+<body>
+
+    <!-- ======= Header ======= -->
+    <header id="header" class="fixed-top d-flex align-items-center">
+        <div class="container d-flex align-items-center">
+
+            <div class="logo me-auto">
+                <h1><a href="#">{{ config('app.name') }}</a></h1>
+                <!-- Uncomment below if you prefer to use an image logo -->
+                <!-- <a href="index.html"><img src="assets/img/logo.png" alt="" class="img-fluid"></a>-->
+            </div>
+
+            <nav id="navbar" class="navbar order-last order-lg-0">
+                <ul>
+                    <li><a class="nav-link scrollto active" href="{{ route('panduan') }}">Panduan</a></li>
+                </ul>
+                <i class="bi bi-list mobile-nav-toggle"></i>
+            </nav><!-- .navbar -->
+
+            <div class="header-social-links d-flex align-items-center">
+                <a href="https://www.facebook.com/itsksoepraoenmalang" target="_blank" class="facebook"><i class="bi bi-facebook"></i></a>
+                <a href="https://www.instagram.com/itsk_soepraoen/" target="_blank" class="instagram"><i class="bi bi-instagram"></i></a>
+                <a href="https://www.tiktok.com/@itsksoepraoen" target="_blank" class="linkedin"><i class="bi bi-tiktok"></i></i></a>
+            </div>
+
+        </div>
+    </header><!-- End Header -->
+
+    <!-- ======= Hero Section ======= -->
+    <section id="hero">
+
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6 pt-5 pt-lg-0 order-2 order-lg-1 d-flex flex-column justify-content-center" data-aos="fade-up">
+                    <div>
+                        <h1>Sistem Informasi Manajemen PKM</h1>
+                        <h2>Aplikasi Pengelolaan Program Kreativitas Mahasiswa ITSK RS dr. Soeproen</h2>
+                        @auth
+                            <a href="{{ route('home') }}" class="btn-get-started scrollto">Beranda</a>
+                        @else
+                            <a href="{{ route('login') }}" class="btn-get-started scrollto">Masuk</a>
+                        @endauth
+                    </div>
+                </div>
+                <div class="col-lg-6 order-1 order-lg-2 hero-img" data-aos="fade-left">
+                    <img src="{{ asset('img/hero-img.png') }}" class="img-fluid" alt="">
+                </div>
+            </div>
+        </div>
+
+    </section><!-- End Hero -->
+
+    <!-- Vendor JS Files -->
+    <script src="{{ asset('vendor/aos/aos.js') }}"></script>
+    <script src="{{ asset('vendor/bootstrap5/js/bootstrap.bundle.min.') }}js"></script>
+    <script src="{{ asset('vendor/glightbox/js/glightbox.min.js') }}"></script>
+    <script src="{{ asset('vendor/isotope-layout/isotope.pkgd.min.js') }}"></script>
+    <script src="{{ asset('vendor/swiper/swiper-bundle.min.js') }}"></script>
+    <script src="{{ asset('vendor/php-email-form/validate.js') }}"></script>
+
+    <!-- Template Main JS File -->
+    <script src="{{ asset('js/landing.js') }}"></script>
+
+</body>
+
 </html>
