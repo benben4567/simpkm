@@ -16,48 +16,55 @@ use Illuminate\Support\Facades\Storage;
 |
 */
 
-// Route::view('/', 'auth.login2');
 Route::view('/', 'landing');
 Route::view('/panduan', 'panduan')->name('panduan');
 
-Auth::routes(['verify' => true]);
+Auth::routes(['verify' => false]);
 
-Route::get('/home', 'HomeController@index')->middleware('verified')->name('home');
+Route::get('/home', 'HomeController@index')->name('home');
+Route::post('/change-password', 'HomeController@changePassword')->name('change-password');
 
 Route::group(['middleware' => ['admin'], 'prefix' => 'admin'], function () {
     Route::get('/home/recap/{tahun}', ['as' => 'home.recap', 'uses' => 'HomeController@recap']);
 
-    // Period
-    Route::get('/periode', ['as' => 'period.index', 'uses' => 'PeriodController@index']);
-    Route::get('/periode/show', ['as' => 'period.show', 'uses' => 'PeriodController@show']);
-    Route::post('/periode/store', ['as' => 'period.store', 'uses' => 'PeriodController@store']);
-    Route::put('/periode/update', ['as' => 'period.update', 'uses' => 'PeriodController@update']);
-
+    // Periode
+    Route::group(['prefix' => 'periode', 'as' => 'period.'], function () {
+        Route::get('/', ['as' => 'index', 'uses' => 'PeriodController@index']);
+        Route::get('/show', ['as' => 'show', 'uses' => 'PeriodController@show']);
+        Route::post('/store', ['as' => 'store', 'uses' => 'PeriodController@store']);
+        Route::put('/update', ['as' => 'update', 'uses' => 'PeriodController@update']);
+    });
+    
     // Proposal
-    Route::get('/usulan', ['as' => 'usulan.index', 'uses' => 'ProposalController@index']);
-
-    Route::get('/usulan/review/{id}', ['as' => 'usulan.review', 'uses' => 'ProposalController@review']);
-    Route::post('/usulan/review', ['as' => 'usulan.review.store', 'uses' => 'ProposalController@reviewStore']);
-    Route::post('/usulan/review-acc', ['as' => 'usulan.review.acc', 'uses' => 'ProposalController@reviewAcc']);
-
-    Route::get('/usulan/show/{id}', ['as' => 'usulan.show', 'uses' => 'ProposalController@show']);
-    Route::put('/usulan/update', ['as' => 'usulan.update', 'uses' => 'ProposalController@update']);
-    Route::put('/usulan/nilai', ['as' => 'usulan.nilai', 'uses' => 'ProposalController@nilai']);
-    Route::get('/usulan/print/{tahun}', ['as' => 'usulan.print', 'uses' => 'ProposalController@print']);
-    Route::delete('/usulan', ['as' => 'usulan.delete', 'uses' => 'ProposalController@destroy']);
-    Route::get('/usulan/download', ['as' => 'usulan.download', 'uses' => 'ProposalController@download']);
-    Route::get('/usulan/download/form', ['as' => 'usulan.download.form', 'uses' => 'ProposalController@downloadForm']);
-    Route::get('/usulan/download/berita', ['as' => 'usulan.download.berita', 'uses' => 'ProposalController@downloadBerita']);
+    Route::group(['prefix' => 'usulan', 'as' => 'usulan.'], function () {
+        Route::get('/', ['as' => 'index', 'uses' => 'ProposalController@index']);
+    
+        Route::get('/review/{id}', ['as' => 'review', 'uses' => 'ProposalController@review']);
+        Route::post('/review', ['as' => 'review.store', 'uses' => 'ProposalController@reviewStore']);
+        Route::post('/review-acc', ['as' => 'review.acc', 'uses' => 'ProposalController@reviewAcc']);
+    
+        Route::get('/show/{id}', ['as' => 'show', 'uses' => 'ProposalController@show']);
+        Route::put('/update', ['as' => 'update', 'uses' => 'ProposalController@update']);
+        Route::put('/nilai', ['as' => 'nilai', 'uses' => 'ProposalController@nilai']);
+        Route::get('/print/{tahun}', ['as' => 'print', 'uses' => 'ProposalController@print']);
+        Route::delete('/', ['as' => 'delete', 'uses' => 'ProposalController@destroy']);
+        Route::get('/download', ['as' => 'download', 'uses' => 'ProposalController@download']);
+        Route::get('/download/form', ['as' => 'download.form', 'uses' => 'ProposalController@downloadForm']);
+        Route::get('/download/berita', ['as' => 'download.berita', 'uses' => 'ProposalController@downloadBerita']);
+    });
 
     // User
-    Route::get('/user', ['as' => 'user.index', 'uses' => 'UserController@index']);
-    Route::get('/user/create/{role}', ['as' => 'user.create', 'uses' => 'UserController@create']);
-    Route::get('/user/show/{role}/{id}', ['as' => 'user.show', 'uses' => 'UserController@show']);
-    Route::post('/user/store/{role}', ['as' => 'user.store', 'uses' => 'UserController@store']);
-    Route::put('/user/update/{role}', ['as' => 'user.update', 'uses' => 'UserController@update']);
-    Route::post('/user/import', ['as' => 'user.import', 'uses' => 'UserController@import']);
-    Route::get('/user/sim/{id}', ['as' => 'user.getsim', 'uses' => 'UserController@showSim']);
-    Route::put('/user/sim', ['as' => 'user.sim', 'uses' => 'UserController@updateSim']);
+    Route::group(['prefix' => 'user', 'as' => 'user.'], function () {
+        Route::get('/', ['as' => 'index', 'uses' => 'UserController@index']);
+        Route::get('/create/{role}', ['as' => 'create', 'uses' => 'UserController@create']);
+        Route::get('/show/{role}/{id}', ['as' => 'show', 'uses' => 'UserController@show']);
+        Route::post('/store/{role}', ['as' => 'store', 'uses' => 'UserController@store']);
+        Route::put('/update/{role}', ['as' => 'update', 'uses' => 'UserController@update']);
+        Route::post('/import', ['as' => 'import', 'uses' => 'UserController@import']);
+        Route::get('/sim/{id}', ['as' => 'getsim', 'uses' => 'UserController@showSim']);
+        Route::put('/sim', ['as' => 'sim', 'uses' => 'UserController@updateSim']);
+    });
+
 
     // Major
     Route::group(['prefix' => 'major', 'as' => 'major.'], function () {
@@ -82,8 +89,10 @@ Route::group(['middleware' => ['admin'], 'prefix' => 'admin'], function () {
     });
 
     // Rekapitulasi
-    Route::get('/recap', ['as' => 'recap.index', 'uses' => 'RecapController@index']);
-    Route::post('/recap/download', ['as' => 'recap.download', 'uses' => 'RecapController@download']);
+    Route::group(['prefix' => 'recap', 'as' => 'recap.'], function () {
+        Route::get('/', ['as' => 'index', 'uses' => 'RecapController@index']);
+        Route::post('/download', ['as' => 'download', 'uses' => 'RecapController@download']);
+    });
 
     // Chart
     Route::get('/chart', ['as' => 'chart.index', 'uses' => 'HomeController@chart']);
@@ -93,24 +102,25 @@ Route::group(['middleware' => ['student'], 'prefix' => 'student'], function () {
     // Profile
     Route::get('/profile', ['as' => 'profile.index', 'uses' => 'Student\ProfileController@index']);
     Route::put('/profile', ['as' => 'profile.update', 'uses' => 'Student\ProfileController@update']);
-    Route::put('/password-update', ['as' => 'student.password.update', 'uses' => 'Student\ProfileController@updatePassword']);
 
     // Proposal
-    Route::get('/usulan', ['as' => 'proposal.index', 'uses' => 'Student\ProposalController@index']);
-    Route::get('/usulan/review/{id}', ['as' => 'proposal.review', 'uses' => 'Student\ProposalController@review']);
-    Route::post('/usulan/review', ['as' => 'proposal.review.store', 'uses' => 'Student\ProposalController@reviewStore']);
-    Route::get('/usulan/create', ['as' => 'proposal.create', 'uses' => 'Student\ProposalController@create']);
-    Route::delete('/usulan/delete', ['as' => 'proposal.delete', 'uses' => 'Student\ProposalController@destroy']);
-    Route::get('/usulan/edit/{id}', ['as' => 'proposal.edit', 'uses' => 'Student\ProposalController@edit']);
-    Route::get('/usulan/show/{id}', ['as' => 'proposal.show', 'uses' => 'Student\ProposalController@show']);
-    Route::put('/usulan/update', ['as' => 'proposal.update', 'uses' => 'Student\ProposalController@update']);
-    Route::post('/usulan/store', ['as' => 'proposal.store', 'uses' => 'Student\ProposalController@store']);
-    Route::post('/usulan/member/remove', ['as' => 'proposal.member.remove', 'uses' => 'Student\ProposalController@memberRemove']);
-    Route::post('/usulan/member/add', ['as' => 'proposal.member.add', 'uses' => 'Student\ProposalController@memberAdd']);
-    Route::get('/usulan/member/{id}', ['as' => 'proposal.member', 'uses' => 'Student\ProposalController@member']);
-    Route::get('/usulan/download/form', ['as' => 'proposal.download.form', 'uses' => 'Student\ProposalController@download']);
-    Route::get('/usulan/download/berita', ['as' => 'proposal.download.berita', 'uses' => 'Student\ProposalController@download2']);
-    Route::get('/usulan/download/proposal', ['as' => 'proposal.download', 'uses' => 'Student\ProposalController@downloadProposal']);
+    Route::group(['prefix' => 'usulan', 'as' => 'proposal.'], function () {
+        Route::get('/', ['as' => 'index', 'uses' => 'Student\ProposalController@index']);
+        Route::get('/review/{id}', ['as' => 'review', 'uses' => 'Student\ProposalController@review']);
+        Route::post('/review', ['as' => 'review.store', 'uses' => 'Student\ProposalController@reviewStore']);
+        Route::get('/create', ['as' => 'create', 'uses' => 'Student\ProposalController@create']);
+        Route::delete('/delete', ['as' => 'delete', 'uses' => 'Student\ProposalController@destroy']);
+        Route::get('/edit/{id}', ['as' => 'edit', 'uses' => 'Student\ProposalController@edit']);
+        Route::get('/show/{id}', ['as' => 'show', 'uses' => 'Student\ProposalController@show']);
+        Route::put('/update', ['as' => 'update', 'uses' => 'Student\ProposalController@update']);
+        Route::post('/store', ['as' => 'store', 'uses' => 'Student\ProposalController@store']);
+        Route::post('/member/remove', ['as' => 'member.remove', 'uses' => 'Student\ProposalController@memberRemove']);
+        Route::post('/member/add', ['as' => 'member.add', 'uses' => 'Student\ProposalController@memberAdd']);
+        Route::get('/member/{id}', ['as' => 'member', 'uses' => 'Student\ProposalController@member']);
+        Route::get('/download/form', ['as' => 'download.form', 'uses' => 'Student\ProposalController@download']);
+        Route::get('/download/berita', ['as' => 'download.berita', 'uses' => 'Student\ProposalController@download2']);
+        Route::get('/download/proposal', ['as' => 'download', 'uses' => 'Student\ProposalController@downloadProposal']);
+    });
 
     // Panduan
     Route::get('/panduan', ['as' => 'panduan.index', 'uses' => 'HomeController@panduan']);
@@ -120,7 +130,6 @@ Route::group(['middleware' => ['teacher'], 'prefix' => 'teacher', 'as' => 'teach
     // Profile
     Route::get('/profile', ['as' => 'profile.index', 'uses' => 'Teacher\ProfileController@index']);
     Route::put('/profile', ['as' => 'profile.update', 'uses' => 'Teacher\ProfileController@update']);
-    Route::put('/password-update', ['as' => 'password.update', 'uses' => 'Teacher\ProfileController@updatePassword']);
 
     // Proposal
     Route::get('/usulan', ['as' => 'proposal.index', 'uses' => 'Teacher\ProposalController@index']);

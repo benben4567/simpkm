@@ -85,31 +85,6 @@
             <div class="col-12">
               <div class="card">
                 <div class="card-header">
-                  <h4 class="card-title">Ganti Password</h4>
-                </div>
-                <div class="card-body">
-                  <form action="" method="post" autocomplete="off" id="update-password">
-                    @csrf
-                    @method('put')
-                    <input type="hidden" name="id" value="{{ $student->user->id }}">
-                    <div class="form-group">
-                      <label for="">Password Baru</label>
-                      <input type="password" class="form-control" name="password">
-                      <div class="invalid-feedback" name="msg_password"><ul></ul></div>
-                    </div>
-                    <div class="form-group">
-                      <label for="">Ulangi Password Baru</label>
-                      <input type="password" class="form-control" name="password_confirmation">
-                      <div class="invalid-feedback" name="msg_password_confirmation"><ul></ul></div>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Simpan</button>
-                  </form>
-                </div>
-              </div>
-            </div>
-            <div class="col-12">
-              <div class="card">
-                <div class="card-header">
                   <h4 class="card-title">Akun SIM Belmawa</h4>
                 </div>
                 <div class="card-body">
