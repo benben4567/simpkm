@@ -12,6 +12,9 @@
                     <div class="card">
                         <form action="{{ route('student.store') }}" method="post" autocomplete="off" id="form-student">
                             <div class="card-body">
+                                <div class="alert alert-info" role="alert">
+                                    <strong>Perhatian!</strong> Akun mahasiswa akan dibuat secara otomatis dengan username dan password yang sama dengan SIAKAD.
+                                </div>
                                 <input type="hidden" name="password">
                                 <div class="row">
                                     <div class="col-lg-12">
@@ -128,9 +131,6 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="alert alert-info" role="alert">
-                                            <strong>Perhatian!</strong> Akun mahasiswa akan dibuat secara otomatis dengan username dan password yang sama dengan SIAKAD.
                                         </div>
                                     </div>
                                 </div>
