@@ -17,7 +17,7 @@ class RefRoleController extends Controller
             return ResponseFormatter::success($role, 'Data role berhasil diambil');
         }
 
-        return view('pages.role.index');
+        return view('pages.admin.role');
     }
 
     public function store(Request $request)
