@@ -23,6 +23,7 @@
         "nao-pon/flysystem-google-drive": "~1.1",
         "novay/laravel-word-template": "^1.1",
         "opcodesio/log-viewer": "^3.1",
+        "spatie/laravel-backup": "^7.8",
         "spatie/laravel-permission": "5.8",
         "wulfheart/pretty_routes": "^0.3.0"
     },
@@ -51,7 +52,8 @@
             "Database\\Seeders\\": "database/seeders/"
         },
         "files": [
-          "app/Helpers/Helper.php"
+            "app/Helpers/Helper.php",
+            "app/Helpers/SizeFormatter.php"
         ]
     },
     "autoload-dev": {

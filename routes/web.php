@@ -98,6 +98,14 @@ Route::group(['middleware' => ['admin'], 'prefix' => 'admin'], function () {
     // Monitoring
     Route::group(['prefix' => 'monitoring', 'as' => 'monitoring.'], function () {
         Route::get('/log-error', ['as' => 'log-error', 'uses' => '\Opcodes\Monitoring\Http\Controllers\LogViewerController@index']);
+        
+        // Database
+        Route::group(['prefix' => 'database', 'as' => 'database.'], function () {
+            Route::get('/', ['as' => 'index', 'uses' => 'BackupController@index']);
+            Route::get('/download/{fileName}', ['as' => 'download', 'uses' => 'BackupController@download']);
+            Route::get('/backup', ['as' => 'backup', 'uses' => 'BackupController@backup']);
+        });
+        
     });
 
     // Rekapitulasi
