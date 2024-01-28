@@ -47,7 +47,7 @@ class TeacherController extends Controller
             return ResponseFormatter::success(null, 'Data dosen berhasil disimpan.');
         } catch (\Exception $e) {
             Log::error("TeacherController@store: {$e->getMessage()}");
-            return ResponseFormatter::error(null, 'Tidak dapat mengakses Siakad. Kesalahan Server', 500);
+            return ResponseFormatter::error(null, 'Tidak dapat menyimpan data dosen. Kesalahan Server.', 500);
         }
     }
     
