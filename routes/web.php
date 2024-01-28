@@ -64,7 +64,16 @@ Route::group(['middleware' => ['admin'], 'prefix' => 'admin'], function () {
         Route::get('/sim/{id}', ['as' => 'getsim', 'uses' => 'UserController@showSim']);
         Route::put('/sim', ['as' => 'sim', 'uses' => 'UserController@updateSim']);
     });
-
+    
+    // Student
+    Route::group(['prefix' => 'student', 'as' => 'student.'], function () {
+        Route::post('/', ['as' => 'store', 'uses' => 'StudentController@store']);
+        Route::post('/check-nim', ['as' => 'check-nim', 'uses' => 'StudentController@checkNim']);
+        Route::put('/', ['as' => 'update', 'uses' => 'StudentController@update']);
+        Route::post('/reset-password', ['as' => 'reset-password', 'uses' => 'StudentController@resetPassword']);
+        Route::post('/toggle', ['as' => 'toggle', 'uses' => 'StudentController@toggle']);
+    });
+    
     // Major
     Route::group(['prefix' => 'major', 'as' => 'major.'], function () {
         Route::get('/', ['as' => 'index', 'uses' => 'MajorController@index']);

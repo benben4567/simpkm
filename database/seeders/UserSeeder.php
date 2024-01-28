@@ -43,8 +43,13 @@ class UserSeeder extends Seeder
 
         // Student
         $student->student()->create([
+            'major_id' => 1,
             'nim' => '111111',
             'nama' => 'Student',
+            'jk' => 'laki',
+            'tempat_lahir' => 'Bandung',
+            'tgl_lahir' => '2000-01-01',
+            'no_hp' => '081234567890',
         ]);
 
         // User w/ Teacher Role

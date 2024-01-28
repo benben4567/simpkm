@@ -29,5 +29,15 @@ return [
         'secret' => env('AWS_SECRET_ACCESS_KEY'),
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
+    
+    'siakad' => [
+        'url' => env('SIAKAD_URL'),
+        'token' => env('SIAKAD_TOKEN'),
+    ],
+    
+    'neosiakad' => [
+        'url' => env('NEOSIAKAD_URL'),
+        'token' => env('NEOSIAKAD_TOKEN'),
+    ],
 
 ];
