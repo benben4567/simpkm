@@ -13,6 +13,8 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Facades\Excel;
 
 class UserController extends Controller
@@ -22,20 +24,19 @@ class UserController extends Controller
         if ($request->ajax()) {
             switch ($request->input('role')) {
                 case 'admin':
-                    $admins = $userService->showAll('admin');
-                    return ResponseFormatter::success($admins, 'Data ditemukan');
+                    $data = $userService->showAll('admin');
                     break;
                 case 'student':
-                    $students = $userService->showAll('student');
-                    return ResponseFormatter::success($students, 'Data ditemukan');
+                    $data = $userService->showAll('student');
                     break;
                 case 'teacher':
-                    $teachers = $userService->showAll('teacher');
-                    return ResponseFormatter::success($teachers, 'Data ditemukan');
+                    $data = $userService->showAll('teacher');
                     break;
                 default:
                     break;
             }
+            
+            return ResponseFormatter::success($data, 'Data ditemukan');
         }
 
         $majors = Major::all();
@@ -58,49 +59,35 @@ class UserController extends Controller
         }
     }
 
-    public function store(Request $request, UserService $userService, $role)
+    public function store(Request $request)
     {
-        $rules = [
-            'email' => 'required|unique:users,email',
-            'name' => 'required',
-            'password' => 'required|min:8|confirmed'
-        ];
-
-        switch ($role) {
-            case 'student':
-                $rules['nim'] = 'required|unique:students,nim';
-                $rules['major'] = 'required';
-                $rules['tempat'] = 'required';
-                $rules['tgl'] = 'required|date_format:Y-m-d';
-                $rules['jk'] = 'required';
-                $rules['no_hp'] = 'required|digits_between:11,13';
-                $this->validate($request, $rules);
-                break;
-            case 'teacher':
-                $rules['nidn'] = 'required|unique:teachers,nidn';
-                $rules['major'] = 'required';
-                $rules['tempat'] = 'required';
-                $rules['tgl'] = 'required|date_format:Y-m-d';
-                $rules['jk'] = 'required';
-                $rules['no_hp'] = 'required|digits_between:11,13';
-                $this->validate($request, $rules);
-                break;
-            default:
-                $this->validate($request, $rules);
-                break;
+        try {
+            // Create User Admin
+            $validator = Validator::make($request->all(), [
+                'email' => 'required|unique:users,email',
+                'username' => 'required|unique:users,username',
+                'name' => 'required',
+                'password' => 'required|min:8|confirmed'
+            ]);
+            
+            if ($validator->fails()) {
+                return ResponseFormatter::error($validator->errors(), "Data yang dimasukkan tidak valid. Silahkan coba lagi.", 422);
+            }
+            
+            $user = User::create([
+                'email' => $request->email,
+                'username' => $request->username,
+                'name' => $request->name,
+                'password' => Hash::make($request->password),
+            ]);
+            
+            $user->assignRole('admin');
+            
+            return ResponseFormatter::success($user, 'User berhasil ditambahkan.');
+        } catch (\Exception $e) {
+            Log::error("UserController@store: {$e->getMessage()}");
+            return ResponseFormatter::error(null, 'Tidak dapat menyimpan data. Kesalahan Server.', 500);
         }
-
-        $request->merge(['role' => $role]);
-        $request->merge(['password' => Hash::make($request->input('password'))]);
-
-        $user = $userService->store($request->all());
-
-        return response()->json([
-            'success' => $user['success'],
-            'data' => $user['data'],
-            'msg' => $user['msg']
-        ], $user['code']);
-
     }
 
     public function show(Request $request, UserService $userService, $role, $id)

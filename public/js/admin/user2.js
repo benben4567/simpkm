@@ -364,11 +364,12 @@ $(document).ready(function () {
         });
     });
 
-    $("#form-admin").submit(function (e) {
+    // Submit form tambah admin
+    $("#form-admin").on("submit", function (e) {
         e.preventDefault();
         $.ajax({
             type: "post",
-            url: "user/store/admin",
+            url: $(this).attr('action'),
             data: $(this).serialize(),
             beforeSend: function () {
                 $.LoadingOverlay("show")
@@ -378,14 +379,12 @@ $(document).ready(function () {
             success: function (response) {
                 $('#adminModal').modal("hide")
                 $.LoadingOverlay("hide")
-                if (response.success) {
-                    table1.ajax.reload();
-                    Swal.fire(
-                        "Berhasil!",
-                        'User admin sudah disimpan.',
-                        'success'
-                    )
-                }
+                table1.ajax.reload();
+                Swal.fire(
+                    "Sukses!",
+                    response.meta.message,
+                    'success'
+                )
             },
             error: function (xhr) {
                 $.LoadingOverlay('hide')
