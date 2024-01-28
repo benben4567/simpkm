@@ -17,7 +17,7 @@ class Admin
     public function handle($request, Closure $next)
     {
       if (Auth::user()) {
-        $role = Auth::user()->role;
+        $role = Auth::user()->roles->pluck('name')[0];
         if ($role != 'admin') {
           return abort(403);
         }

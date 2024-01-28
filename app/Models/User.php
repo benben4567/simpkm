@@ -8,10 +8,11 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use App\Notifications\VerifyEmail;
 use App\Notifications\VerifyEmailQueued;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
-    use Notifiable, Uuids;
+    use Notifiable, Uuids, HasRoles;
 
     /**
      * The attributes that are mass assignable.
@@ -19,7 +20,7 @@ class User extends Authenticatable implements MustVerifyEmail
      * @var array
      */
     protected $fillable = [
-        'username', 'name', 'email', 'password', 'no_hp', 'email_verified_at', 'role', 'status'
+        'username', 'name', 'email', 'password', 'no_hp', 'email_verified_at', 'status'
     ];
 
     /**

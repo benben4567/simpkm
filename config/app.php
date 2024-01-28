@@ -168,6 +168,7 @@ return [
          */
         Codedge\Fpdf\FpdfServiceProvider::class,
         Novay\WordTemplate\WordTemplateServiceProvider::class,
+        Spatie\Permission\PermissionServiceProvider::class,
         /*
          * Application Service Providers...
          */

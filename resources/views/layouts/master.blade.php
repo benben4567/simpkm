@@ -40,8 +40,8 @@
                         </a>
                         <div class="dropdown-menu dropdown-menu-right">
                             <div class="dropdown-title">Menu</div>
-                            @if (Auth::user()->role != 'admin')
-                                <a href="{{ Auth::user()->role . '/profile' }}" class="dropdown-item has-icon">
+                            @if (Auth::user()->roles->pluck('name')[0] != 'admin')
+                                <a href="{{ Auth::user()->roles->pluck('name')[0] . '/profile' }}" class="dropdown-item has-icon">
                                     <i class="far fa-user"></i> Profil
                                 </a>
                             @endif
@@ -70,15 +70,15 @@
                     <ul class="sidebar-menu">
                         <li class="{{ set_active('home') }}"><a href="{{ route('home') }}" class="nav-link"><i class="fas fa-fire"></i><span>Dashboard</span></a></li>
                         {{-- Admin --}}
-                        @if (Auth::user()->role == 'admin')
+                        @if (Auth::user()->roles->pluck('name')[0] == 'admin')
                             @include('includes.admin_sidebar')
                         @endif
                         {{-- Mahasiswa --}}
-                        @if (Auth::user()->role == 'student')
+                        @if (Auth::user()->roles->pluck('name')[0] == 'student')
                             @include('includes.student_sidebar')
                         @endif
                         {{-- Dosen --}}
-                        @if (Auth::user()->role == 'teacher')
+                        @if (Auth::user()->roles->pluck('name')[0] == 'teacher')
                             @include('includes.teacher_sidebar')
                         @endif
                     </ul>

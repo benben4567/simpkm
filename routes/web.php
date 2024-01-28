@@ -65,7 +65,6 @@ Route::group(['middleware' => ['admin'], 'prefix' => 'admin'], function () {
         Route::put('/sim', ['as' => 'sim', 'uses' => 'UserController@updateSim']);
     });
 
-
     // Major
     Route::group(['prefix' => 'major', 'as' => 'major.'], function () {
         Route::get('/', ['as' => 'index', 'uses' => 'MajorController@index']);
@@ -74,7 +73,6 @@ Route::group(['middleware' => ['admin'], 'prefix' => 'admin'], function () {
         Route::put('/toggle', ['as' => 'toggle', 'uses' => 'MajorController@toggle']);
     });
 
-
     // Ref Skema
     Route::group(['prefix' => 'ref-skema', 'as' => 'refskema.'], function () {
         Route::get('/', ['as' => 'index', 'uses' => 'RefSkemaController@index']);
@@ -82,7 +80,21 @@ Route::group(['middleware' => ['admin'], 'prefix' => 'admin'], function () {
         Route::put('/update', ['as' => 'update', 'uses' => 'RefSkemaController@update']);
         Route::put('/toggle', ['as' => 'toggle', 'uses' => 'RefSkemaController@toggle']);
     });
-
+    
+    // Ref Permission
+    Route::group(['prefix' => 'ref-permission', 'as' => 'permission.'], function () {
+        Route::get('/', ['as' => 'index', 'uses' => 'RefPermissionController@index']);
+        Route::post('/store', ['as' => 'store', 'uses' => 'RefPermissionController@store']);
+        Route::put('/update', ['as' => 'update', 'uses' => 'RefPermissionController@update']);
+    });
+    
+    // Ref Role
+    Route::group(['prefix' => 'ref-role', 'as' => 'role.'], function () {
+        Route::get('/', ['as' => 'index', 'uses' => 'RefRoleController@index']);
+        Route::post('/store', ['as' => 'store', 'uses' => 'RefRoleController@store']);
+        Route::put('/update', ['as' => 'update', 'uses' => 'RefRoleController@update']);
+    });
+    
     // Monitoring
     Route::group(['prefix' => 'monitoring', 'as' => 'monitoring.'], function () {
         Route::get('/log-error', ['as' => 'log-error', 'uses' => '\Opcodes\Monitoring\Http\Controllers\LogViewerController@index']);

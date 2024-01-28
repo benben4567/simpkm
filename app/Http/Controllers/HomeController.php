@@ -27,20 +27,20 @@ class HomeController extends Controller
 
     public function index()
     {
-        if (Auth::user()->role == 'admin') {
+        if (Auth::user()->roles->pluck('name')[0] == 'admin') {
             $proposal = Proposal::all()->count();
             $lolos = Proposal::lolos()->count();
             $major = Major::all()->count();
             $student = Student::all()->count();
             $periods = Period::all();
             return view('pages.admin.index', compact('proposal', 'lolos', 'major', 'student', 'periods'));
-        } elseif (Auth::user()->role == 'student') {
+        } elseif (Auth::user()->roles->pluck('name')[0] == 'student') {
             $proposals = Proposal::with('teachers')->whereHas('students', function ($q) {
                 $q->where('student_id', '=', Auth::user()->student->id);
             })->get();
             // dd($proposals);
             return view('pages.student.index', compact('proposals'));
-        } elseif (Auth::user()->role == 'teacher') {
+        } elseif (Auth::user()->roles->pluck('name')[0] == 'teacher') {
             $proposals = Proposal::with('students')->whereHas('teachers', function ($q) {
                 $q->where('teacher_id', '=', Auth::user()->teacher->id);
             })->get();
