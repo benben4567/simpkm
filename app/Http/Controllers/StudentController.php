@@ -103,7 +103,6 @@ class StudentController extends Controller
                 'email' => $request->input('email'),
                 'name' => trim($request->input('name')),
                 'username' => $request->input('nim'),
-                'name' => trim($request->input('nama')),
                 'no_hp' => $request->input('no_hp'),
             ]);
             
