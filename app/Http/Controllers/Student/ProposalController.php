@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Student;
 use App\Helpers\ResponseFormatter;
 use App\Http\Controllers\Controller;
 use App\Jobs\UploadProposal;
+use App\Models\RefSkema;
 use Illuminate\Http\Request;
 use App\Models\Period;
 use App\Models\Teacher;
@@ -75,7 +76,8 @@ class ProposalController extends Controller
 
     $periode = Period::where('id', $id_periode)->first();
     $teachers = Teacher::all();
-    return view('pages.student.proposal_create', compact('periode', 'teachers'));
+    $skema = RefSkema::where('is_aktif', true)->get();
+    return view('pages.student.proposal_create', compact('periode', 'teachers', 'skema'));
   }
 
   public function store(Request $request)
@@ -117,7 +119,7 @@ class ProposalController extends Controller
         // simpan ke table proposal
         $review = $proposal->reviews()->create([
           'user_id' => auth()->user()->id,
-          'type' => auth()->user()->role,
+          'type' => auth()->user()->roles->pluck('name')[0],
           'description' => 'Usulan Proposal Awal',
         ]);
 
@@ -307,7 +309,7 @@ class ProposalController extends Controller
     // simpan ke table review
     $review = $proposal->reviews()->create([
       'user_id' => auth()->user()->id,
-      'type' => auth()->user()->role,
+      'type' => auth()->user()->roles->pluck('name')[0],
       'description' => $request->deskripsi,
       'file' => $id_file
     ]);

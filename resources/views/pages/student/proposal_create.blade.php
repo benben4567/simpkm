@@ -30,14 +30,9 @@
                         <label for="">Skema PKM</label>
                         <select class="form-control @error('skema') is-invalid @enderror" name="skema" id="skema">
                           <option selected disabled>- pilih -</option>
-                          <option value="PKM-R" {{ old('skema') == 'PKM-R' ? 'selected' : ''}}>PKM-R</option>
-                          <option value="PKM-K" {{ old('skema') == 'PKM-K' ? 'selected' : ''}}>PKM-K</option>
-                          <option value="PKM-PM" {{ old('skema') == 'PKM-PM' ? 'selected' : ''}}>PKM-PM</option>
-                          <option value="PKM-PI" {{ old('skema') == 'PKM-PI' ? 'selected' : ''}}>PKM-PI</option>
-                          <option value="PKM-KC" {{ old('skema') == 'PKM-KC' ? 'selected' : ''}}>PKM-KC</option>
-                          <option value="PKM-GFK" {{ old('skema') == 'PKM-GFK' ? 'selected' : ''}}>PKM-GFK</option>
-                          <option value="PKM-AI" {{ old('skema') == 'PKM-AI' ? 'selected' : ''}}>PKM-AI</option>
-                          <option value="PKM-GT" {{ old('skema') == 'PKM-GT' ? 'selected' : ''}}>PKM-GT</option>
+                          @foreach ($skema as $s)
+                            <option value="{{ $s->nama }}" {{ $s->nama == old('skema') ? 'selected' : '' }}>{{ $s->nama . ' (' . $s->kepanjangan.')' }}</option>
+                          @endforeach
                         </select>
                         @error('skema')
                           <div class="invalid-feedback">

@@ -19,10 +19,12 @@ use Illuminate\Support\Facades\Storage;
 Route::view('/', 'landing');
 Route::view('/panduan', 'panduan')->name('panduan');
 
-Auth::routes(['verify' => false]);
+Auth::routes(['verify' => false, 'reset' => false]);
 
 Route::get('/home', 'HomeController@index')->name('home');
 Route::post('/change-password', 'HomeController@changePassword')->name('change-password');
+
+Route::post('/register/check-nim', 'Auth\RegisterController@checkNim')->name('register.check-nim');
 
 Route::group(['middleware' => ['admin'], 'prefix' => 'admin'], function () {
     Route::get('/home/recap/{tahun}', ['as' => 'home.recap', 'uses' => 'HomeController@recap']);
@@ -74,7 +76,6 @@ Route::group(['middleware' => ['admin'], 'prefix' => 'admin'], function () {
         Route::post('/toggle', ['as' => 'toggle', 'uses' => 'StudentController@toggle']);
     });
     
-    
     // Teacher
     Route::group(['prefix' => 'teacher', 'as' => 'teacher.'], function () {
         Route::post('/', ['as' => 'store', 'uses' => 'TeacherController@store']);
@@ -82,7 +83,6 @@ Route::group(['middleware' => ['admin'], 'prefix' => 'admin'], function () {
         Route::post('/reset-password', ['as' => 'reset-password', 'uses' => 'TeacherController@resetPassword']);
         Route::post('/toggle', ['as' => 'toggle', 'uses' => 'TeacherController@toggle']);
     });
-    
     
     // Major
     Route::group(['prefix' => 'major', 'as' => 'major.'], function () {

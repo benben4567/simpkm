@@ -22,13 +22,13 @@
                                             <div class="col-lg-6">
                                                 <div class="form-group">
                                                     <label for="prodi">Angkatan <span class="text-danger">*</span></label>
-                                                    <select class="form-control form-control-sm selectric" name="angakatan" required>
+                                                    <select class="form-control form-control-sm selectric" name="angkatan" required>
                                                         <option selected disabled>- pilih -</option>
                                                         @for($i = date('Y'); $i >= date('Y')-4; $i--)
                                                             <option value="{{ $i }}">{{ $i }}</option>
                                                         @endfor
                                                     </select>
-                                                    <div class="invalid-feedback" name="msg_major">
+                                                    <div class="invalid-feedback" name="msg_angkatan">
                                                         <ul></ul>
                                                     </div>
                                                 </div>

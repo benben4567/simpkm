@@ -10,7 +10,7 @@ $(document).ready(function () {
     ordering: false,
     columnDefs: [
       { "width": "11%", "targets" : [1, 2, 3, 4]},
-      { "width": "18%", "targets" : 5},
+      { "width": "18%", "targets" : 5, "className": "text-center text-nowrap"},
     ]
   })
 

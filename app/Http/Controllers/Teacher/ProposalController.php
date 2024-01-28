@@ -158,7 +158,7 @@ class ProposalController extends Controller
     // simpan ke table proposal
     $review = $proposal->reviews()->create([
       'user_id' => auth()->user()->id,
-      'type' => auth()->user()->role,
+      'type' => auth()->user()->roles->pluck('name')[0],
       'description' => $request->deskripsi,
       'file' => $id_file
     ]);
@@ -196,7 +196,7 @@ class ProposalController extends Controller
     // simpan ke table review
     $review = $proposal->reviews()->create([
       'user_id' => auth()->user()->id,
-      'type' => auth()->user()->role,
+      'type' => auth()->user()->roles->pluck('name')[0],
       'description' => $request->deskripsi,
       'file' => $id_file,
       'acc' => 1

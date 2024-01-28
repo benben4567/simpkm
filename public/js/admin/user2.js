@@ -406,6 +406,11 @@ $(document).ready(function () {
                         break;
 
                     default:
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error!',
+                            text: xhr.responseJSON.meta.message,
+                        })
                         break;
                 }
             }

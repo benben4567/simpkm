@@ -33,7 +33,8 @@ class HomeController extends Controller
             $major = Major::all()->count();
             $student = Student::all()->count();
             $periods = Period::all();
-            return view('pages.admin.index', compact('proposal', 'lolos', 'major', 'student', 'periods'));
+            $periodeAktif = Period::where('status', 'aktif')->first();
+            return view('pages.admin.index', compact('proposal', 'lolos', 'major', 'student', 'periods', 'periodeAktif'));
         } elseif (Auth::user()->roles->pluck('name')[0] == 'student') {
             $proposals = Proposal::with('teachers')->whereHas('students', function ($q) {
                 $q->where('student_id', '=', Auth::user()->student->id);

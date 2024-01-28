@@ -39,11 +39,7 @@
                 <div class="alert-title">Perhatian</div>
                 @if ($now)
                   @if($now['pendaftaran'] == 'tutup')
-                    @if($now['tahun'] <= date("Y"))
-                      <strong>Usulan Proposal Tahun {{ $now['tahun'] }} sudah ditutup.</strong> Peserta tidak dapat membuat usulan baru ataupun menghapus usulan yang telah dibuat.
-                    @else
-                      <strong>Usulan Proposal Tahun {{ $now['tahun'] }} belum dibuka.</strong>
-                    @endif
+                    <strong>Usulan Proposal Tahun {{ $now['tahun'] }} ditutup/belum dibuka.</strong> Peserta tidak dapat membuat usulan baru ataupun menghapus usulan yang telah dibuat.
                   @else
                     Pengusulan PKM <strong>hanya</strong> dilakukan oleh Ketua Kelompok masing-masing PKM. Anggota kelompok cukup sampai melengkapi <strong>Data Diri</strong> saja. Silahkan baca <a class="btn btn-primary btn-sm" href="{{ route('panduan.index') }}" role="button">Panduan SIM</a> pada menu disamping untuk informasi lebih lanjut.
                   @endif
@@ -133,13 +129,15 @@
                                   <button class="btn btn-sm btn-secondary mx-1" type="button" data-toggle="tooltip" data-placement="bottom" title="Edit"><i class="fas fa-pencil-alt"></i></a>
                                   <button class="btn btn-sm btn-secondary mx-1" type="button" data-toggle="tooltip" data-placement="bottom" title="Hapus"><i class="fas fa-trash-alt"></i></button>
                                 @else
-                                  <a class="btn btn-sm btn-warning" data-toggle="tooltip" data-placement="bottom" title="Edit" href="{{ route('proposal.edit', ["id" => $proposal->id]) }}" role="button"><i class="fas fa-pencil-alt"></i></a>
-                                  <form action="{{ route('proposal.delete') }}" class="form-delete" method="post">
-                                    @csrf
-                                    @method('delete')
-                                    <input type="hidden" name="id" value="{{ $proposal->id }}">
-                                    <button type="button" class="btn btn-sm btn-danger btn-delete" data-toggle="tooltip" data-placement="bottom" title="Hapus"><i class="fas fa-trash-alt"></i></button>
-                                  </form>
+                                <div class="div">
+                                    <a class="btn btn-sm btn-warning" data-toggle="tooltip" data-placement="bottom" title="Edit" href="{{ route('proposal.edit', ["id" => $proposal->id]) }}" role="button"><i class="fas fa-pencil-alt"></i></a>
+                                    <form action="{{ route('proposal.delete') }}" class="form-delete" method="post">
+                                      @csrf
+                                      @method('delete')
+                                      <input type="hidden" name="id" value="{{ $proposal->id }}">
+                                      <button type="button" class="btn btn-sm btn-danger btn-delete" data-toggle="tooltip" data-placement="bottom" title="Hapus"><i class="fas fa-trash-alt"></i></button>
+                                    </form>
+                                </div>
                                   {{-- <a class="btn btn-sm btn-danger btn-delete" data-toggle="tooltip" data-placement="bottom" data-id="{{ $proposal->id }}" title="Hapus" href="#" role="button"><i class="fas fa-times"></i></a> --}}
                                 @endif
                               @endif

@@ -37,7 +37,7 @@ class StudentController extends Controller
             $student = User::create([
                 'email' => $request->input('email'),
                 'username' => $request->input('nim'),
-                'name' => trim($request->input('nama')),
+                'name' => ucwords(trim($request->input('nama'))),
                 'password' => $request->input('password') == '' ? Hash::make($request->input('nim')) : $request->input('password'),
                 'no_hp' => $request->input('no_hp'),
                 'email_verified_at' => now(),
@@ -48,7 +48,7 @@ class StudentController extends Controller
             $student->student()->create([
                 'major_id' => $request->input('major'),
                 'nim' => $request->input('nim'),
-                'nama' => trim($request->input('nama')),
+                'nama' => ucwords(trim($request->input('nama'))),
                 'jk' => $request->input('jk'),
                 'tempat_lahir' => $request->input('tempat'),
                 'tgl_lahir' => $request->input('tgl'),
