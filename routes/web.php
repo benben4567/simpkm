@@ -74,6 +74,16 @@ Route::group(['middleware' => ['admin'], 'prefix' => 'admin'], function () {
         Route::post('/toggle', ['as' => 'toggle', 'uses' => 'StudentController@toggle']);
     });
     
+    
+    // Teacher
+    Route::group(['prefix' => 'teacher', 'as' => 'teacher.'], function () {
+        Route::post('/', ['as' => 'store', 'uses' => 'TeacherController@store']);
+        Route::put('/', ['as' => 'update', 'uses' => 'TeacherController@update']);
+        Route::post('/reset-password', ['as' => 'reset-password', 'uses' => 'TeacherController@resetPassword']);
+        Route::post('/toggle', ['as' => 'toggle', 'uses' => 'TeacherController@toggle']);
+    });
+    
+    
     // Major
     Route::group(['prefix' => 'major', 'as' => 'major.'], function () {
         Route::get('/', ['as' => 'index', 'uses' => 'MajorController@index']);

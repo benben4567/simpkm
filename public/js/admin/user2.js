@@ -9,6 +9,10 @@ $(document).ready(function () {
     $('.modal').on('hidden.bs.modal', function (e) {
         $(this).find('form').trigger('reset');
     });
+    
+    $(".numeric").on('input', function (e) {
+        $(this).val($(this).val().replace(/[^0-9]/g, ''));
+    });
 
     $(".datepicker").datepicker({
         format: "yyyy-mm-dd"
@@ -229,7 +233,11 @@ $(document).ready(function () {
                 "className": "text-center text-nowrap align-middle",
                 "data": 'id',
                 "render": function (data, type, row, meta) {
-                    return `<button type="button" class="btn btn-sm btn-icon btn-primary teacher-edit" data-id="${data}"><i class="fas fa-eye"></i></button>`
+                    let btnEdit = `<button type="button" class="btn btn-sm btn-icon btn-warning teacher-edit" title="Edit Data" data-id="${data}"><i class="fas fa-pencil-alt"></i></button>`
+                    let btnReset = `<button type="button" class="btn btn-sm btn-icon btn-info ml-1 teacher-reset" title="Reset Password" data-id="${data}"><i class="fas fa-sync-alt"></i></button>`
+                    let btnToggle = `<button type="button" class="btn btn-sm btn-icon btn-${row.status == 'aktif' ? 'danger' : 'success'} ml-1 teacher-toggle" title="${row.status == 'aktif' ? 'Nonaktifkan' : 'Aktifkan'}" data-id="${data}"><i class="fas fa-power-off"></i></button>`
+                    
+                    return `${btnEdit}${btnToggle}${btnReset}`
                 }
             },
         ],
@@ -237,22 +245,6 @@ $(document).ready(function () {
 
     // biar button ngga gandeng
     $('.btn-import').parent('.dt-buttons').removeClass('btn-group');
-
-    $('#adminModalEdit').on('hidden.bs.modal', function (e) {
-        $("#form-admin-edit").trigger("reset");
-    })
-
-    $('#studentModalEdit').on('hidden.bs.modal', function (e) {
-        $("#form-student-edit").trigger("reset");
-    })
-
-    $('#mahasiswaSimModal').on('hidden.bs.modal', function (e) {
-        $("#form-update-sim").trigger("reset");
-    })
-
-    $('#adminModal').on('show.bs.modal', function (e) {
-        $("#form-admin").trigger("reset");
-    })
 
     $("#form-import").submit(function (e) {
         e.preventDefault();
@@ -522,12 +514,13 @@ $(document).ready(function () {
             }
         });
     });
-
-    $("#form-teacher-edit").submit(function (e) {
+    
+    // Submit form edit teacher
+    $("#form-teacher-edit").on("submit", function (e) {
         e.preventDefault();
         $.ajax({
             type: "PUT",
-            url: "user/update/teacher",
+            url: $(this).attr("action"),
             data: $(this).serialize(),
             beforeSend: function () {
                 $.LoadingOverlay("show")
@@ -535,38 +528,40 @@ $(document).ready(function () {
                 $("div.invalid-feedback").find('ul').empty();
             },
             success: function (response) {
-                console.log(response)
                 $('#teacherModalEdit').modal("hide")
                 $.LoadingOverlay("hide")
-                if (response.success) {
-                    table3.ajax.reload()
-                    Swal.fire(
-                        "Berhasil!",
-                        'Perubahan user sudah disimpan.',
-                        'success'
-                    )
-                }
+                table3.ajax.reload()
+                Swal.fire(
+                    "Sukses!",
+                    response.meta.message,
+                    'success'
+                )
             },
             error: function (xhr) {
                 $.LoadingOverlay('hide')
                 switch (xhr.status) {
                     case 422:
-                        let errors = xhr.responseJSON.errors
+                        let errors = xhr.responseJSON.data
                         Swal.fire(
                             'Error!',
-                            xhr.responseJSON.message,
+                            xhr.responseJSON.meta.message,
                             'error'
                         )
 
                         $.each(errors, function (key, value) {
+                            $("select[name=" + key + "]").addClass("is-invalid")
                             $("input[name=" + key + "]").addClass("is-invalid")
                             $.each(errors[key], function (ke, val) {
                                 $('<li>' + val + "</li>").appendTo($("div[name=msg_" + key + "_edit]").find('ul'));
                             })
                         })
                         break;
-
                     default:
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error!',
+                            text: xhr.responseJSON.meta.message,
+                        });
                         break;
                 }
             }
@@ -736,7 +731,7 @@ $(document).ready(function () {
         });
     });
     
-    // toggle status
+    // toggle status student
     $('#table-student tbody').on('click', 'button.student-toggle', function () {
         var id = $(this).data('id');
         $.ajax({
@@ -772,7 +767,7 @@ $(document).ready(function () {
         });
     });
     
-    // reset password
+    // reset password student
     $('#table-student tbody').on('click', 'button.student-reset', function () {
         var id = $(this).data('id');
         $.ajax({
@@ -788,6 +783,78 @@ $(document).ready(function () {
             success: function (response) {
                 $.LoadingOverlay('hide')
                 table2.ajax.reload(null, false)
+                Swal.fire({
+                    position: 'center',
+                    icon: 'success',
+                    title: 'Sukses!',
+                    text: response.meta.message,
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                $.LoadingOverlay('hide')
+                Swal.fire(
+                    'Error!',
+                    xhr.responseJSON.meta.message,
+                    'error'
+                )
+            }
+        });
+    });
+    
+    // toggle status teacher
+    $('#table-teacher tbody').on('click', 'button.teacher-toggle', function () {
+        var id = $(this).data('id');
+        $.ajax({
+            type: "post",
+            url: "/admin/teacher/toggle",
+            data: {
+                id: id,
+            },
+            dataType: "JSON",
+            beforeSend: function () {
+                $.LoadingOverlay('show')
+            },
+            success: function (response) {
+                $.LoadingOverlay('hide')
+                table3.ajax.reload(null, false)
+                Swal.fire({
+                    position: 'center',
+                    icon: 'success',
+                    title: 'Sukses!',
+                    text: response.meta.message,
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                $.LoadingOverlay('hide')
+                Swal.fire(
+                    'Error!',
+                    xhr.responseJSON.meta.message,
+                    'error'
+                )
+            }
+        });
+    });
+    
+    // reset password teacher
+    $('#table-teacher tbody').on('click', 'button.teacher-reset', function () {
+        var id = $(this).data('id');
+        $.ajax({
+            type: "post",
+            url: "/admin/teacher/reset-password",
+            data: {
+                id: id,
+            },
+            dataType: "JSON",
+            beforeSend: function () {
+                $.LoadingOverlay('show')
+            },
+            success: function (response) {
+                $.LoadingOverlay('hide')
+                table3.ajax.reload(null, false)
                 Swal.fire({
                     position: 'center',
                     icon: 'success',
