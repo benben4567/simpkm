@@ -38,7 +38,7 @@
                                     <button type="button" class="btn btn-danger"><i class="fas fa-file-pdf"></i> Proposal ACC</button>
                                 @else
                                     @if ($ketua->user_id == auth()->user()->id)
-                                        <button type="button" class="btn btn-info" data-toggle="modal" data-target="#modalReview"><i class="fas fa-upload"></i> Hasil Revisi</button>
+                                        <button type="button" class="btn btn-info" data-toggle="modal" data-target="#modalReview"><i class="fas fa-upload"></i> Upload Hasil Revisi</button>
                                     @endif
                                 @endif
                             </div>
