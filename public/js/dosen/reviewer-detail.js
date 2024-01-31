@@ -17,7 +17,7 @@ $(function () {
 
 
   // Submit Form Review
-  $("#form-review").submit(function (e) {
+  $("#form-review").on("submit", function (e) {
     e.preventDefault();
 
     var formData = new FormData($("#form-review")[0]);
@@ -42,7 +42,7 @@ $(function () {
             confirmButtonColor: '#3085d6',
             allowOutsideClick: false,
           }).then((result) => {
-            location.reload();
+            window.location.reload(true);
           })
         }
       },
@@ -54,8 +54,8 @@ $(function () {
     });
   });
 
-  // Submit Form Review
-  $("#form-acc").submit(function (e) {
+  // Submit Form Acc
+  $("#form-acc").on("submit", function (e) {
     e.preventDefault();
 
     var formData = new FormData($("#form-acc")[0]);
@@ -91,7 +91,8 @@ $(function () {
                 confirmButtonColor: '#3085d6',
                 allowOutsideClick: false,
               }).then((result) => {
-                location.reload();
+                // hard reload
+                window.location.reload(true);
               })
             }
           },
