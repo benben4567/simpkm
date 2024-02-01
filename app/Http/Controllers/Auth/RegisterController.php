@@ -75,8 +75,8 @@ class RegisterController extends Controller
             return redirect()->back()->with('error', 'Tidak dapat mengakses Siakad. Silahkan coba lagi nanti.');
         }
         
-        if ($response['data'] == null) {
-            return redirect()->back()->with('error', 'NIM tidak ditemukan. Silahkan hubungi operator/admin.');
+        if ($response['data'] == null || $response['data'] == '') {
+            return redirect()->back()->with('error', 'NIM tidak ditemukan. Pastikan Tahun Angkatan dan NIM benar.');
         }
         
         $prodi = Major::where('kode_prodi', $response['data']['kode_prodi'])->first();
@@ -125,13 +125,13 @@ class RegisterController extends Controller
             $nim = $request->input('nim');
 
             $response = GetStudentService::checkNim($angkatan, $nim);
-
+            
             if ($response == false) {
                 return ResponseFormatter::error(null, 'Tidak dapat mengakses Siakad. Silahkan coba lagi nanti.', 500);
             }
 
-            if ($response['data'] == null) {
-                return ResponseFormatter::error(null, 'NIM tidak ditemukan. Silahkan hubungi operator/admin.', 404);
+            if ($response['data'] == null || $response['data'] == '') {
+                return ResponseFormatter::error(null, 'Data tidak ditemukan. Pastikan Tahun Angkatan dan NIM sudah benar.', 404);
             }
             
             $prodi = Major::where('kode_prodi', $response['data']['kode_prodi'])->first();
@@ -144,7 +144,7 @@ class RegisterController extends Controller
                 'email' => $response['data']['email'],
             ];
             
-            return ResponseFormatter::success($data, 'NIM ditemukan');
+            return ResponseFormatter::success($data, 'Data ditemukan');
         } catch (\Exception $e) {
             Log::error("RegisterController@checkNim: {$e->getMessage()}");
             return ResponseFormatter::error(null, 'Gagal cek data mahasiswa. Silahkan coba lagi nanti.', 500);

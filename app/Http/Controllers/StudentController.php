@@ -154,32 +154,37 @@ class StudentController extends Controller
     
     public function checkNim(Request $request)
     {
-        $angkatan = $request->input('angkatan');
-        $nim = $request->input('nim');
-        
-        $response = GetStudentService::checkNim($angkatan, $nim);
-        
-        if ($response == false) {
-            return ResponseFormatter::error(null, 'Tidak dapat mengakses Siakad. Kesalahan Server', 500);
+        try {
+            $angkatan = $request->input('angkatan');
+            $nim = $request->input('nim');
+            
+            $response = GetStudentService::checkNim($angkatan, $nim);
+            
+            if ($response == false) {
+                return ResponseFormatter::error(null, 'Tidak dapat mengakses Siakad. Silahkan coba lagi nanti.', 500);
+            }
+            
+            if($response['data'] == null || $response['data'] == '')
+            {
+                return ResponseFormatter::error(null, 'Data tidak ditemukan. Pastikan Tahun Angkatan dan NIM sudah benar.', 404);
+            }
+            
+            $data = [
+                'nim' => $response['data']['nim'],
+                'nama' => $response['data']['nama_mahasiswa'],
+                'prodi' => Major::where('kode_prodi', $response['data']['kode_prodi'])->first()->id,
+                'jk' => $response['data']['jenis_kelamin'] == 'L' ? 'laki' : 'perempuan',
+                'tempat_lahir' => $response['data']['tempat_lahir'],
+                'tanggal_lahir' => $response['data']['tanggal_lahir'],
+                'telepon' => $response['data']['telepon'],
+                'email' => $response['data']['email'],
+                'password' => $response['data']['password'],
+            ];
+            
+            return ResponseFormatter::success($data, 'Data ditemukan');
+        } catch (\Exception $e) {
+            Log::error("StudentController@checkNim: {$e->getMessage()}");
+            return ResponseFormatter::error(null, 'Gagal cek data mahasiswa. Silahkan coba lagi nanti.', 500);
         }
-        
-        if($response['data'] == null)
-        {
-            return ResponseFormatter::error(null, 'NIM tidak ditemukan', 404);
-        }
-        
-        $data = [
-            'nim' => $response['data']['nim'],
-            'nama' => $response['data']['nama_mahasiswa'],
-            'prodi' => Major::where('kode_prodi', $response['data']['kode_prodi'])->first()->id,
-            'jk' => $response['data']['jenis_kelamin'] == 'L' ? 'laki' : 'perempuan',
-            'tempat_lahir' => $response['data']['tempat_lahir'],
-            'tanggal_lahir' => $response['data']['tanggal_lahir'],
-            'telepon' => $response['data']['telepon'],
-            'email' => $response['data']['email'],
-            'password' => $response['data']['password'],
-        ];
-        
-        return ResponseFormatter::success($data, 'NIM ditemukan');
     }
 }
