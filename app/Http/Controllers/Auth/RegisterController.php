@@ -65,7 +65,6 @@ class RegisterController extends Controller
 
     protected function create(array $data)
     {
-        
         $angkatan = $data['angkatan'];
         $nim = $data['nim'];
         
@@ -123,6 +122,13 @@ class RegisterController extends Controller
         try {
             $angkatan = $request->input('angkatan');
             $nim = $request->input('nim');
+            
+            // check if NIM exist in database
+            $student = User::where('username', $nim)->first();
+            
+            if ($student) {
+                return ResponseFormatter::error(null, 'NIM sudah pernah terdaftar. Silahkan login untuk masuk ke sistem.', 409);
+            }
 
             $response = GetStudentService::checkNim($angkatan, $nim);
             

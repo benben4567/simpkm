@@ -154,7 +154,17 @@
 
             $("#btn-cek").on("click", function(e) {
                 e.preventDefault();
-
+                
+                // check if nim and angkatan is empty
+                if ($("input[name=nim]").val() == "" || $("select[name=angkatan]").val() == null) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error!',
+                        text: 'NIM dan Angkatan tidak boleh kosong!',
+                    })
+                    return false;
+                }
+                
                 $.ajax({
                     type: "POST",
                     url: "{{ route('register.check-nim') }}",
@@ -179,6 +189,10 @@
                         
                         $("#btn-cek").hide()
                         $("#btn-daftar").show()
+                        
+                        // disable input nim and angkatan
+                        $("input[name=nim]").prop("readonly", true)
+                        $("select[name=angkatan]").prop("readonly", true)
                         
                         Swal.fire({
                             title: 'Berhasil!',

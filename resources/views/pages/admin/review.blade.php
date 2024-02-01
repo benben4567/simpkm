@@ -35,7 +35,7 @@
               </dl>
 
               @if ($proposal->reviews->last()->acc == 1)
-                <a type="button" class="btn btn-danger" href="{{ route('admin.proposal.download', ['file' => $proposal->file]) }}"><i class="fas fa-file-pdf"></i> Proposal ACC</a>
+                <a type="button" class="btn btn-danger" href="{{ route('usulan.download', ['file' => $proposal->file]) }}"><i class="fas fa-file-pdf"></i> Download Proposal ACC</a>
               @else
                 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalReview"><i class="fas fa-upload"></i> Hasil Review</button>
                 <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modalAcc"><i class="fas fa-clipboard-check"></i> Acc Proposal</button>
