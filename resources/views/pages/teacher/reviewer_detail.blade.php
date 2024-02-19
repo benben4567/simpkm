@@ -25,9 +25,11 @@
 
                   <dt class="col-sm-3">Anggota</dt>
                   <dd class="col-sm-9">:
-                    @foreach ($anggota as $ang)
+                    @forelse ($anggota as $ang)
                       <span class="badge badge-primary">{{ $ang['nama']." (".$ang['nim'].")" }}</span>
-                    @endforeach
+                    @empty
+                        <span class="badge badge-danger">Tidak ada anggota</span>
+                    @endforelse
                   </dd>
 
                   <dt class="col-sm-3">Reviewer</dt>
