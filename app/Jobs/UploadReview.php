@@ -17,12 +17,12 @@ use Illuminate\Support\Str;
 class UploadReview implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-    
+
     protected $user;
     protected $filename_temp;
     protected $id_folder_review;
     protected $id_proposal;
-    protected $deskripsi;    
+    protected $deskripsi;
     protected $acc;
 
     /**
@@ -47,17 +47,17 @@ class UploadReview implements ShouldQueue
      */
     public function handle()
     {
-        
+
         $proposal = Proposal::find($this->id_proposal);
-        
+
         // if exist upload and save to table
         $title = preg_replace('/[^a-z0-9]+/', '-', strtolower(Str::words($proposal->judul, 7, '')));
         $filename = $proposal->skema . '_' . $title . '_' . time() . '.pdf';
-        
+
         // get local file
-        $path = public_path('storage\temp_proposal_review\/' . $this->filename_temp);
+        $path = public_path('storage/temp_proposal_review/' . $this->filename_temp);
         $fileData = File::get($path);
-        
+
         Storage::cloud()->put($this->id_folder_review . "/" . $filename, $fileData);
 
         // get metadata
@@ -77,7 +77,7 @@ class UploadReview implements ShouldQueue
             'file' => $id_file,
             'acc' => $this->acc
         ]);
-        
+
         // check if acc, update status
         if ($this->acc == 1) {
             $acc = $proposal->update([
