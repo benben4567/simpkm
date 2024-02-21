@@ -142,7 +142,7 @@ class ProposalController extends Controller
                 'id-proposal' => 'required',
                 'id-folder' => 'required',
                 'deskripsi' => 'required',
-                'file' => 'required|mimes:pdf|max:5120',
+                'file' => 'required|mimetypes:application/pdf|max:5120',
             ]);
 
             if ($validator->fails()) {
