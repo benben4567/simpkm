@@ -40,8 +40,8 @@
                 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalReview"><i class="fas fa-upload"></i> Hasil Review</button>
                 <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modalAcc"><i class="fas fa-clipboard-check"></i> Acc Proposal</button>
               @endif
-              <button type="button" class="btn btn-info btn-form"><i class="fas fa-file-word"></i> Form Penilaian</button>
-              <button type="button" class="btn btn-info btn-berita"><i class="fas fa-file-word"></i> Berita Acara</button>
+              {{-- <button type="button" class="btn btn-info btn-form"><i class="fas fa-file-word"></i> Form Penilaian</button> --}}
+              {{-- <button type="button" class="btn btn-info btn-berita"><i class="fas fa-file-word"></i> Berita Acara</button> --}}
             </div>
           </div>
         </div>
