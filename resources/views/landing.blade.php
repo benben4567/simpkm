@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-    <title>{{ config('app.name') }}</title>
+    <title>{{ config('app.name') }} - ITSK RS dr. Soepraoen</title>
     <meta content="Sistem Informasi Manajemen PKM - ITSK RS dr. Soepraoen" name="description">
     <meta content="SIM, PKM, ITSK, Soepraoen" name="keywords">
 
@@ -74,7 +74,7 @@
                 <div class="col-lg-6 pt-5 pt-lg-0 order-2 order-lg-1 d-flex flex-column justify-content-center" data-aos="fade-up">
                     <div>
                         <h1>Sistem Informasi Manajemen PKM</h1>
-                        <h2>Aplikasi Pengelolaan Program Kreativitas Mahasiswa ITSK RS dr. Soeproen</h2>
+                        <h2>Aplikasi Pengelolaan Program Kreativitas Mahasiswa ITSK RS dr. Soepraoen</h2>
                         @auth
                             <a href="{{ route('home') }}" class="btn-get-started scrollto">Beranda</a>
                         @else
