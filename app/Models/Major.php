@@ -6,20 +6,20 @@ use Illuminate\Database\Eloquent\Model;
 
 class Major extends Model
 {
-    protected $fillable = ['jenang', 'nama', 'kode_prodi', 'is_aktif'];
+    protected $fillable = ['jenjang', 'nama', 'kode_prodi', 'is_aktif'];
 
     public function students()
     {
-      return $this->hasMany(Student::class);
+        return $this->hasMany(Student::class);
     }
 
     public function teacher()
     {
-      return $this->hasMany(Teacher::class);
+        return $this->hasMany(Teacher::class);
     }
 
     public function getFullNameAttribute()
     {
-      return "{$this->jenjang} {$this->nama}";
+        return "{$this->jenjang} {$this->nama}";
     }
 }
