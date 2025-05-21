@@ -27,6 +27,7 @@ class MajorController extends Controller
             $validator = Validator::make($request->all(), [
                 'jenjang' => 'required',
                 'nama' => 'required',
+                'kode_prodi' => 'required',
             ]);
     
             if ($validator->fails()) {
