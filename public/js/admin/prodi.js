@@ -78,6 +78,7 @@ $(function () {
         $('#id-prodi').val(data.id);
         $("select[name='jenjang']").val(data.jenjang).selectric('refresh');
         $("input[name='nama']").val(data.nama);
+        $("input[name='kode_prodi']").val(data.kode_prodi);
 
         $('#modalEdit').modal('show');
     });

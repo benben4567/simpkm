@@ -69,6 +69,13 @@
                                             <ul></ul>
                                         </div>
                                     </div>
+                                    <div class="form-group">
+                                        <label for="">Kode Prodi <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" name="kode_prodi" required>
+                                        <div class="invalid-feedback" name="msg_kode_prodi">
+                                            <ul></ul>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -113,6 +120,13 @@
                                         <label for="">Nama Prodi <span class="text-danger">*</span></label>
                                         <input type="text" class="form-control" name="nama" required>
                                         <div class="invalid-feedback" name="msg_nama">
+                                            <ul></ul>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="">Kode Prodi <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" name="kode_prodi" required>
+                                        <div class="invalid-feedback" name="msg_kode_prodi">
                                             <ul></ul>
                                         </div>
                                     </div>
