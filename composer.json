@@ -19,6 +19,7 @@
         "laravel/legacy-factories": "^1.3",
         "laravel/tinker": "^2.0",
         "laravel/ui": "^3.0",
+        "league/flysystem-aws-s3-v3": "^1.0",
         "maatwebsite/excel": "^3.1",
         "nao-pon/flysystem-google-drive": "~1.1",
         "novay/laravel-word-template": "^1.1",
@@ -53,7 +54,8 @@
         },
         "files": [
             "app/Helpers/Helper.php",
-            "app/Helpers/SizeFormatter.php"
+            "app/Helpers/SizeFormatter.php",
+            "app/Helpers/CloudStorage.php"
         ]
     },
     "autoload-dev": {
