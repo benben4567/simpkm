@@ -78,7 +78,11 @@
                   </div>
                   <p style="line-height: 20px">{{ $review->description }}</p>
                   @if ($loop->first)
-                    <a class="btn btn-primary mt-3" href="{{ route('usulan.download', ['file' => $review->file]) }}" target="_blank" role="button"><i class="fas fa-download"></i> Proposal Usulan</a>
+                   @if ($review->file_url)
+                      <a class="btn btn-primary mt-3" href="{{ $review->file_url }}" target="_blank" role="button"><i class="fas fa-download"></i> Proposal Usulan</a>
+                   @else
+                      <a class="btn btn-primary mt-3" href="{{ route('usulan.download', ['file' => $review->file]) }}" target="_blank" role="button"><i class="fas fa-download"></i> Proposal Usulan</a>
+                   @endif
                   @elseif ($review->type == 'student')
                   <a class="btn btn-info mt-3" href="{{ route('usulan.download', ['file' => $review->file]) }}" target="_blank" role="button"><i class="fas fa-download"></i> Hasil Revisi</a>
                   @elseif ($review->type == 'teacher')

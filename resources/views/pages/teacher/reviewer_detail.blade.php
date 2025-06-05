@@ -37,7 +37,7 @@
                 </dl>
 
                 @if ($proposal->reviews->last()->acc == 1)
-                  <a type="button" class="btn btn-danger" href="{{ route('teacher.proposal.download', ['file' => $proposal->file]) }}"><i class="fas fa-file-pdf"></i> Proposal ACC</a>
+                  <a type="button" class="btn btn-danger" href="{{ route('teacher.proposal.download', ['id' => $proposal->id]) }}"><i class="fas fa-file-pdf"></i> Proposal ACC</a>
                   @if ($reviewer->user_id == auth()->user()->id)
                     <button type="button" class="btn btn-info btn-form"><i class="fas fa-file-word"></i> Form Penilaian</button>
                     <button type="button" class="btn btn-info btn-berita"><i class="fas fa-file-word"></i> Berita Acara</button>
@@ -84,11 +84,11 @@
                     </div>
                     <p style="line-height: 20px">{{ $review->description }}</p>
                     @if ($loop->first)
-                      <a class="btn btn-primary mt-3" href="{{ route('teacher.proposal.download', ['file' => $review->file]) }}" target="_blank" role="button"><i class="fas fa-download"></i> Proposal Usulan</a>
+                      <a class="btn btn-primary mt-3" href="{{ route('teacher.proposal.download', ['id' => $review->id]) }}" target="_blank" role="button"><i class="fas fa-download"></i> Proposal Usulan</a>
                     @elseif ($review->type == 'student')
-                    <a class="btn btn-info mt-3" href="{{ route('teacher.proposal.download', ['file' => $review->file]) }}" target="_blank" role="button"><i class="fas fa-download"></i> Hasil Revisi</a>
+                    <a class="btn btn-info mt-3" href="{{ route('teacher.proposal.download', ['id' => $review->id]) }}" target="_blank" role="button"><i class="fas fa-download"></i> Hasil Revisi</a>
                     @elseif ($review->type == 'teacher')
-                    <a class="btn btn-success mt-3" href="{{ route('teacher.proposal.download', ['file' => $review->file]) }}" target="_blank" role="button"><i class="fas fa-download"></i> Hasil Review</a>
+                    <a class="btn btn-success mt-3" href="{{ route('teacher.proposal.download', ['id' => $review->id]) }}" target="_blank" role="button"><i class="fas fa-download"></i> Hasil Review</a>
                   @endif
                   </div>
                 </div>
