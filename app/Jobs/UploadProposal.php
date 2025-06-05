@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Helpers\CloudStorage;
 use App\Models\Review;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -46,23 +47,28 @@ class UploadProposal implements ShouldQueue
         // $path = public_path('storage\\temp_proposal\\'.$this->filename_temp);
         $fileData = File::get($path);
 
-        // $upload = Storage::cloud()->putFileAs($this->id_folder_review, $fileData, $this->filename);
-        $upload = Storage::cloud()->put($this->id_folder_review . "/" . $this->filename, $fileData);
+        $review = Review::find($this->review_id);
+        if (!$review) {
+            Log::error('Review not found for ID: ' . $this->review_id);
+            return;
+        }
 
-        // get metadata
-        $contents = collect(Storage::cloud()->listContents($this->id_folder_review, false));
-        $file = $contents
-            ->where('type', '=', 'file')
-            ->where('filename', '=', pathinfo($this->filename, PATHINFO_FILENAME))
-            ->where('extension', '=', pathinfo($this->filename, PATHINFO_EXTENSION))
-            ->first(); // there can be duplicate file names!
+        $dirname = $review->proposal->period->tahun . '/proposal';
 
-        if ($file) {
-            $id_file = $file['path'];
-            // simpan ke table review
-            $review = Review::where('id', $this->review_id)->update([
-                'file' => $id_file,
-            ]);
+        // $upload = Storage::cloud()->put($this->id_folder_review . "/" . $this->filename, $fileData); //google drive
+        $upload = CloudStorage::upload($dirname, $fileData, $this->filename);
+
+        // update DB
+        Review::where('id', $this->review_id)->update(['file_path' => $upload['path'], 'file_url' => $upload['url']]);
+        Log::info('File uploaded successfully: ' . $upload['url']);
+
+        // delete temp file
+        $tempPath = public_path('storage/temp_proposal/' . $this->filename_temp);
+        if (File::exists($tempPath)) {
+            File::delete($tempPath);
+            Log::info('Temporary file deleted: ' . $tempPath);
+        } else {
+            Log::warning('Temporary file not found: ' . $tempPath);
         }
     }
 
