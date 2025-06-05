@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Helpers\CloudStorage;
 use App\Models\Proposal;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
@@ -52,38 +53,39 @@ class UploadReview implements ShouldQueue
 
         // if exist upload and save to table
         $title = preg_replace('/[^a-z0-9]+/', '-', strtolower(Str::words($proposal->judul, 7, '')));
-        $filename = $proposal->skema . '_' . $title . '_' . time() . '.pdf';
+        $filename = $proposal->skema . '_' . $title . '_' . time();
 
         // get local file
         $path = public_path('storage/temp_proposal_review/' . $this->filename_temp);
         $fileData = File::get($path);
 
-        Storage::cloud()->put($this->id_folder_review . "/" . $filename, $fileData);
-
-        // get metadata
-        $contents = collect(Storage::cloud()->listContents($this->id_folder_review, false));
-        $metadata = $contents
-            ->where('type', '=', 'file')
-            ->where('filename', '=', pathinfo($filename, PATHINFO_FILENAME))
-            ->where('extension', '=', pathinfo($filename, PATHINFO_EXTENSION))
-            ->first(); // there can be duplicate file names!
-        $id_file = $metadata['path'];
+        $dirname = $proposal->period->tahun . '/review';
+        $upload = CloudStorage::upload($dirname, $fileData, $filename);
 
         // simpan ke table proposal
         $review = $proposal->reviews()->create([
             'user_id' => $this->user['id'],
             'type' => $this->user['roles'],
             'description' => $this->deskripsi,
-            'file' => $id_file,
+            'file_path' => $upload['path'],
+            'file_url' => $upload['url'],
             'acc' => $this->acc
         ]);
 
         // check if acc, update status
         if ($this->acc == 1) {
             $acc = $proposal->update([
-                'file' => $id_file,
+                'file_path' => $upload['path'],
+                'file_url' => $upload['url'],
                 'status' => 'selesai'
             ]);
+            
+            if (!$acc) {
+                Log::error('Failed to update proposal status after review upload', [
+                    'proposal_id' => $this->id_proposal,
+                    'user_id' => $this->user['id']
+                ]);
+            }
         }
     }
 }
