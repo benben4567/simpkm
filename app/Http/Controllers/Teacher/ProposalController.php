@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Teacher;
 
+use App\Helpers\CloudStorage;
 use App\Helpers\ResponseFormatter;
 use App\Http\Controllers\Controller;
 use App\Jobs\UploadReview;
@@ -10,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Teacher;
 use App\Models\Proposal;
 use App\Models\Period;
+use App\Models\Review;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -241,10 +243,15 @@ class ProposalController extends Controller
 
     public function downloadProposal(Request $request)
     {
-        // $proposal = Proposal::whereId($request->id)->first();
-        $metadata = Storage::cloud()->getMetadata($request->file);
-        $download = Storage::cloud()->download($request->file, $metadata['name']);
-        return $download;
+        $review = Review::where('id', $request->id)->first();
+        if (!$review->file_url) {
+            $metadata = Storage::cloud()->getMetadata($review->file);
+            $download = Storage::cloud()->download($review->file, $metadata['name']);
+            return $download;
+        } else {
+            $download = $review->file_url;
+            return redirect()->away($download);
+        }
     }
 
     public function exportBerita($data, $skema)
