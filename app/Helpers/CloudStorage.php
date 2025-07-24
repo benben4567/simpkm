@@ -64,12 +64,14 @@ class CloudStorage
         return $res;
     }
 
-    public static function upload($pathName, $file, $fileName, $visibility = 'public')
+    public static function upload($pathName, $fileContent, $fileName, $visibility = 'public')
     {
-        $res = Storage::cloud()->putFileAs(self::$path . '/' . $pathName, $file, $fileName . '.' . $file->extension());
+        $path = self::$path . '/' . $pathName . '/' . $fileName;
 
-        if (!$res) {
-            Log::error("CloudStorage@upload: File {$pathName} failed to upload");
+        $result = Storage::disk('s3')->put($path, $fileContent, $visibility);
+
+        if (!$result) {
+            Log::error("CloudStorage@upload: File {$path} failed to upload");
 
             return [
                 'status' => false,
@@ -77,22 +79,15 @@ class CloudStorage
                 'full_path' => null,
                 'url' => null
             ];
-        } else {
-
-            if ($visibility == 'public') {
-                Storage::cloud()->setVisibility($res, $visibility);
-            }
-            ;
-
-            $url = Storage::cloud()->url($res);
-
-            $explode = explode(self::$path . '/', $res);
-            return [
-                'status' => true,
-                'path' => $explode[1],
-                'full_path' => $res,
-                'url' => $url
-            ];
         }
+
+        $url = Storage::disk('s3')->url($path);
+
+        return [
+            'status' => true,
+            'path' => $path,
+            'full_path' => $path,
+            'url' => $url,
+        ];
     }
 }

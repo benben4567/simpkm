@@ -91,25 +91,19 @@ class ProposalController extends Controller
             'file' => 'required|mimes:pdf|max:2048'
         ]);
 
-        try {
-            // DB Transaction
             DB::transaction(function () use ($request) {
+                $periode = Period::where('tahun', $request->input('tahun'))->firstOrFail();
 
-                // Upload file
-                if ($request->file('file')) {
-                    $title = preg_replace('/[^a-z0-9]+/', '-', strtolower(Str::words($request->input('judul'), 7, '')));
-                    $filename = $request->input('skema') . '_' . $title . '_' . Str::random(7) . '.pdf';
+                $title = preg_replace('/[^a-z0-9]+/', '-', strtolower(Str::words($request->input('judul'), 7, '')));
+                $filename = $request->input('skema') . '_' . $title . '_' . Str::random(7) . '.pdf';
 
-                    // get folder id by tahun
-                    $periode = Period::where('tahun', '=', $request->input('tahun'))->first();
-                    // if exist upload to local
-                    if ($periode->id_folder_review) {
-                        $filename_temp = Str::random(7) . '.pdf';
-                        $file = Storage::putFileAs('public/temp_proposal', $request->file('file'), $filename_temp);
-                    }
-                }
+                $tempFilename = Str::random(10) . '.pdf';
+                $tempPath = storage_path('app/temp_proposal/' . $tempFilename);
 
-                // simpan ke table proposal
+                $request->file('file')->move(storage_path('app/temp_proposal'), $tempFilename);
+
+
+                // Simpan ke table proposal
                 $proposal = Proposal::create([
                     'period_id' => $periode->id,
                     'skema' => $request->input('skema'),
@@ -117,31 +111,29 @@ class ProposalController extends Controller
                     'status' => 'kompilasi',
                 ]);
 
-                // simpan ke table proposal
                 $review = $proposal->reviews()->create([
                     'user_id' => auth()->user()->id,
                     'type' => auth()->user()->roles->pluck('name')[0],
                     'description' => 'Usulan Proposal Awal',
                 ]);
 
-                // upload file
-                if ($periode->id_folder_review) {
-                    UploadProposal::dispatch($filename_temp, $filename, $periode->id_folder_review, $review->id);
-                }
-
+                // Dispatch job dengan hanya mengirim path (bukan konten)
+                UploadProposal::dispatch($tempPath, $filename, $periode->tahun, $review->id);
                 // Attach Student
-                $proposal->students()->attach(Auth::user()->student->id, ['jabatan' => 'Ketua']);
+                $proposal->students()->attach(auth()->user()->student->id, ['jabatan' => 'Ketua']);
+
                 // Attach Teacher
                 $proposal->teachers()->attach($request->input('dosen'), ['jabatan' => 'Pembimbing']);
             });
+        try {
 
             return redirect()->route('proposal.index')->with('success', 'Data berhasil disimpan');
-
         } catch (\Exception $e) {
             Log::error($e->getMessage());
             return redirect()->route('proposal.index')->with('error', 'Data gagal disimpan');
         }
     }
+
 
     public function edit($id)
     {
@@ -219,7 +211,7 @@ class ProposalController extends Controller
                         $file = CloudStorage::upload($dirname, $request->file('file'), $filename);
                     }
                 }
-                
+
                 $review = Review::where('proposal_id', $request->input('id'))->update([
                     'file_path' => $file['path'],
                     'file_url' => $file['url'],

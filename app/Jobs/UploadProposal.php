@@ -2,50 +2,40 @@
 
 namespace App\Jobs;
 
-use App\Helpers\CloudStorage;
-use App\Models\Review;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Storage;
+use App\Models\Review;
+use App\Helpers\CloudStorage;
 
 class UploadProposal implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    protected $filename_temp;
+    protected $tempPath;
     protected $filename;
-    protected $id_folder_review;
+    protected $tahun;
     protected $review_id;
 
-    /**
-     * Create a new job instance.
-     *
-     * @return void
-     */
-    public function __construct($filename_temp, $filename, $id_folder_review, $review_id)
+    public function __construct($tempPath, $filename, $tahun, $review_id)
     {
-        $this->filename_temp = $filename_temp;
+        $this->tempPath = $tempPath;
         $this->filename = $filename;
-        $this->id_folder_review = $id_folder_review;
+        $this->tahun = $tahun;
         $this->review_id = $review_id;
     }
 
-    /**
-     * Execute the job.
-     *
-     * @return void
-     */
     public function handle()
     {
-        // get local file
-        $path = public_path('storage/temp_proposal/' . $this->filename_temp);
-        // $path = public_path('storage\\temp_proposal\\'.$this->filename_temp);
-        $fileData = File::get($path);
+        if (!file_exists($this->tempPath)) {
+            Log::error("Temp file not found: {$this->tempPath}");
+            return;
+        }
+
+        $fileContent = file_get_contents($this->tempPath);
 
         $review = Review::find($this->review_id);
         if (!$review) {
@@ -53,23 +43,21 @@ class UploadProposal implements ShouldQueue
             return;
         }
 
-        $dirname = $review->proposal->period->tahun . '/proposal';
+        $dirname = $this->tahun . '/proposal';
 
-        // $upload = Storage::cloud()->put($this->id_folder_review . "/" . $this->filename, $fileData); //google drive
-        $upload = CloudStorage::upload($dirname, $fileData, $this->filename);
+        $upload = CloudStorage::upload($dirname, $fileContent, $this->filename);
 
-        // update DB
-        Review::where('id', $this->review_id)->update(['file_path' => $upload['path'], 'file_url' => $upload['url']]);
-        Log::info('File uploaded successfully: ' . $upload['url']);
-
-        // delete temp file
-        $tempPath = public_path('storage/temp_proposal/' . $this->filename_temp);
-        if (File::exists($tempPath)) {
-            File::delete($tempPath);
-            Log::info('Temporary file deleted: ' . $tempPath);
+        if ($upload['status']) {
+            $review->update([
+                'file_path' => $upload['path'],
+                'file_url' => $upload['url'],
+            ]);
+            Log::info('File uploaded successfully: ' . $upload['url']);
         } else {
-            Log::warning('Temporary file not found: ' . $tempPath);
+            Log::error('Failed to upload file for review ID: ' . $this->review_id);
         }
-    }
 
+        // Clean up
+        unlink($this->tempPath);
+    }
 }
