@@ -90,6 +90,7 @@ class ProposalController extends Controller
             'judul' => 'required',
             'file' => 'required|mimes:pdf|max:2048'
         ]);
+        try {
 
             DB::transaction(function () use ($request) {
                 $periode = Period::where('tahun', $request->input('tahun'))->firstOrFail();
@@ -125,7 +126,6 @@ class ProposalController extends Controller
                 // Attach Teacher
                 $proposal->teachers()->attach($request->input('dosen'), ['jabatan' => 'Pembimbing']);
             });
-        try {
 
             return redirect()->route('proposal.index')->with('success', 'Data berhasil disimpan');
         } catch (\Exception $e) {

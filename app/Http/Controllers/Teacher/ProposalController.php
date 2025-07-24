@@ -133,7 +133,7 @@ class ProposalController extends Controller
         $pembimbing = $proposal->pembimbing->first();
         $reviewer = $proposal->reviewer->first();
         $anggota = $proposal->anggota->toArray();
-        
+
         return view('pages.teacher.reviewer_detail', compact('proposal', 'periode', 'ketua', 'pembimbing', 'reviewer', 'anggota'));
     }
 
@@ -141,8 +141,6 @@ class ProposalController extends Controller
     {
         try {
             $validator = Validator::make($request->all(), [
-                'id-proposal' => 'required',
-                'id-folder' => 'required',
                 'deskripsi' => 'required',
                 'file' => 'required|file|max:5120',
             ]);
@@ -150,17 +148,17 @@ class ProposalController extends Controller
             if ($validator->fails()) {
                 return ResponseFormatter::error(null, $validator->errors(), 422);
             }
-            
-            // upload file to temporary folder
-            $filename_temp = time() . '.' . $request->file('file')->getClientOriginalExtension();
-            Storage::putFileAs('public/temp_proposal_review', $request->file('file'), $filename_temp);
-            
-            $user = [
+
+
+            $tempFilename = Str::random(10) . '.pdf';
+            $tempPath = storage_path('app/temp_proposal_review/' . $tempFilename);
+
+            $request->file('file')->move(storage_path('app/temp_proposal_review'), $tempFilename);
+
+            UploadReview::dispatch([
                 'id' => auth()->user()->id,
                 'roles' => auth()->user()->roles->pluck('name')[0],
-            ];
-            
-            UploadReview::dispatch($user, $filename_temp, $request->input('id-folder'), $request->input('id-proposal'), $request->deskripsi, null);
+            ], $tempPath, $request->input('id-folder'), $request->input('deskripsi'), $request->input('acc'));
 
             return ResponseFormatter::success(null, 'Data Berhasil disimpan', 201);
         } catch (\Exception $e) {
@@ -178,21 +176,21 @@ class ProposalController extends Controller
                 'deskripsi' => 'nullable',
                 'file' => 'required|file|max:5120',
             ]);
-    
+
             if ($validator->fails()) {
                 return ResponseFormatter::error(null, $validator->errors(), 422);
             }
-    
+
             $filename_temp = time() . '.' . $request->file('file')->getClientOriginalExtension();
             Storage::putFileAs('public/temp_proposal_review', $request->file('file'), $filename_temp);
-            
+
             $user = [
                 'id' => auth()->user()->id,
                 'roles' => auth()->user()->roles->pluck('name')[0],
             ];
-            
+
             UploadReview::dispatch($user, $filename_temp, $request->input('id-folder'), $request->input('id-proposal'), $request->deskripsi, 1);
-    
+
             return ResponseFormatter::success(null, 'Data Berhasil disimpan', 201);
         } catch (\Exception $e) {
             Log::error("ProposalController::reviewerAcc() " . $e->getMessage());

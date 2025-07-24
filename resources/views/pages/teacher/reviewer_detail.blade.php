@@ -113,8 +113,6 @@
           <div class="modal-body">
             <div class="row">
               <div class="col-12">
-                  <input type="text" class="d-none" name="id-proposal" value="{{ $proposal->id }}">
-                  <input type="text" class="d-none" name="id-folder" value="{{ $periode->id_folder_review }}">
                   <div class="form-group">
                     <label>Instruksi Singkat</label>
                     <textarea class="form-control h-100" name="deskripsi" rows="5" required></textarea>
@@ -158,8 +156,6 @@
           <div class="modal-body">
             <div class="row">
               <div class="col-12">
-                  <input type="text" class="d-none" name="id-proposal" value="{{ $proposal->id }}">
-                  <input type="text" class="d-none" name="id-folder" value="{{ $periode->id_folder }}">
                   <div class="form-group">
                     <label>Instruksi Singkat (opsional)</label>
                     <textarea class="form-control h-100" name="deskripsi" rows="5"></textarea>

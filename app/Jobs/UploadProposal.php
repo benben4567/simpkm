@@ -46,7 +46,6 @@ class UploadProposal implements ShouldQueue
         $dirname = $this->tahun . '/proposal';
 
         $upload = CloudStorage::upload($dirname, $fileContent, $this->filename);
-
         if ($upload['status']) {
             $review->update([
                 'file_path' => $upload['path'],
@@ -56,8 +55,6 @@ class UploadProposal implements ShouldQueue
         } else {
             Log::error('Failed to upload file for review ID: ' . $this->review_id);
         }
-
-        // Clean up
         unlink($this->tempPath);
     }
 }

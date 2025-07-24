@@ -20,22 +20,18 @@ class UploadReview implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     protected $user;
-    protected $filename_temp;
-    protected $id_folder_review;
+    protected $tempPath;
     protected $id_proposal;
     protected $deskripsi;
     protected $acc;
 
     /**
      * Create a new job instance.
-     *
-     * @return void
      */
-    public function __construct($user, $filename_temp, $id_folder_review, $id_proposal, $deskripsi, $acc)
+    public function __construct($user, $tempPath, $id_proposal, $deskripsi, $acc)
     {
         $this->user = $user;
-        $this->filename_temp = $filename_temp;
-        $this->id_folder_review = $id_folder_review;
+        $this->tempPath = $tempPath;
         $this->id_proposal = $id_proposal;
         $this->deskripsi = $deskripsi;
         $this->acc = $acc;
@@ -43,27 +39,28 @@ class UploadReview implements ShouldQueue
 
     /**
      * Execute the job.
-     *
-     * @return void
      */
     public function handle()
     {
-
         $proposal = Proposal::find($this->id_proposal);
+        if (!$proposal || !file_exists($this->tempPath)) {
+            Log::error('Proposal not found or file missing.', [
+                'proposal_id' => $this->id_proposal,
+                'file' => $this->tempPath
+            ]);
+            return;
+        }
 
-        // if exist upload and save to table
         $title = preg_replace('/[^a-z0-9]+/', '-', strtolower(Str::words($proposal->judul, 7, '')));
-        $filename = $proposal->skema . '_' . $title . '_' . time();
+        $filename = $proposal->skema . '_' . $title . '_' . time() . '.pdf';
 
-        // get local file
-        $path = public_path('storage/temp_proposal_review/' . $this->filename_temp);
-        $fileData = File::get($path);
-
+        $fileData = File::get($this->tempPath);
         $dirname = $proposal->period->tahun . '/review';
+
         $upload = CloudStorage::upload($dirname, $fileData, $filename);
 
-        // simpan ke table proposal
-        $review = $proposal->reviews()->create([
+        $proposal->reviews()->create([
+            'file' => $filename,
             'user_id' => $this->user['id'],
             'type' => $this->user['roles'],
             'description' => $this->deskripsi,
@@ -72,20 +69,23 @@ class UploadReview implements ShouldQueue
             'acc' => $this->acc
         ]);
 
-        // check if acc, update status
         if ($this->acc == 1) {
-            $acc = $proposal->update([
+            $success = $proposal->update([
                 'file_path' => $upload['path'],
                 'file_url' => $upload['url'],
+                'file' => $filename,
                 'status' => 'selesai'
             ]);
-            
-            if (!$acc) {
-                Log::error('Failed to update proposal status after review upload', [
+
+            if (!$success) {
+                Log::error('Failed to update proposal after approval.', [
                     'proposal_id' => $this->id_proposal,
                     'user_id' => $this->user['id']
                 ]);
             }
         }
+
+        // Delete temp file
+        File::delete($this->tempPath);
     }
 }
