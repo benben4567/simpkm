@@ -117,6 +117,8 @@
                     <label>Instruksi Singkat</label>
                     <textarea class="form-control h-100" name="deskripsi" rows="5" required></textarea>
                   </div>
+                  {{-- Hidden for id-proposal --}}
+                    <input type="hidden" name="id_proposal" value="{{ $proposal->id }}">
                   <div class="form-group">
                     <label for="">File Hasil Review</label>
                     <div class="custom-file">

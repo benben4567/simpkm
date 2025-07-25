@@ -140,6 +140,7 @@ class ProposalController extends Controller
     public function reviewerStore(Request $request)
     {
         try {
+
             $validator = Validator::make($request->all(), [
                 'deskripsi' => 'required',
                 'file' => 'required|file|max:5120',
@@ -154,11 +155,7 @@ class ProposalController extends Controller
             $tempPath = storage_path('app/temp_proposal_review/' . $tempFilename);
 
             $request->file('file')->move(storage_path('app/temp_proposal_review'), $tempFilename);
-
-            UploadReview::dispatch([
-                'id' => auth()->user()->id,
-                'roles' => auth()->user()->roles->pluck('name')[0],
-            ], $tempPath, $request->input('id-folder'), $request->input('deskripsi'), $request->input('acc'));
+            UploadReview::dispatch(['id' => auth()->user()->id, 'roles' => auth()->user()->getRoleNames()[0]], $tempPath, $request->id_proposal, $request->input('deskripsi'), $request->input('acc'));
 
             return ResponseFormatter::success(null, 'Data Berhasil disimpan', 201);
         } catch (\Exception $e) {

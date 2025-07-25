@@ -28,7 +28,7 @@ class UploadReview implements ShouldQueue
     /**
      * Create a new job instance.
      */
-    public function __construct($user, $tempPath, $id_proposal, $deskripsi, $acc)
+    public function __construct($user, $tempPath, $id_proposal, $deskripsi, $acc = 0)
     {
         $this->user = $user;
         $this->tempPath = $tempPath;
