@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Storage;
 class CloudStorage
 {
 
-    protected static $path = 'simpkm';
+    protected static $path = 'data-simpkm';
 
     public static function dirExist($name)
     {
