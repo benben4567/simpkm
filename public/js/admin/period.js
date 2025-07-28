@@ -115,14 +115,21 @@ $(function () {
           }
         },
         {
-          "targets":2,
+            "targets":2,
+            "data": null,
+            "render": function (data, type, row, meta) {
+              return row.kegiatan ? row.kegiatan : 'Tidak ada kegiatan';
+            }
+        },
+        {
+          "targets":3,
           "data": null,
           "render": function (data, type, row, meta) {
             return row.proposals_count
           }
         },
         {
-          "targets" : 3,
+          "targets" : 4,
           "data" : null,
           "render": function (data, type, row, meta) {
             if (row.status == "aktif") {
@@ -133,7 +140,7 @@ $(function () {
           }
         },
         {
-          "targets" : 4,
+          "targets" : 5,
           "data" : null,
           "render": function (data, type, row, meta) {
             if (row.pendaftaran == "buka") {
@@ -144,7 +151,7 @@ $(function () {
           }
         },
         {
-          "targets": 5,
+          "targets": 6,
           "data": null,
           "render": function ( data, type, row, meta ) {
             return `<button type="button" class="btn btn-icon btn-sm btn-warning" title="Edit" data-id="${row.id}"><i class="fas fa-pencil-alt"></i></button>`

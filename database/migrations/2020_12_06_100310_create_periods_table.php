@@ -18,6 +18,7 @@ class CreatePeriodsTable extends Migration
             $table->year('tahun')->nullable();
             $table->enum('status', ['aktif', 'nonaktif'])->nullable()->default('nonaktif');
             $table->enum('pendaftaran', ['buka', 'tutup'])->nullable()->default('tutup');
+            $table->string('kegiatan')->nullable();
             $table->string('id_folder')->nullable();
             $table->string('id_folder_review')->nullable();
             $table->timestamps();

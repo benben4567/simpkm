@@ -166,27 +166,26 @@ class ProposalController extends Controller
 
     public function reviewerAcc(Request $request)
     {
+        if($request->acc == "1") {
+            $request->merge(['acc' => true]);
+        }
         try {
             $validator = Validator::make($request->all(), [
-                'id-proposal' => 'required',
-                'id-folder' => 'required',
-                'deskripsi' => 'nullable',
+                'deskripsi' => 'required',
                 'file' => 'required|file|max:5120',
+                'id_proposal' => 'required',
             ]);
 
             if ($validator->fails()) {
                 return ResponseFormatter::error(null, $validator->errors(), 422);
             }
 
-            $filename_temp = time() . '.' . $request->file('file')->getClientOriginalExtension();
-            Storage::putFileAs('public/temp_proposal_review', $request->file('file'), $filename_temp);
 
-            $user = [
-                'id' => auth()->user()->id,
-                'roles' => auth()->user()->roles->pluck('name')[0],
-            ];
+            $tempFilename = Str::random(10) . '.pdf';
+            $tempPath = storage_path('app/temp_proposal_review/' . $tempFilename);
 
-            UploadReview::dispatch($user, $filename_temp, $request->input('id-folder'), $request->input('id-proposal'), $request->deskripsi, 1);
+            $request->file('file')->move(storage_path('app/temp_proposal_review'), $tempFilename);
+            UploadReview::dispatch(['id' => auth()->user()->id, 'roles' => auth()->user()->getRoleNames()[0]], $tempPath, $request->id_proposal, $request->input('deskripsi'), $request->input('acc'));
 
             return ResponseFormatter::success(null, 'Data Berhasil disimpan', 201);
         } catch (\Exception $e) {
@@ -241,7 +240,7 @@ class ProposalController extends Controller
         $review = Review::where('id', $request->id)->first();
         if (!$review->file_url) {
             $metadata = Storage::cloud()->getMetadata($review->file);
-            $download = Storage::cloud()->download($review->file, $metadata['name']);
+            $download = Storage::cloud()->download($review->file, $metadata['basename']);
             return $download;
         } else {
             $download = $review->file_url;
@@ -252,11 +251,11 @@ class ProposalController extends Controller
     public function exportBerita($data, $skema)
     {
         if ($skema == 'PKM-GFK') {
-            $file = asset('template/BA-GFK.rtf');
+            $file = public_path('template/BA-GFK.rtf');
         } elseif ($skema == 'PKM-AI' || $skema == 'PKM-GT') {
-            $file = asset('template/BA-GT-AI.rtf');
+            $file = public_path('template/BA-GT-AI.rtf');
         } else {
-            $file = asset('template/BA-5Bidang.rtf');
+            $file = public_path('template/BA-5Bidang.rtf');
         }
 
         $rand = uniqid();
@@ -267,12 +266,16 @@ class ProposalController extends Controller
 
     public function exportForm($data, $skema)
     {
-        $file = asset('template/' . $skema . '.rtf');
+    $filePath = public_path('template/' . $skema . '.rtf');
 
-        $rand = uniqid();
-        $nama_file = 'FORM_' . $skema . '_' . $rand . '.doc';
+    if (!file_exists($filePath)) {
+        throw new \Exception("Template file not found: " . $filePath);
+    }
 
-        return \WordTemplate::export($file, $data, $nama_file);
+    $rand = uniqid();
+    $nama_file = 'FORM_' . $skema . '_' . $rand . '.doc';
+
+    return \WordTemplate::export($filePath, $data, $nama_file);
     }
 
     public function print(Request $request)

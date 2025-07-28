@@ -20,6 +20,7 @@
                     <tr class=text-center>
                       <th>#</th>
                       <th>Tahun</th>
+                      <th>Kegiatan</th>
                       <th>Jumlah Usulan</th>
                       <th>Status</th>
                       <th>Pendaftaran</th>
@@ -31,6 +32,7 @@
                       <tr class="text-center">
                         <td>{{ $loop->iteration }}</td>
                         <td>{{ $period->tahun }}</td>
+                        <td>{{ $period->kegiatan }}</td>
                         <td>{{ $period->proposals_count }}</td>
                         <td><span class="badge {{ $period->status == "aktif" ? "badge-success" : "badge-danger" }}">{{ ucfirst($period->status) }}</span></td>
                         <td><span class="badge {{ $period->pendaftaran == "buka" ? "badge-success" : "badge-danger" }}">{{ ucfirst($period->pendaftaran) }}</span></td>
@@ -67,6 +69,11 @@
                   <option value="{{ Carbon\Carbon::now()->year }}">{{ Carbon\Carbon::now()->year }}</option>
                   <option value="{{ Carbon\Carbon::now()->addYear()->format('Y') }}">{{ Carbon\Carbon::now()->addYear()->format('Y') }}</option>
                 </select>
+              </div>
+              {{-- Kegiatan input field --}}
+              <div class="form-group">
+                <label for="">Kegiatan</label>
+                <input type="text" class="form-control" name="kegiatan" id="kegiatan">
               </div>
               <div>
                 <button type="submit" class="btn btn-primary">Simpan</button>

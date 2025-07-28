@@ -18,7 +18,7 @@
                                     <dd class="col-sm-9">: {{ $proposal->judul }}</dd>
 
                                     <dt class="col-sm-3">Pembimbing</dt>
-                                    <dd class="col-sm-9">: {{ $pembimbing->nama }}</dd>
+                                    <dd class="col-sm-9 ">: <div class="badge badge-primary">{{ $pembimbing->nama }}</div></dd>
 
                                     <dt class="col-sm-3">Ketua</dt>
                                     <dd class="col-sm-9">: {{ $ketua->nama . ' (' . $ketua->nim . ')' }}</dd>
@@ -31,7 +31,7 @@
                                     </dd>
 
                                     <dt class="col-sm-3">Reviewer</dt>
-                                    <dd class="col-sm-9">: {{ $reviewer->nama }}</dd>
+                                    <dd class="col-sm-9">: <div class="badge badge-info">{{ $reviewer->nama }}</div> </dd>
                                 </dl>
 
                                 @if ($proposal->reviews->last()->acc == 1)
@@ -77,12 +77,12 @@
                                         </div>
                                         <p style="line-height: 20px">{{ $review->description }}</p>
                                         @if ($loop->first)
-                                            <a class="btn btn-primary mt-3" href="{{ route('proposal.download', ['file' => $review->file]) }}" target="_blank" role="button"><i class="fas fa-download"></i> Proposal Usulan</a>
+                                            <a class="btn btn-primary mt-3" href="{{ route('proposal.download', ['id' => $review->id]) }}" target="_blank" role="button"><i class="fas fa-download"></i> Proposal Usulan</a>
                                         @elseif ($review->type == 'student')
-                                            <a class="btn btn-info mt-3" href="{{ route('proposal.download', ['file' => $review->file]) }}" target="_blank" role="button"><i class="fas fa-download"></i>
+                                            <a class="btn btn-info mt-3" href="{{ route('proposal.download', ['id' => $review->id]) }}" target="_blank" role="button"><i class="fas fa-download"></i>
                                                 Hasil Revisi</a>
                                         @elseif ($review->type == 'teacher')
-                                            <a class="btn btn-success mt-3" href="{{ route('proposal.download', ['file' => $review->file]) }}" target="_blank" role="button"><i
+                                            <a class="btn btn-success mt-3" href="{{ route('proposal.download', ['id' => $review->id]) }}" target="_blank" role="button"><i
                                                     class="fas fa-download"></i> Hasil Review</a>
                                         @endif
                                     </div>

@@ -296,7 +296,6 @@ class ProposalController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'id-proposal' => 'required',
-            'id-folder' => 'required',
             'deskripsi' => 'nullable',
             'file' => 'required|file|max:5120',
         ]);
@@ -376,9 +375,16 @@ class ProposalController extends Controller
     public function downloadProposal(Request $request)
     {
         // $proposal = Proposal::whereId($request->id)->first();
-        $metadata = Storage::cloud()->getMetadata($request->file);
-        $download = Storage::cloud()->download($request->file, $metadata['name']);
-        return $download;
+        $proposal = Review::where('id', $request->id)->first();
+        if (!$proposal->file_url) {
+            $metadata = Storage::cloud()->getMetadata($proposal->file);
+            $download = Storage::cloud()->download($proposal->file, $metadata['basename']);
+            return $download;
+        }else {
+            $download = $proposal->file_url;
+            return redirect()->away($download);
+        }
+
     }
 
     public function exportBerita($data, $skema)

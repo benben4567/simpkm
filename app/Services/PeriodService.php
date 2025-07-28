@@ -20,6 +20,7 @@ class PeriodService
         $year = $data['tahun'];
         $period = Period::create([
             'tahun' => $data['tahun'],
+            'kegiatan' => $data['kegiatan'],
         ]);
 
         return $period;

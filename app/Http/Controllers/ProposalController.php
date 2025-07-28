@@ -98,7 +98,7 @@ class ProposalController extends Controller
     $pembimbing = $proposal->pembimbing->first();
     $reviewer = $proposal->reviewer->first();
     $anggota = $proposal->anggota->toArray();
-    
+
     return view('pages.admin.review', compact('proposal', 'periode', 'ketua', 'pembimbing', 'reviewer', 'anggota'));
   }
 
@@ -106,7 +106,6 @@ class ProposalController extends Controller
   {
     $validator = Validator::make($request->all(), [
       'id-proposal' => 'required',
-      'id-folder' => 'required',
       'deskripsi' => 'required',
       'file' => 'required|file|max:5120',
     ]);

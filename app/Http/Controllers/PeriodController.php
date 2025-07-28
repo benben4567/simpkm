@@ -3,9 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Period;
-use App\Services\PeriodService;
 use Illuminate\Http\Request;
+use App\Services\PeriodService;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
 
 class PeriodController extends Controller
 {
@@ -27,7 +28,16 @@ class PeriodController extends Controller
   public function store(Request $request, PeriodService $periodService)
   {
     $this->validate($request, [
-      'tahun' => 'required|unique:periods,tahun'
+        'tahun' => 'required',
+        'kegiatan' => [
+            'required',
+            'string',
+            'max:255',
+            Rule::unique('periods')->where(function ($query) use ($request) {
+                return $query->where('tahun', $request->tahun)
+                    ->where('kegiatan', $request->kegiatan);
+            }),
+        ],
     ]);
 
     $period = $periodService->store($request->all());

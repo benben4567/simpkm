@@ -18,7 +18,7 @@
                   <dd class="col-sm-9">: {{ $proposal->judul }}</dd>
 
                   <dt class="col-sm-3">Pembimbing</dt>
-                  <dd class="col-sm-9">: {{ $pembimbing->nama }}</dd>
+                  <dd class="col-sm-9 ">: <div class="badge badge-primary">{{ $pembimbing->nama }}</div></dd>
 
                   <dt class="col-sm-3">Ketua</dt>
                   <dd class="col-sm-9">: {{ $ketua->nama." (".$ketua->nim.")" }}</dd>
@@ -33,7 +33,7 @@
                   </dd>
 
                   <dt class="col-sm-3">Reviewer</dt>
-                  <dd class="col-sm-9">: {{ $reviewer->nama }}</dd>
+                  <dd class="col-sm-9">: <div class="badge badge-info">{{ $reviewer->nama }}</div> </dd>
                 </dl>
 
                 @if ($proposal->reviews->last()->acc == 1)
@@ -161,6 +161,9 @@
                   <div class="form-group">
                     <label>Instruksi Singkat (opsional)</label>
                     <textarea class="form-control h-100" name="deskripsi" rows="5"></textarea>
+                    <input type="hidden" name="id_proposal" value="{{ $proposal->id }}">
+                    {{-- acc true --}}
+                    <input type="hidden" name="acc" value="1">
                   </div>
                   <div class="form-group">
                     <label for="">File Proposal Acc</label>
@@ -168,6 +171,7 @@
                       <input type="file" class="custom-file-input @error('file') is-invalid @enderror" accept="application/pdf" name="file" id="customFile" required>
                       <label class="custom-file-label" for="customFile"></label>
                       <small id="fileHelpId" class="form-text text-muted">Format file : PDF | Maks. 5MB</small>
+
                       @error('file')
                         <div class="invalid-feedback">
                           {{ $message }}
