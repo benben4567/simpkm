@@ -2,16 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Helpers\ResponseFormatter;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use App\Models\Period;
-use App\Models\Proposal;
-use App\Services\AdminProposalService;
+use App\Models\Review;
 use App\Models\Teacher;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Validator;
+use App\Models\Proposal;
 use Illuminate\Support\Str;
+use Illuminate\Http\Request;
+use App\Helpers\ResponseFormatter;
+use Illuminate\Support\Facades\DB;
+use App\Services\AdminProposalService;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 
 class ProposalController extends Controller
 {
@@ -245,10 +246,15 @@ class ProposalController extends Controller
 
   public function download(Request $request)
   {
-    // $proposal = Proposal::whereId($request->id)->first();
-    $metadata = Storage::cloud()->getMetadata($request->file);
-    $download = Storage::cloud()->download($request->file, $metadata['name']);
-    return $download;
+    $review = Review::where('id', $request->id)->first();
+    if (!$review->file_url) {
+        $metadata = Storage::cloud()->getMetadata($review->file);
+        $download = Storage::cloud()->download($review->file, $metadata['basename']);
+        return $download;
+    } else {
+        $download = $review->file_url;
+        return redirect()->away($download);
+    }
   }
 
   public function downloadForm(Request $request)

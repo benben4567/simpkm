@@ -84,12 +84,12 @@
                    @if ($review->file_url)
                       <a class="btn btn-primary mt-3" href="{{ $review->file_url }}" target="_blank" role="button"><i class="fas fa-download"></i> Proposal Usulan</a>
                    @else
-                      <a class="btn btn-primary mt-3" href="{{ route('usulan.download', ['file' => $review->file]) }}" target="_blank" role="button"><i class="fas fa-download"></i> Proposal Usulan</a>
+                      <a class="btn btn-primary mt-3" href="{{ route('usulan.download', ['id' => $review->id]) }}" target="_blank" role="button"><i class="fas fa-download"></i> Proposal Usulan</a>
                    @endif
                   @elseif ($review->type == 'student')
-                  <a class="btn btn-info mt-3" href="{{ route('usulan.download', ['file' => $review->file]) }}" target="_blank" role="button"><i class="fas fa-download"></i> Hasil Revisi</a>
+                  <a class="btn btn-info mt-3" href="{{ route('usulan.download', ['id' => $review->id]) }}" target="_blank" role="button"><i class="fas fa-download"></i> Hasil Revisi</a>
                   @elseif ($review->type == 'teacher')
-                  <a class="btn btn-success mt-3" href="{{ route('usulan.download', ['file' => $review->file]) }}" target="_blank" role="button"><i class="fas fa-download"></i> Hasil Review</a>
+                  <a class="btn btn-success mt-3" href="{{ route('usulan.download', ['id' => $review->id]) }}" target="_blank" role="button"><i class="fas fa-download"></i> Hasil Review</a>
                 @endif
                 </div>
               </div>
