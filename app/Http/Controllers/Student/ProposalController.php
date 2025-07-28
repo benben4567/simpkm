@@ -90,21 +90,28 @@ class ProposalController extends Controller
             'judul' => 'required',
             'file' => 'required|mimes:pdf|max:2048'
         ]);
-        try {
 
+        try {
             DB::transaction(function () use ($request) {
                 $periode = Period::where('tahun', $request->input('tahun'))->firstOrFail();
 
+                // Buat nama file yang unik
                 $title = preg_replace('/[^a-z0-9]+/', '-', strtolower(Str::words($request->input('judul'), 7, '')));
-                $filename = $request->input('skema') . '_' . $title . '_' . Str::random(7) . '.pdf';
+                $filename = $request->input('skema') . '_' . $title . '_' . time() . '.pdf';
+
+                // Simpan file sementara
+                $tempDir = storage_path('app/temp_proposal');
+                if (!file_exists($tempDir)) {
+                    mkdir($tempDir, 0755, true);
+                }
 
                 $tempFilename = Str::random(10) . '.pdf';
-                $tempPath = storage_path('app/temp_proposal/' . $tempFilename);
+                $tempPath = $tempDir . '/' . $tempFilename;
 
-                $request->file('file')->move(storage_path('app/temp_proposal'), $tempFilename);
+                // Simpan file dengan cara yang lebih aman
+                $request->file('file')->move($tempDir, $tempFilename);
 
-
-                // Simpan ke table proposal
+                // Simpan proposal
                 $proposal = Proposal::create([
                     'period_id' => $periode->id,
                     'skema' => $request->input('skema'),
@@ -112,25 +119,25 @@ class ProposalController extends Controller
                     'status' => 'kompilasi',
                 ]);
 
+                // Buat review
                 $review = $proposal->reviews()->create([
                     'user_id' => auth()->user()->id,
                     'type' => auth()->user()->roles->pluck('name')[0],
                     'description' => 'Usulan Proposal Awal',
                 ]);
 
-                // Dispatch job dengan hanya mengirim path (bukan konten)
+                // Dispatch job
                 UploadProposal::dispatch($tempPath, $filename, $periode->tahun, $review->id);
-                // Attach Student
-                $proposal->students()->attach(auth()->user()->student->id, ['jabatan' => 'Ketua']);
 
-                // Attach Teacher
+                // Attach relasi
+                $proposal->students()->attach(auth()->user()->student->id, ['jabatan' => 'Ketua']);
                 $proposal->teachers()->attach($request->input('dosen'), ['jabatan' => 'Pembimbing']);
             });
 
             return redirect()->route('proposal.index')->with('success', 'Data berhasil disimpan');
         } catch (\Exception $e) {
-            Log::error($e->getMessage());
-            return redirect()->route('proposal.index')->with('error', 'Data gagal disimpan');
+            Log::error('ProposalController@store Error: ' . $e->getMessage());
+            return redirect()->route('proposal.index')->with('error', 'Data gagal disimpan: ' . $e->getMessage());
         }
     }
 

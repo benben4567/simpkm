@@ -25,9 +25,6 @@ class UploadReview implements ShouldQueue
     protected $deskripsi;
     protected $acc;
 
-    /**
-     * Create a new job instance.
-     */
     public function __construct($user, $tempPath, $id_proposal, $deskripsi, $acc = 0)
     {
         $this->user = $user;
@@ -37,55 +34,72 @@ class UploadReview implements ShouldQueue
         $this->acc = $acc;
     }
 
-    /**
-     * Execute the job.
-     */
     public function handle()
     {
-        $proposal = Proposal::find($this->id_proposal);
-        if (!$proposal || !file_exists($this->tempPath)) {
-            Log::error('Proposal not found or file missing.', [
-                'proposal_id' => $this->id_proposal,
-                'file' => $this->tempPath
-            ]);
-            return;
-        }
+        try {
+            // Validasi file temp
+            if (!file_exists($this->tempPath)) {
+                throw new \Exception("Temp file not found: {$this->tempPath}");
+            }
 
-        $title = preg_replace('/[^a-z0-9]+/', '-', strtolower(Str::words($proposal->judul, 7, '')));
-        $filename = $proposal->skema . '_' . $title . '_' . time() . '.pdf';
+            $proposal = Proposal::find($this->id_proposal);
+            if (!$proposal) {
+                throw new \Exception("Proposal not found: {$this->id_proposal}");
+            }
 
-        $fileData = File::get($this->tempPath);
-        $dirname = $proposal->period->tahun . '/review';
+            // Generate nama file yang aman
+            $title = preg_replace('/[^a-z0-9]+/', '-', strtolower(Str::words($proposal->judul, 7, '')));
+            $filename = $proposal->skema . '_' . $title . '_' . time() . '.pdf';
 
-        $upload = CloudStorage::upload($dirname, $fileData, $filename);
+            // Upload ke cloud storage
+            $dirname = $proposal->period->tahun . '/review';
+            $upload = CloudStorage::upload(
+                $dirname,
+                file_get_contents($this->tempPath),
+                $filename
+            );
 
-        $proposal->reviews()->create([
-            'file' => $filename,
-            'user_id' => $this->user['id'],
-            'type' => $this->user['roles'],
-            'description' => $this->deskripsi,
-            'file_path' => $upload['path'],
-            'file_url' => $upload['url'],
-            'acc' => $this->acc
-        ]);
+            if (!$upload['status']) {
+                throw new \Exception("Failed to upload file to cloud storage");
+            }
 
-        if ($this->acc == 1) {
-            $success = $proposal->update([
+            // Buat record review
+            $review = $proposal->reviews()->create([
+                'user_id' => $this->user['id'],
+                'type' => $this->user['roles'],
+                'description' => $this->deskripsi,
+                'file' => $filename,
                 'file_path' => $upload['path'],
                 'file_url' => $upload['url'],
-                'file' => $filename,
-                'status' => 'selesai'
+                'acc' => $this->acc
             ]);
 
-            if (!$success) {
-                Log::error('Failed to update proposal after approval.', [
-                    'proposal_id' => $this->id_proposal,
-                    'user_id' => $this->user['id']
+            // Jika review disetujui
+            if ($this->acc == 1) {
+                $proposal->update([
+                    'file_path' => $upload['path'],
+                    'file_url' => $upload['url'],
+                    'file' => $filename,
+                    'status' => 'selesai'
                 ]);
             }
-        }
 
-        // Delete temp file
-        File::delete($this->tempPath);
+            Log::info('Review uploaded successfully', [
+                'proposal_id' => $this->id_proposal,
+                'review_id' => $review->id,
+                'file_url' => $upload['url']
+            ]);
+        } catch (\Exception $e) {
+            Log::error('UploadReview failed: ' . $e->getMessage(), [
+                'proposal_id' => $this->id_proposal,
+                'user_id' => $this->user['id'] ?? null
+            ]);
+        } finally {
+            // Bersihkan file temp
+            if (file_exists($this->tempPath)) {
+                @unlink($this->tempPath);
+            }
+        }
     }
 }
+

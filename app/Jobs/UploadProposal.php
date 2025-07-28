@@ -30,31 +30,50 @@ class UploadProposal implements ShouldQueue
 
     public function handle()
     {
-        if (!file_exists($this->tempPath)) {
-            Log::error("Temp file not found: {$this->tempPath}");
-            return;
+        try {
+            // Periksa apakah file temp ada
+            if (!file_exists($this->tempPath)) {
+                throw new \Exception("Temp file not found: {$this->tempPath}");
+            }
+
+            // Dapatkan ekstensi file dari nama file
+            $extension = pathinfo($this->filename, PATHINFO_EXTENSION);
+
+            // Jika belum ada ekstensi, tambahkan .pdf
+            if (empty($extension)) {
+                $this->filename .= '.pdf';
+            }
+
+            $review = Review::find($this->review_id);
+            if (!$review) {
+                throw new \Exception('Review not found for ID: ' . $this->review_id);
+            }
+
+            $dirname = $this->tahun . '/proposal';
+
+            // Upload ke Cloud Storage
+            $upload = CloudStorage::upload(
+                $dirname,
+                file_get_contents($this->tempPath),
+                $this->filename
+            );
+
+            if ($upload['status']) {
+                $review->update([
+                    'file_path' => $upload['path'],
+                    'file_url' => $upload['url'],
+                ]);
+                Log::info('File uploaded successfully: ' . $upload['url']);
+            } else {
+                throw new \Exception('Failed to upload file for review ID: ' . $this->review_id);
+            }
+        } catch (\Exception $e) {
+            Log::error('UploadProposal Error: ' . $e->getMessage());
+        } finally {
+            // Pastikan file temp dihapus
+            if (file_exists($this->tempPath)) {
+                unlink($this->tempPath);
+            }
         }
-
-        $fileContent = file_get_contents($this->tempPath);
-
-        $review = Review::find($this->review_id);
-        if (!$review) {
-            Log::error('Review not found for ID: ' . $this->review_id);
-            return;
-        }
-
-        $dirname = $this->tahun . '/proposal';
-
-        $upload = CloudStorage::upload($dirname, $fileContent, $this->filename);
-        if ($upload['status']) {
-            $review->update([
-                'file_path' => $upload['path'],
-                'file_url' => $upload['url'],
-            ]);
-            Log::info('File uploaded successfully: ' . $upload['url']);
-        } else {
-            Log::error('Failed to upload file for review ID: ' . $this->review_id);
-        }
-        unlink($this->tempPath);
     }
 }

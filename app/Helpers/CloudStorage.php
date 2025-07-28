@@ -66,23 +66,13 @@ class CloudStorage
 
     public static function upload($pathName, $fileContent, $fileName, $visibility = 'public')
     {
-        // Pastikan fileName memiliki ekstensi yang benar
-        $extension = pathinfo($fileName, PATHINFO_EXTENSION);
-
-    // Jika fileContent adalah file object (UploadedFile)
-        if (is_object($fileContent) && method_exists($fileContent, 'extension')) {
-            $extension = $fileContent->extension();
-            $fileContent = file_get_contents($fileContent->getRealPath());
-        }
-
-    // Bangun path lengkap
         $path = self::$path . '/' . $pathName . '/' . $fileName;
 
-        // Upload ke S3
         $result = Storage::disk('s3')->put($path, $fileContent, $visibility);
 
         if (!$result) {
             Log::error("CloudStorage@upload: File {$path} failed to upload");
+
             return [
                 'status' => false,
                 'path' => null,

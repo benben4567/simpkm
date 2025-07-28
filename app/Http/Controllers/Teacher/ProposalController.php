@@ -137,32 +137,54 @@ class ProposalController extends Controller
         return view('pages.teacher.reviewer_detail', compact('proposal', 'periode', 'ketua', 'pembimbing', 'reviewer', 'anggota'));
     }
 
-    public function reviewerStore(Request $request)
-    {
-        try {
+public function reviewerStore(Request $request)
+{
+    $validator = Validator::make($request->all(), [
+        'id_proposal' => 'required|exists:proposals,id',
+        'deskripsi' => 'required|string',
+        'file' => 'required|file|mimes:pdf|max:5120',
+        'acc' => 'sometimes|boolean'
+    ]);
 
-            $validator = Validator::make($request->all(), [
-                'deskripsi' => 'required',
-                'file' => 'required|file|max:5120',
-            ]);
-
-            if ($validator->fails()) {
-                return ResponseFormatter::error(null, $validator->errors(), 422);
-            }
-
-
-            $tempFilename = Str::random(10) . '.pdf';
-            $tempPath = storage_path('app/temp_proposal_review/' . $tempFilename);
-
-            $request->file('file')->move(storage_path('app/temp_proposal_review'), $tempFilename);
-            UploadReview::dispatch(['id' => auth()->user()->id, 'roles' => auth()->user()->getRoleNames()[0]], $tempPath, $request->id_proposal, $request->input('deskripsi'), $request->input('acc'));
-
-            return ResponseFormatter::success(null, 'Data Berhasil disimpan', 201);
-        } catch (\Exception $e) {
-            Log::error("ProposalController::reviewerStore() " . $e->getMessage());
-            return ResponseFormatter::error(null, 'Data Gagal disimpan', 500);
-        }
+    if ($validator->fails()) {
+        return ResponseFormatter::error(null, $validator->errors(), 422);
     }
+
+    try {
+        // Persiapkan direktori temp
+        $tempDir = storage_path('app/temp_proposal_review');
+        if (!file_exists($tempDir)) {
+            mkdir($tempDir, 0755, true);
+        }
+
+        // Simpan file sementara
+        $tempFilename = Str::random(10) . '.pdf';
+        $tempPath = $tempDir . '/' . $tempFilename;
+        
+        $request->file('file')->move($tempDir, $tempFilename);
+
+        // Dispatch job
+        UploadReview::dispatch(
+            [
+                'id' => auth()->user()->id,
+                'roles' => auth()->user()->getRoleNames()[0]
+            ],
+            $tempPath,
+            $request->id_proposal,
+            $request->deskripsi,
+            $request->input('acc', 0)
+        );
+
+        return ResponseFormatter::success(null, 'Review sedang diproses', 202);
+
+    } catch (\Exception $e) {
+        Log::error("ProposalController::reviewerStore() " . $e->getMessage(), [
+            'user_id' => auth()->id(),
+            'proposal_id' => $request->id_proposal
+        ]);
+        return ResponseFormatter::error(null, 'Terjadi kesalahan saat memproses review', 500);
+    }
+}
 
     public function reviewerAcc(Request $request)
     {
