@@ -103,6 +103,10 @@
                 <input type="text" class="form-control" name="tahun" disabled>
               </div>
               <div class="form-group">
+                <label for="">Kegiatan</label>
+                <input type="text" class="form-control" name="kegiatan" id="kegiatan" disabled>
+              </div>
+              <div class="form-group">
                 <label for="">Status</label>
                 <select class="form-control selectric" name="status" id="status">
                   <option value="aktif">Aktif</option>

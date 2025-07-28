@@ -179,6 +179,7 @@ $(function () {
           console.log(data);
           $("input[name='id']").val(data.id);
           $("input[name='tahun']").val(data.tahun);
+          $("input[name='kegiatan']").val(data.kegiatan);
           $("select[name='status']").val(data.status).change().selectric('refresh');
           $("select[name='pendaftaran']").val(data.pendaftaran).change().selectric('refresh');
 
