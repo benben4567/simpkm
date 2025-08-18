@@ -23,7 +23,9 @@ class UploadProposal implements ShouldQueue
     public function __construct($tempPath, $filename, $tahun, $review_id)
     {
         $this->tempPath = $tempPath;
-        $this->filename = $filename;
+        $this->filename = pathinfo($filename, PATHINFO_EXTENSION)
+            ? $filename
+            : $filename . '.pdf'; // Pastikan selalu ada extension
         $this->tahun = $tahun;
         $this->review_id = $review_id;
     }
@@ -55,7 +57,8 @@ class UploadProposal implements ShouldQueue
             $upload = CloudStorage::upload(
                 $dirname,
                 file_get_contents($this->tempPath),
-                $this->filename
+                $this->filename,
+                ['visibility' => 'public', 'ACL' => 'public-read'] // Tambahkan ini
             );
 
             if ($upload['status']) {
