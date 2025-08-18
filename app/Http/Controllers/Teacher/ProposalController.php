@@ -160,7 +160,7 @@ public function reviewerStore(Request $request)
         // Simpan file sementara
         $tempFilename = Str::random(10) . '.pdf';
         $tempPath = $tempDir . '/' . $tempFilename;
-        
+
         $request->file('file')->move($tempDir, $tempFilename);
 
         // Dispatch job
@@ -193,7 +193,6 @@ public function reviewerStore(Request $request)
         }
         try {
             $validator = Validator::make($request->all(), [
-                'deskripsi' => 'required',
                 'file' => 'required|file|max:5120',
                 'id_proposal' => 'required',
             ]);
@@ -259,7 +258,11 @@ public function reviewerStore(Request $request)
 
     public function downloadProposal(Request $request)
     {
-        $review = Review::where('id', $request->id)->first();
+        if (Str::isUuid($request->id)) {
+            $review = Review::where('type', 'teacher')->where('proposal_id', $request->id)->first();
+        }else {
+            $review = Review::where('id', $request->id)->first();
+        }
         if (!$review->file_url) {
             $metadata = Storage::cloud()->getMetadata($review->file);
             $download = Storage::cloud()->download($review->file, $metadata['basename']);

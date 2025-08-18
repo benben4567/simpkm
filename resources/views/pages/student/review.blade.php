@@ -35,7 +35,7 @@
                                 </dl>
 
                                 @if ($proposal->reviews->last()->acc == 1)
-                                    <button type="button" class="btn btn-danger"><i class="fas fa-file-pdf"></i> Proposal ACC</button>
+                                    <a type="button" class="btn btn-danger" href="{{ route('proposal.download', ['id' => $proposal->id]) }}"><i class="fas fa-file-pdf"></i> Download Proposal ACC</a>
                                 @else
                                     @if ($ketua->user_id == auth()->user()->id)
                                         <button type="button" class="btn btn-info" data-toggle="modal" data-target="#modalReview"><i class="fas fa-upload"></i> Upload Hasil Revisi</button>

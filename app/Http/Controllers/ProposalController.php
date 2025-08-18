@@ -246,7 +246,11 @@ class ProposalController extends Controller
 
   public function download(Request $request)
   {
-    $review = Review::where('id', $request->id)->first();
+    if ($request->file) {
+        $review = Review::where('file', $request->file)->first();
+    }else{
+        $review = Review::where('id', $request->id)->first();
+    }
     if (!$review->file_url) {
         $metadata = Storage::cloud()->getMetadata($review->file);
         $download = Storage::cloud()->download($review->file, $metadata['basename']);
